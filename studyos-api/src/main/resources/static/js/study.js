@@ -1,116 +1,6 @@
 Utils.requireAuth();
 
-const methods = [
-  {
-    id: 'POMODORO',
-    icon: 'POM',
-    name: 'Pomodoro',
-    description: 'Ciclos de foco e pausa para estudar com ritmo e evitar desgaste.',
-    duration: '25/5',
-    intensity: 'Foco guiado',
-    color: '#ef4444'
-  },
-  {
-    id: 'FLOW_STATE',
-    icon: 'FLOW',
-    name: 'Flow State',
-    description: 'Sessao livre, sem cronometro pressionando. Ideal para foco profundo.',
-    duration: 'Livre',
-    intensity: 'Imersivo',
-    color: '#0f766e'
-  },
-  {
-    id: 'FIFTY_TWO_SEVENTEEN',
-    icon: '52',
-    name: '52/17',
-    description: '52 minutos de foco e 17 minutos de pausa para blocos mais longos.',
-    duration: '52/17',
-    intensity: 'Foco longo',
-    color: '#2563eb'
-  },
-  {
-    id: 'TIMEBOXING',
-    icon: 'BOX',
-    name: 'Timeboxing',
-    description: 'Defina um bloco fechado de tempo para uma tarefa especifica.',
-    duration: 'Personalizado',
-    intensity: 'Planejado',
-    color: '#7c3aed'
-  },
-  {
-    id: 'FEYNMAN',
-    icon: 'FEY',
-    name: 'Feynman',
-    description: 'Estude e explique com suas palavras para encontrar falhas no entendimento.',
-    duration: 'Livre',
-    intensity: 'Explicacao',
-    color: '#d97706'
-  },
-  {
-    id: 'ACTIVE_RECALL',
-    icon: 'AR',
-    name: 'Active Recall',
-    description: 'Tente lembrar antes de consultar o material. Excelente para memoria.',
-    duration: 'Livre',
-    intensity: 'Memoria ativa',
-    color: '#16a34a'
-  },
-  {
-    id: 'FLASHCARDS',
-    icon: 'CARD',
-    name: 'Flashcards',
-    description: 'Revise perguntas e respostas com repeticao espacada.',
-    duration: 'Revisao',
-    intensity: 'SM-2',
-    color: '#db2777'
-  },
-  {
-    id: 'SPACED_REPETITION',
-    icon: 'SR',
-    name: 'Repeticao Espacada',
-    description: 'Revise no momento certo para fortalecer memoria de longo prazo.',
-    duration: 'Agenda',
-    intensity: 'Retencao',
-    color: '#9333ea'
-  },
-  {
-    id: 'GUIDED_READING',
-    icon: 'READ',
-    name: 'Leitura Guiada',
-    description: 'Estude PDFs, textos e materiais com anotacoes e destaques.',
-    duration: 'Livre',
-    intensity: 'Leitura',
-    color: '#0891b2'
-  },
-  {
-    id: 'QUESTIONS',
-    icon: 'QST',
-    name: 'Questoes',
-    description: 'Treine com perguntas, simulados e exercicios da materia.',
-    duration: 'Variavel',
-    intensity: 'Pratica',
-    color: '#ea580c'
-  },
-  {
-    id: 'CORNELL_NOTES',
-    icon: 'COR',
-    name: 'Metodo Cornell',
-    description: 'Organize anotacoes em ideias principais, detalhes e resumo final.',
-    duration: 'Livre',
-    intensity: 'Anotacao',
-    color: '#475569'
-  },
-  {
-    id: 'FREE_REVIEW',
-    icon: 'REV',
-    name: 'Revisao Livre',
-    description: 'Sessao curta para revisar conceitos, resumos ou anotacoes antigas.',
-    duration: 'Curta',
-    intensity: 'Revisao',
-    color: '#65a30d'
-  }
-];
-
+let methods = [];
 let selectedMethod = null;
 
 const user = Utils.getUser();
@@ -131,6 +21,13 @@ function logout() {
 }
 
 function renderMethods() {
+  if (!methods.length) {
+    methodsGrid.innerHTML = `
+      <div class="empty-state">Nenhum metodo disponivel agora.</div>
+    `;
+    return;
+  }
+
   methodsGrid.innerHTML = methods.map((method) => `
     <article
       class="method-card card"
@@ -138,16 +35,16 @@ function renderMethods() {
       style="--method-color: ${method.color}"
     >
       <div class="method-top">
-        <span class="method-icon">${method.icon}</span>
+        <span class="method-icon">${Utils.escapeHtml(method.icon)}</span>
         <span class="method-dot"></span>
       </div>
 
-      <h2>${method.name}</h2>
-      <p>${method.description}</p>
+      <h2>${Utils.escapeHtml(method.name)}</h2>
+      <p>${Utils.escapeHtml(method.description)}</p>
 
       <div class="method-meta">
-        <span>${method.duration}</span>
-        <span>${method.intensity}</span>
+        <span>${Utils.escapeHtml(method.duration)}</span>
+        <span>${Utils.escapeHtml(method.intensity)}</span>
       </div>
 
       <button class="btn btn-secondary method-action" type="button">
@@ -155,6 +52,23 @@ function renderMethods() {
       </button>
     </article>
   `).join('');
+}
+
+async function loadStudyMethods() {
+  try {
+    methodsGrid.innerHTML = `
+      <div class="empty-state">Carregando metodos...</div>
+    `;
+
+    methods = await Api.getStudyMethods();
+    renderMethods();
+  } catch (error) {
+    methodsGrid.innerHTML = `
+      <div class="empty-state">
+        Nao foi possivel carregar os metodos de estudo.
+      </div>
+    `;
+  }
 }
 
 async function loadSubjects() {
@@ -229,5 +143,5 @@ methodsGrid.addEventListener('click', (event) => {
 
 startButton.addEventListener('click', startMethod);
 
-renderMethods();
+loadStudyMethods();
 loadSubjects();

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = '/api';
 
 const Api = {
   get token() {
@@ -32,8 +32,8 @@ const Api = {
 
     if (response.status === 401 || response.status === 403) {
       this.clearSession();
-      window.location.href = path.includes('/auth') ? 'index.html' : '../index.html';
-      throw new Error('Sessão expirada. Faça login novamente.');
+      window.location.href = path.includes('/auth') ? '/index.html' : '/index.html';
+      throw new Error('Sessao expirada. Faca login novamente.');
     }
 
     const contentType = response.headers.get('content-type');
@@ -42,7 +42,11 @@ const Api = {
       : null;
 
     if (!response.ok) {
-      throw new Error(data?.message || data?.error || 'Erro na requisição.');
+      const message = data?.message
+        || Object.values(data || {})[0]
+        || 'Erro na requisicao.';
+
+      throw new Error(message);
     }
 
     return data;
@@ -94,5 +98,9 @@ const Api = {
 
   deleteSubject(id) {
     return this.delete(`/subjects/${id}`);
+  },
+
+  getStudyMethods() {
+    return this.get('/study-methods');
   }
 };
