@@ -1,64 +1,74 @@
-const API = 'http://localhost:8080/api';
+const loginForm = Utils.$('#login-form');
+const registerForm = Utils.$('#register-form');
+
+function getValue(selector) {
+  return Utils.$(selector)?.value.trim() || '';
+}
 
 async function login() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  Utils.clearMessage('#msg');
+
+  const email = getValue('#email');
+  const password = getValue('#password');
+
+  if (!email || !password) {
+    Utils.showMessage('#msg', 'Informe email e senha.');
+    return;
+  }
 
   try {
-    const res = await fetch(`${API}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data));
-      window.location.href = 'pages/dashboard.html';
-    } else {
-      document.getElementById('msg').textContent = 'Email ou senha incorretos!';
-    }
-  } catch (e) {
-    document.getElementById('msg').textContent = 'Erro ao conectar com o servidor!';
+    const data = await Api.login({ email, password });
+    Api.setSession(data);
+    window.location.href = 'pages/dashboard.html';
+  } catch (error) {
+    Utils.showMessage('#msg', error.message || 'Email ou senha incorretos.');
   }
 }
 
 async function register() {
-  const name = document.getElementById('reg-name').value;
-  const email = document.getElementById('reg-email').value;
-  const password = document.getElementById('reg-password').value;
+  Utils.clearMessage('#msg');
+
+  const name = getValue('#reg-name');
+  const email = getValue('#reg-email');
+  const password = getValue('#reg-password');
+
+  if (!name || !email || !password) {
+    Utils.showMessage('#msg', 'Preencha todos os campos.');
+    return;
+  }
+
+  if (password.length < 6) {
+    Utils.showMessage('#msg', 'A senha deve ter pelo menos 6 caracteres.');
+    return;
+  }
 
   try {
-    const res = await fetch(`${API}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data));
-      window.location.href = 'pages/dashboard.html';
-    } else {
-      document.getElementById('msg').textContent = 'Erro ao cadastrar!';
-    }
-  } catch (e) {
-    document.getElementById('msg').textContent = 'Erro ao conectar com o servidor!';
+    const data = await Api.register({ name, email, password });
+    Api.setSession(data);
+    window.location.href = 'pages/dashboard.html';
+  } catch (error) {
+    Utils.showMessage('#msg', error.message || 'Erro ao cadastrar usuário.');
   }
 }
 
 function showRegister() {
-  document.getElementById('login-form').style.display = 'none';
-  document.getElementById('register-form').style.display = 'block';
-  document.getElementById('msg').textContent = '';
+  loginForm.style.display = 'none';
+  registerForm.style.display = 'block';
+  Utils.clearMessage('#msg');
 }
 
 function showLogin() {
-  document.getElementById('register-form').style.display = 'none';
-  document.getElementById('login-form').style.display = 'block';
-  document.getElementById('msg').textContent = '';
+  registerForm.style.display = 'none';
+  loginForm.style.display = 'block';
+  Utils.clearMessage('#msg');
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Enter') return;
+
+  if (registerForm.style.display === 'block') {
+    register();
+  } else {
+    login();
+  }
+});

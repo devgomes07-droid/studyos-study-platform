@@ -3,61 +3,88 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StudyOS — Dashboard</title>
+
+    <title>StudyOS - Dashboard</title>
+
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
 </head>
 <body class="app">
-
 <aside class="sidebar">
-    <div class="logo">📚 StudyOS</div>
+    <div class="logo">StudyOS</div>
+
     <nav>
-        <a href="dashboard.html" class="active">🏠 Dashboard</a>
-        <a href="subjects.html">📖 Matérias</a>
-        <a href="pomodoro.html">🍅 Pomodoro</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="subjects.html">Materias</a>
+        <a href="study.html">Metodos</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="profile.html">Perfil</a>
     </nav>
+
     <div class="user-info" id="user-info"></div>
+
     <button onclick="logout()" class="logout-btn">Sair</button>
 </aside>
 
 <main class="main">
-    <h1>Olá, <span id="username"></span>! 👋</h1>
-    <p class="subtitle">Vamos estudar hoje?</p>
+    <section class="page-header">
+        <div>
+            <h1 class="page-title"><span id="greeting">Ola</span>, <span id="username"></span></h1>
+            <p class="page-subtitle">Escolha seu ritmo, acompanhe seu progresso e continue evoluindo.</p>
+        </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <span class="stat-icon">⚡</span>
+        <button class="btn btn-primary" onclick="window.location.href='study.html'">
+            Iniciar estudo
+        </button>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span class="stat-icon">XP</span>
             <div>
                 <p class="stat-label">XP Total</p>
                 <p class="stat-value" id="xp">0</p>
             </div>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon">🏆</span>
+        </article>
+
+        <article class="stat-card">
+            <span class="stat-icon">NV</span>
             <div>
-                <p class="stat-label">Nível</p>
+                <p class="stat-label">Nivel</p>
                 <p class="stat-value" id="level">1</p>
             </div>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon">📖</span>
+        </article>
+
+        <article class="stat-card">
+            <span class="stat-icon">MAT</span>
             <div>
-                <p class="stat-label">Matérias</p>
+                <p class="stat-label">Materias</p>
                 <p class="stat-value" id="subjects-count">0</p>
             </div>
+        </article>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <div>
+                <h2>Suas Materias</h2>
+                <p>Acompanhe onde voce ja esta estudando.</p>
+            </div>
+
+            <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">
+                Gerenciar
+            </button>
         </div>
-    </div>
 
-    <h2>Suas Matérias</h2>
-    <div class="subjects-list" id="subjects-list">
-        <p>Carregando...</p>
-    </div>
-
-    <button onclick="window.location.href='pomodoro.html'" class="start-btn">
-        🍅 Iniciar Pomodoro
-    </button>
+        <div class="subjects-list" id="subjects-list">
+            <div class="empty-state">Carregando materias...</div>
+        </div>
+    </section>
 </main>
 
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/dashboard.js"></script>
 </body>
 </html>
