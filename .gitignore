@@ -1,0 +1,34 @@
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Java / Spring
+target/
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Environment / Secrets
+.env
+*.env
+application-local.properties
+application-dev.properties
+application-prod.properties
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
