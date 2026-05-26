@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>StudyOS - Materias</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/subjects.css" />
+</head>
+<body class="app">
+<aside class="sidebar">
+    <div class="logo">StudyOS</div>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="subjects.html" class="active">Materias</a>
+        <a href="study.html">Metodos</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="profile.html">Perfil</a>
+    </nav>
+
+    <div class="user-info" id="user-info"></div>
+
+    <button onclick="logout()" class="logout-btn">Sair</button>
+</aside>
+
+<main class="main">
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Materias</h1>
+            <p class="page-subtitle">Organize suas disciplinas, metas semanais e progresso de estudo.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openSubjectModal()">
+            Nova materia
+        </button>
+    </section>
+
+    <section class="subjects-toolbar">
+        <div class="search-box">
+            <input
+                    class="input"
+                    id="subject-search"
+                    type="search"
+                    placeholder="Buscar materia..."
+                    autocomplete="off"
+            />
+        </div>
+
+        <div class="subjects-summary card">
+            <span id="subjects-total">0</span>
+            <small>materias cadastradas</small>
+        </div>
+    </section>
+
+    <section id="subjects-grid" class="subjects-grid">
+        <div class="empty-state">Carregando materias...</div>
+    </section>
+</main>
+
+<div class="modal-backdrop" id="subject-modal">
+    <section class="modal">
+        <header class="modal-header">
+            <h2 class="modal-title" id="modal-title">Nova materia</h2>
+            <button class="icon-button" onclick="closeSubjectModal()" aria-label="Fechar modal">
+                X
+            </button>
+        </header>
+
+        <form id="subject-form" class="subject-form">
+            <input type="hidden" id="subject-id" />
+
+            <label>
+                Nome
+                <input class="input" id="subject-name" type="text" placeholder="Ex: Matematica" />
+            </label>
+
+            <label>
+                Descricao
+                <textarea
+                        class="textarea"
+                        id="subject-description"
+                        rows="3"
+                        placeholder="Ex: Algebra, geometria e revisoes semanais"
+                ></textarea>
+            </label>
+
+            <div class="form-row">
+                <label>
+                    Emoji
+                    <input class="input" id="subject-icon" type="text" maxlength="2" placeholder="📚" />
+                </label>
+
+                <label>
+                    Cor
+                    <input class="input color-input" id="subject-color" type="color" value="#4f46e5" />
+                </label>
+            </div>
+
+            <label>
+                Meta semanal de horas
+                <input class="input" id="subject-weekly-goal" type="number" min="1" max="80" value="5" />
+            </label>
+
+            <p id="subject-message" class="form-message"></p>
+
+            <footer class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeSubjectModal()">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn btn-primary">
+                    Salvar materia
+                </button>
+            </footer>
+        </form>
+    </section>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/subjects.js"></script>
+</body>
+</html>
