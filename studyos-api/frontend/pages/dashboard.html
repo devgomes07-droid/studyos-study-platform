@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyOS — Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body class="app">
+
+<aside class="sidebar">
+    <div class="logo">📚 StudyOS</div>
+    <nav>
+        <a href="dashboard.html" class="active">🏠 Dashboard</a>
+        <a href="subjects.html">📖 Matérias</a>
+        <a href="pomodoro.html">🍅 Pomodoro</a>
+    </nav>
+    <div class="user-info" id="user-info"></div>
+    <button onclick="logout()" class="logout-btn">Sair</button>
+</aside>
+
+<main class="main">
+    <h1>Olá, <span id="username"></span>! 👋</h1>
+    <p class="subtitle">Vamos estudar hoje?</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-icon">⚡</span>
+            <div>
+                <p class="stat-label">XP Total</p>
+                <p class="stat-value" id="xp">0</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <div>
+                <p class="stat-label">Nível</p>
+                <p class="stat-value" id="level">1</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">📖</span>
+            <div>
+                <p class="stat-label">Matérias</p>
+                <p class="stat-value" id="subjects-count">0</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Suas Matérias</h2>
+    <div class="subjects-list" id="subjects-list">
+        <p>Carregando...</p>
+    </div>
+
+    <button onclick="window.location.href='pomodoro.html'" class="start-btn">
+        🍅 Iniciar Pomodoro
+    </button>
+</main>
+
+<script src="../js/dashboard.js"></script>
+</body>
+</html>

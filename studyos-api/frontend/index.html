@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyOS</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="container">
+    <div class="auth-box">
+        <h1>📚 StudyOS</h1>
+        <p>Sua plataforma de gestão de estudos</p>
+
+        <div id="login-form">
+            <h2>Entrar</h2>
+            <input type="email" id="email" placeholder="Email" />
+            <input type="password" id="password" placeholder="Senha" />
+            <button onclick="login()">Entrar</button>
+            <p>Não tem conta? <a href="#" onclick="showRegister()">Cadastrar</a></p>
+        </div>
+
+        <div id="register-form" style="display:none">
+            <h2>Cadastrar</h2>
+            <input type="text" id="reg-name" placeholder="Nome" />
+            <input type="email" id="reg-email" placeholder="Email" />
+            <input type="password" id="reg-password" placeholder="Senha" />
+            <button onclick="register()">Cadastrar</button>
+            <p>Já tem conta? <a href="#" onclick="showLogin()">Entrar</a></p>
+        </div>
+
+        <p id="msg" style="color:red"></p>
+    </div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+body.app {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: #0f0f1a;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1a1a2e;
+  border-right: 1px solid #2d2d4e;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logo {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #6366f1;
+  margin-bottom: 24px;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+nav a {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+nav a:hover, nav a.active {
+  background: #6366f1;
+  color: white;
+}
+
+.user-info {
+  margin-top: auto;
+  padding: 12px;
+  background: #0f0f1a;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.logout-btn {
+  margin-top: 8px;
+  background: #ef4444;
+  padding: 8px;
+  font-size: 0.85rem;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+.main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.main h1 {
+  font-size: 1.8rem;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-bottom: 32px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: #1a1a2e;
+  border: 1px solid #2d2d4e;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  font-size: 2rem;
+}
+
+.stat-label {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #6366f1;
+}
+
+.subjects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.subject-card {
+  background: #1a1a2e;
+  border: 1px solid #2d2d4e;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.subject-card:hover {
+  border-color: #6366f1;
+  transform: translateY(-2px);
+}
+
+.subject-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.subject-hours {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.start-btn {
+  width: auto;
+  padding: 14px 28px;
+  font-size: 1.1rem;
+}
