@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>StudyOS - Metodos</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/study.css" />
+</head>
+<body class="app">
+<aside class="sidebar">
+    <div class="logo">StudyOS</div>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="subjects.html">Materias</a>
+        <a href="study.html" class="active">Metodos</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="profile.html">Perfil</a>
+    </nav>
+
+    <div class="user-info" id="user-info"></div>
+
+    <button onclick="logout()" class="logout-btn">Sair</button>
+</aside>
+
+<main class="main">
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Como voce quer estudar hoje?</h1>
+            <p class="page-subtitle">
+                Escolha o metodo que combina melhor com seu ritmo, energia e objetivo agora.
+            </p>
+        </div>
+
+        <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">
+            Gerenciar materias
+        </button>
+    </section>
+
+    <section class="study-setup card">
+        <div>
+            <h2>Preparar sessao</h2>
+            <p>Selecione uma materia antes de iniciar um metodo.</p>
+        </div>
+
+        <label>
+            Materia
+            <select class="input" id="subject-select">
+                <option value="">Carregando materias...</option>
+            </select>
+        </label>
+    </section>
+
+    <section class="methods-grid" id="methods-grid">
+        <div class="empty-state">Carregando metodos...</div>
+    </section>
+
+    <section class="selected-method card">
+        <div>
+            <p class="selected-label">Metodo selecionado</p>
+            <h2 id="selected-method-name">Nenhum metodo selecionado</h2>
+            <p id="selected-method-description">
+                Escolha um card acima para configurar sua sessao.
+            </p>
+        </div>
+
+        <button class="btn btn-primary" id="start-method-btn" disabled>
+            Iniciar sessao
+        </button>
+    </section>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/study.js"></script>
+</body>
+</html>
