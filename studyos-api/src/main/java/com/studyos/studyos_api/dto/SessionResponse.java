@@ -18,6 +18,7 @@ public class SessionResponse {
     private LocalDateTime endedAt;
     private Integer durationMinutes;
     private String type;
+    private String studyMethod;
     private Boolean completed;
     private Integer xpEarned;
     private String notes;

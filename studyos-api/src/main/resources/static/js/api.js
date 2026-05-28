@@ -32,7 +32,7 @@ const Api = {
 
     if (response.status === 401 || response.status === 403) {
       this.clearSession();
-      window.location.href = path.includes('/auth') ? '/index.html' : '/index.html';
+      window.location.href = '/index.html';
       throw new Error('Sessao expirada. Faca login novamente.');
     }
 
@@ -102,5 +102,17 @@ const Api = {
 
   getStudyMethods() {
     return this.get('/study-methods');
+  },
+
+  startSession(payload) {
+    return this.post('/sessions/start', payload);
+  },
+
+  finishSession(id, payload) {
+    return this.post(`/sessions/${id}/finish`, payload);
+  },
+
+  getSessions() {
+    return this.get('/sessions');
   }
 };

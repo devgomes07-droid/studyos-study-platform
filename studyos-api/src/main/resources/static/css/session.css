@@ -1,0 +1,115 @@
+.session-main {
+  display: grid;
+  gap: 22px;
+}
+
+.session-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px;
+}
+
+.session-label {
+  margin: 0 0 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.session-hero h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+}
+
+.session-hero p {
+  margin: 0;
+  color: #64748b;
+}
+
+.session-subject {
+  min-width: 180px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.session-subject span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.session-subject strong {
+  font-size: 20px;
+}
+
+.timer-card {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+  padding: 34px;
+}
+
+.timer-ring {
+  width: 280px;
+  height: 280px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffffff 58%, transparent 59%),
+    conic-gradient(#4f46e5 75%, #e5e7eb 0);
+}
+
+.timer-ring div {
+  display: grid;
+  place-items: center;
+}
+
+#timer-display {
+  font-size: 56px;
+  font-weight: 900;
+}
+
+#timer-mode {
+  color: #64748b;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.notes-card {
+  padding: 22px;
+}
+
+.notes-card label {
+  display: grid;
+  gap: 10px;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .session-hero {
+    flex-direction: column;
+  }
+
+  .timer-ring {
+    width: 220px;
+    height: 220px;
+  }
+
+  #timer-display {
+    font-size: 44px;
+  }
+}

@@ -1,14 +1,17 @@
 package com.studyos.studyos_api.entity;
 
 import com.studyos.studyos_api.enums.SessionType;
+import com.studyos.studyos_api.enums.StudyMethodType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "study_sessions")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,11 +21,13 @@ public class StudySession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // ALTERADO DE LAZY → EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // ALTERADO DE LAZY → EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
@@ -39,6 +44,11 @@ public class StudySession {
     @Builder.Default
     @Column(nullable = false)
     private SessionType type = SessionType.FOCUS;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    @Column(name = "study_method", nullable = false)
+    private StudyMethodType studyMethod = StudyMethodType.FREE_REVIEW;
 
     @Builder.Default
     @Column(nullable = false)

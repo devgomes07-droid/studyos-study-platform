@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>StudyOS - Sessao</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/session.css" />
+</head>
+<body class="app">
+<aside class="sidebar">
+    <div class="logo">StudyOS</div>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="subjects.html">Materias</a>
+        <a href="study.html">Metodos</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="profile.html">Perfil</a>
+    </nav>
+
+    <div class="user-info" id="user-info"></div>
+    <button onclick="logout()" class="logout-btn">Sair</button>
+</aside>
+
+<main class="main session-main">
+    <section class="session-hero card" id="session-hero">
+        <div>
+            <p class="session-label">Sessao em andamento</p>
+            <h1 id="method-name">Metodo</h1>
+            <p id="method-description">Preparando sua sessao...</p>
+        </div>
+
+        <div class="session-subject">
+            <span>Materia</span>
+            <strong id="subject-name">-</strong>
+        </div>
+    </section>
+
+    <section class="timer-card card">
+        <div class="timer-ring">
+            <div>
+                <span id="timer-display">00:00</span>
+                <small id="timer-mode">Foco</small>
+            </div>
+        </div>
+
+        <div class="session-actions">
+            <button class="btn btn-secondary" id="pause-btn">Pausar</button>
+            <button class="btn btn-primary" id="finish-btn">Finalizar sessao</button>
+            <button class="btn btn-danger" id="cancel-btn">Cancelar</button>
+        </div>
+    </section>
+
+    <section class="notes-card card">
+        <label>
+            Nota rapida
+            <textarea
+                    class="textarea"
+                    id="session-notes"
+                    rows="6"
+                    placeholder="O que voce estudou? O que ficou pendente?"
+            ></textarea>
+        </label>
+    </section>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/session.js"></script>
+</body>
+</html>

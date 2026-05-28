@@ -123,15 +123,24 @@ function startMethod() {
     return;
   }
 
+  const selectedSubject = subjectSelect.selectedOptions[0];
+
   const sessionDraft = {
     method: selectedMethod.id,
+    methodName: selectedMethod.name,
+    methodDescription: selectedMethod.description,
+    duration: selectedMethod.duration,
+    intensity: selectedMethod.intensity,
+    color: selectedMethod.color,
     subjectId: Number(subjectSelect.value),
+    subjectName: selectedSubject.textContent.trim(),
     startedAt: new Date().toISOString()
   };
 
   localStorage.setItem('studySessionDraft', JSON.stringify(sessionDraft));
+  localStorage.removeItem('activeStudySession');
 
-  window.alert(`Metodo "${selectedMethod.name}" selecionado. Proximo passo: criar a tela de sessao.`);
+  window.location.href = 'session.html';
 }
 
 methodsGrid.addEventListener('click', (event) => {
