@@ -15,4 +15,10 @@ public class SessionRequest {
 
     @Size(max = 3000, message = "Notas devem ter no maximo 3000 caracteres.")
     private String notes;
+
+    private Integer focusScore;
+
+    private Boolean perfectSession;
+
+    private Integer elapsedSeconds;
 }

@@ -28,6 +28,7 @@ public class StudySessionService {
     private final UserRepository userRepository;
 
     public SessionResponse start(SessionRequest request) {
+
         User user = getCurrentUser();
 
         Subject subject = subjectRepository.findById(request.getSubjectId())
@@ -41,14 +42,19 @@ public class StudySessionService {
                 .user(user)
                 .subject(subject)
                 .startedAt(LocalDateTime.now())
+                .completed(false)
+                .xpEarned(0)
                 .build();
 
         session.setStudyMethod(method);
 
-        return toResponse(sessionRepository.save(session), subject);
+        sessionRepository.save(session);
+
+        return toResponse(session, subject);
     }
 
     public SessionResponse finish(Long sessionId, SessionRequest request) {
+
         User user = getCurrentUser();
 
         StudySession session = sessionRepository.findById(sessionId)
@@ -63,7 +69,10 @@ public class StudySessionService {
         }
 
         LocalDateTime endedAt = LocalDateTime.now();
-        int minutes = Math.toIntExact(Duration.between(session.getStartedAt(), endedAt).toMinutes());
+
+        int minutes = Math.toIntExact(
+                Duration.between(session.getStartedAt(), endedAt).toMinutes()
+        );
 
         session.setEndedAt(endedAt);
         session.setDurationMinutes(minutes);
@@ -74,11 +83,24 @@ public class StudySessionService {
                 ? session.getStudyMethod()
                 : StudyMethodType.FREE_REVIEW;
 
-        int xpEarned = minutes >= MIN_XP_MINUTES ? calculateXp(minutes, method) : 0;
+        int xpEarned = 0;
+
+        if (minutes >= MIN_XP_MINUTES) {
+            xpEarned = calculateXp(minutes, method);
+        }
+
         session.setXpEarned(xpEarned);
 
         Subject subject = session.getSubject();
-        subject.setTotalHoursStudied(subject.getTotalHoursStudied() + (minutes / 60.0));
+
+        double currentHours = subject.getTotalHoursStudied() != null
+                ? subject.getTotalHoursStudied()
+                : 0.0;
+
+        subject.setTotalHoursStudied(
+                currentHours + (minutes / 60.0)
+        );
+
         subjectRepository.save(subject);
 
         if (xpEarned > 0) {
@@ -92,6 +114,7 @@ public class StudySessionService {
     }
 
     public List<SessionResponse> history() {
+
         User user = getCurrentUser();
 
         return sessionRepository.findByUserIdOrderByStartedAtDesc(user.getId())
@@ -101,32 +124,98 @@ public class StudySessionService {
     }
 
     private int calculateXp(int minutes, StudyMethodType method) {
-        int baseXp = switch (method) {
-            case FEYNMAN, ACTIVE_RECALL, QUESTIONS -> 20;
-            case POMODORO, FIFTY_TWO_SEVENTEEN, TIMEBOXING -> 15;
-            case FLASHCARDS, SPACED_REPETITION -> 12;
-            default -> 10;
-        };
 
-        int timeXp = minutes * 2;
+        int baseXp;
+        int multiplier;
 
-        int methodBonus = switch (method) {
-            case FEYNMAN, ACTIVE_RECALL, QUESTIONS -> 8;
-            case POMODORO, FIFTY_TWO_SEVENTEEN -> 5;
-            default -> 0;
-        };
+        switch (method) {
 
-        return Math.min(baseXp + timeXp + methodBonus, 120);
+            case POMODORO -> {
+                baseXp = 15;
+                multiplier = 2;
+            }
+
+            case FLOW_STATE -> {
+                baseXp = 30;
+                multiplier = 4;
+            }
+
+            case FIFTY_TWO_SEVENTEEN -> {
+                baseXp = 20;
+                multiplier = 3;
+            }
+
+            case TIMEBOXING -> {
+                baseXp = 18;
+                multiplier = 2;
+            }
+
+            case FEYNMAN -> {
+                baseXp = 35;
+                multiplier = 5;
+            }
+
+            case ACTIVE_RECALL -> {
+                baseXp = 32;
+                multiplier = 5;
+            }
+
+            case FLASHCARDS -> {
+                baseXp = 16;
+                multiplier = 2;
+            }
+
+            case SPACED_REPETITION -> {
+                baseXp = 22;
+                multiplier = 3;
+            }
+
+            case GUIDED_READING -> {
+                baseXp = 14;
+                multiplier = 2;
+            }
+
+            case QUESTIONS -> {
+                baseXp = 30;
+                multiplier = 4;
+            }
+
+            case CORNELL_NOTES -> {
+                baseXp = 24;
+                multiplier = 3;
+            }
+
+            default -> {
+                baseXp = 10;
+                multiplier = 1;
+            }
+        }
+
+        int xp = baseXp + (minutes * multiplier);
+
+        if (minutes >= 60) {
+            xp += 25;
+        }
+
+        if (minutes >= 120) {
+            xp += 50;
+        }
+
+        return Math.min(xp, 500);
     }
 
     private User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
 
     private SessionResponse toResponse(StudySession session, Subject subject) {
+
         return SessionResponse.builder()
                 .id(session.getId())
                 .subjectId(subject.getId())
@@ -135,7 +224,11 @@ public class StudySessionService {
                 .endedAt(session.getEndedAt())
                 .durationMinutes(session.getDurationMinutes())
                 .type(session.getType().name())
-                .studyMethod(session.getStudyMethod() != null ? session.getStudyMethod().name() : null)
+                .studyMethod(
+                        session.getStudyMethod() != null
+                                ? session.getStudyMethod().name()
+                                : null
+                )
                 .completed(session.getCompleted())
                 .xpEarned(session.getXpEarned())
                 .notes(session.getNotes())
@@ -143,8 +236,12 @@ public class StudySessionService {
     }
 
     private SessionResponse toResponse(StudySession session) {
-        Subject subject = subjectRepository.findById(session.getSubject().getId())
-                .orElseThrow(() -> new RuntimeException("Materia nao encontrada"));
+
+        Subject subject = subjectRepository.findById(
+                session.getSubject().getId()
+        ).orElseThrow(() ->
+                new RuntimeException("Materia nao encontrada")
+        );
 
         return toResponse(session, subject);
     }

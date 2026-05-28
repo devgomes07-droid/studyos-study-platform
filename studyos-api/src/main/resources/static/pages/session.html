@@ -1,75 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sessão de Estudo - StudyOS</title>
 
-    <title>StudyOS - Sessao</title>
-
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components.css" />
-    <link rel="stylesheet" href="../css/session.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/session.css">
 </head>
-<body class="app">
-<aside class="sidebar">
-    <div class="logo">StudyOS</div>
+<body>
 
-    <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="subjects.html">Materias</a>
-        <a href="study.html">Metodos</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="profile.html">Perfil</a>
-    </nav>
+<header class="topbar">
+    <div class="logo-area">
+        <h2>StudyOS</h2>
+    </div>
 
-    <div class="user-info" id="user-info"></div>
-    <button onclick="logout()" class="logout-btn">Sair</button>
-</aside>
+    <div class="topbar-right">
+        <div id="user-info"></div>
 
-<main class="main session-main">
-    <section class="session-hero card" id="session-hero">
+        <button class="btn btn-danger" onclick="logout()">
+            Sair
+        </button>
+    </div>
+</header>
+
+<main class="container session-main">
+
+    <section class="card session-hero" id="session-hero">
+
         <div>
-            <p class="session-label">Sessao em andamento</p>
-            <h1 id="method-name">Metodo</h1>
-            <p id="method-description">Preparando sua sessao...</p>
+            <p class="session-label">
+                Método ativo
+            </p>
+
+            <h1 id="method-name">
+                Método
+            </h1>
+
+            <p id="method-description">
+                Sessão de estudo em andamento.
+            </p>
         </div>
 
         <div class="session-subject">
-            <span>Materia</span>
-            <strong id="subject-name">-</strong>
+            <span>Matéria</span>
+
+            <strong id="subject-name">
+                Carregando...
+            </strong>
         </div>
+
     </section>
 
-    <section class="timer-card card">
-        <div class="timer-ring">
+    <section class="card timer-card">
+
+        <div class="timer-ring" id="timer-ring">
             <div>
-                <span id="timer-display">00:00</span>
-                <small id="timer-mode">Foco</small>
+                <span id="timer-display">
+                    00:00
+                </span>
+
+                <small id="timer-mode">
+                    Foco
+                </small>
             </div>
         </div>
 
         <div class="session-actions">
-            <button class="btn btn-secondary" id="pause-btn">Pausar</button>
-            <button class="btn btn-primary" id="finish-btn">Finalizar sessao</button>
-            <button class="btn btn-danger" id="cancel-btn">Cancelar</button>
+
+            <button
+                    class="btn btn-secondary"
+                    id="pause-btn"
+            >
+                Pausar
+            </button>
+
+            <button
+                    class="btn btn-success"
+                    id="finish-btn"
+            >
+                Finalizar sessão
+            </button>
+
+            <button
+                    class="btn btn-danger"
+                    id="cancel-btn"
+            >
+                Cancelar
+            </button>
+
         </div>
+
     </section>
 
-    <section class="notes-card card">
+    <section class="card notes-card">
+
         <label>
-            Nota rapida
+            Anotações da sessão
+
             <textarea
-                    class="textarea"
                     id="session-notes"
-                    rows="6"
-                    placeholder="O que voce estudou? O que ficou pendente?"
+                    rows="7"
+                    placeholder="Escreva resumos, ideias, dificuldades, dúvidas..."
             ></textarea>
         </label>
+
     </section>
+
+    <section class="card focus-card">
+
+        <h3>
+            Missão da sessão
+        </h3>
+
+        <ul class="focus-list">
+            <li>
+                Permanecer focado até o final
+            </li>
+
+            <li>
+                Evitar trocar de aba
+            </li>
+
+            <li>
+                Fazer anotações importantes
+            </li>
+
+            <li>
+                Completar o tempo mínimo para ganhar XP
+            </li>
+        </ul>
+
+    </section>
+
 </main>
 
-<script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
+<script src="../js/api.js"></script>
 <script src="../js/session.js"></script>
+
 </body>
 </html>

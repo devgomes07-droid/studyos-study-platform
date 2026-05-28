@@ -1,115 +1,486 @@
+/* ========================================
+   SESSION — Base
+   ======================================== */
+
 .session-main {
-  display: grid;
-  gap: 22px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .session-hero {
+  border-radius: 16px;
+  padding: 28px;
+  border-top: 5px solid #6366f1;
   display: flex;
   justify-content: space-between;
-  gap: 24px;
-  padding: 26px;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .session-label {
-  margin: 0 0 8px;
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 900;
+  font-size: 12px;
   text-transform: uppercase;
-}
-
-.session-hero h1 {
-  margin: 0 0 8px;
-  font-size: 36px;
-}
-
-.session-hero p {
-  margin: 0;
-  color: #64748b;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  margin-bottom: 6px;
 }
 
 .session-subject {
-  min-width: 180px;
-  display: grid;
-  align-content: center;
-  gap: 6px;
-  padding: 16px;
-  border-radius: 12px;
-  background: #f1f5f9;
-}
-
-.session-subject span {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 900;
-  text-transform: uppercase;
+  text-align: right;
+  font-size: 14px;
+  color: #94a3b8;
 }
 
 .session-subject strong {
-  font-size: 20px;
+  display: block;
+  font-size: 16px;
+  color: #f1f5f9;
 }
 
+/* ========================================
+   TIMER CARD
+   ======================================== */
+
 .timer-card {
-  display: grid;
-  place-items: center;
-  gap: 24px;
-  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 40px 28px;
+  border-radius: 20px;
 }
 
 .timer-ring {
-  width: 280px;
-  height: 280px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: radial-gradient(circle, #ffffff 58%, transparent 59%),
-    conic-gradient(#4f46e5 75%, #e5e7eb 0);
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#6366f1 0%, #1e293b 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.5s ease;
+  position: relative;
 }
 
-.timer-ring div {
-  display: grid;
-  place-items: center;
+.timer-ring::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #0f172a;
+  z-index: 0;
+}
+
+.timer-ring > div {
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
 #timer-display {
-  font-size: 56px;
-  font-weight: 900;
+  font-size: 52px;
+  font-weight: 800;
+  font-family: 'Courier New', monospace;
+  color: #f1f5f9;
+  display: block;
+  line-height: 1;
 }
 
 #timer-mode {
-  color: #64748b;
-  font-weight: 900;
+  font-size: 13px;
+  color: #94a3b8;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  display: block;
 }
 
 .session-actions {
   display: flex;
+  gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
 }
 
-.notes-card {
-  padding: 22px;
+/* ========================================
+   NOTES CARD
+   ======================================== */
+
+.notes-card textarea {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #2d2d4e;
+  border-radius: 10px;
+  color: #f1f5f9;
+  padding: 14px;
+  font-size: 15px;
+  resize: vertical;
+  margin-top: 8px;
+  outline: none;
+  transition: border 0.2s;
 }
 
-.notes-card label {
-  display: grid;
+.notes-card textarea:focus {
+  border-color: #6366f1;
+}
+
+/* ========================================
+   FOCUS CARD
+   ======================================== */
+
+.focus-card h3 {
+  margin-bottom: 12px;
+  color: #f1f5f9;
+}
+
+.focus-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.focus-list li {
+  padding: 10px 14px;
+  background: #0f172a;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 14px;
+  border-left: 3px solid #6366f1;
+}
+
+.focus-score {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #a5b4fc;
+}
+
+/* ========================================
+   MÉTODO: POMODORO
+   ======================================== */
+
+body.method-POMODORO .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#ef4444 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+  animation: pomodoroGlow 2s ease-in-out infinite alternate;
+}
+
+body.method-POMODORO #timer-display {
+  color: #fca5a5;
+}
+
+body.method-POMODORO .session-hero {
+  border-top-color: #ef4444;
+  background: linear-gradient(135deg, #1a0a0a, #1a1a2e);
+}
+
+body.method-POMODORO .focus-list li {
+  border-left-color: #ef4444;
+}
+
+@keyframes pomodoroGlow {
+  from { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+  to   { box-shadow: 0 0 60px rgba(239, 68, 68, 0.5); }
+}
+
+/* Ciclos do Pomodoro */
+.pomodoro-cycles {
+  display: flex;
   gap: 10px;
-  font-weight: 900;
+  justify-content: center;
+  font-size: 24px;
+  margin-top: -8px;
 }
 
-@media (max-width: 760px) {
-  .session-hero {
-    flex-direction: column;
-  }
+/* ========================================
+   MÉTODO: FLOW STATE
+   ======================================== */
 
-  .timer-ring {
-    width: 220px;
-    height: 220px;
-  }
+body.method-FLOW_STATE {
+  background: #020617;
+}
 
-  #timer-display {
-    font-size: 44px;
-  }
+body.method-FLOW_STATE .topbar {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+body.method-FLOW_STATE .topbar:hover {
+  opacity: 1;
+}
+
+body.method-FLOW_STATE .timer-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+body.method-FLOW_STATE .timer-ring {
+  background:
+    radial-gradient(circle, #020617 58%, transparent 59%),
+    conic-gradient(#0f766e 0%, #0a1628 0%);
+  box-shadow: 0 0 80px rgba(15, 118, 110, 0.2);
+}
+
+body.method-FLOW_STATE #timer-display {
+  color: #5eead4;
+  font-size: 64px;
+}
+
+body.method-FLOW_STATE .session-hero {
+  border-top-color: #0f766e;
+  background: rgba(15, 118, 110, 0.05);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+}
+
+body.method-FLOW_STATE .focus-list li {
+  border-left-color: #0f766e;
+}
+
+body.method-FLOW_STATE .notes-card textarea {
+  background: #020617;
+  border-color: rgba(15, 118, 110, 0.3);
+  min-height: 200px;
+}
+
+/* ========================================
+   MÉTODO: FEYNMAN
+   ======================================== */
+
+body.method-FEYNMAN .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#d97706 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(217, 119, 6, 0.25);
+}
+
+body.method-FEYNMAN #timer-display {
+  color: #fcd34d;
+}
+
+body.method-FEYNMAN .session-hero {
+  border-top-color: #d97706;
+  background: linear-gradient(135deg, #1a1200, #1a1a2e);
+}
+
+body.method-FEYNMAN .notes-card {
+  border: 2px solid #d97706;
+}
+
+body.method-FEYNMAN .notes-card label::before {
+  content: '✍️ Explique com suas palavras — ';
+  color: #fcd34d;
+  font-size: 13px;
+}
+
+body.method-FEYNMAN .focus-list li {
+  border-left-color: #d97706;
+}
+
+/* ========================================
+   MÉTODO: ACTIVE RECALL
+   ======================================== */
+
+body.method-ACTIVE_RECALL .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#16a34a 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(22, 163, 74, 0.25);
+}
+
+body.method-ACTIVE_RECALL #timer-display {
+  color: #86efac;
+}
+
+body.method-ACTIVE_RECALL .session-hero {
+  border-top-color: #16a34a;
+  background: linear-gradient(135deg, #001a0a, #1a1a2e);
+}
+
+body.method-ACTIVE_RECALL .focus-list li {
+  border-left-color: #16a34a;
+}
+
+/* ========================================
+   MÉTODO: 52/17
+   ======================================== */
+
+body.method-FIFTY_TWO_SEVENTEEN .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#2563eb 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(37, 99, 235, 0.25);
+}
+
+body.method-FIFTY_TWO_SEVENTEEN #timer-display {
+  color: #93c5fd;
+}
+
+body.method-FIFTY_TWO_SEVENTEEN .session-hero {
+  border-top-color: #2563eb;
+  background: linear-gradient(135deg, #000d1a, #1a1a2e);
+}
+
+body.method-FIFTY_TWO_SEVENTEEN .focus-list li {
+  border-left-color: #2563eb;
+}
+
+/* Barra de progresso 52/17 */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #1e293b;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: -12px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 99px;
+  transition: width 1s linear;
+}
+
+/* ========================================
+   MÉTODO: FLASHCARDS
+   ======================================== */
+
+body.method-FLASHCARDS .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#db2777 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(219, 39, 119, 0.25);
+}
+
+body.method-FLASHCARDS #timer-display {
+  color: #f9a8d4;
+}
+
+body.method-FLASHCARDS .session-hero {
+  border-top-color: #db2777;
+  background: linear-gradient(135deg, #1a0010, #1a1a2e);
+}
+
+body.method-FLASHCARDS .focus-list li {
+  border-left-color: #db2777;
+}
+
+/* ========================================
+   MÉTODO: TIMEBOXING
+   ======================================== */
+
+body.method-TIMEBOXING .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#7c3aed 0%, #1e293b 0%);
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.25);
+}
+
+body.method-TIMEBOXING #timer-display {
+  color: #c4b5fd;
+}
+
+body.method-TIMEBOXING .session-hero {
+  border-top-color: #7c3aed;
+  background: linear-gradient(135deg, #0d0020, #1a1a2e);
+}
+
+body.method-TIMEBOXING .focus-list li {
+  border-left-color: #7c3aed;
+}
+
+/* ========================================
+   MÉTODO: CORNELL NOTES
+   ======================================== */
+
+body.method-CORNELL_NOTES .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#475569 0%, #1e293b 0%);
+}
+
+body.method-CORNELL_NOTES #timer-display {
+  color: #cbd5e1;
+}
+
+body.method-CORNELL_NOTES .session-hero {
+  border-top-color: #475569;
+}
+
+body.method-CORNELL_NOTES .notes-card {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+}
+
+/* ========================================
+   MÉTODO: FREE REVIEW
+   ======================================== */
+
+body.method-FREE_REVIEW .timer-ring {
+  background:
+    radial-gradient(circle, #0f172a 58%, transparent 59%),
+    conic-gradient(#65a30d 0%, #1e293b 0%);
+}
+
+body.method-FREE_REVIEW #timer-display {
+  color: #bef264;
+}
+
+body.method-FREE_REVIEW .session-hero {
+  border-top-color: #65a30d;
+}
+
+/* ========================================
+   DEEP FOCUS MODE (Flow State fullscreen)
+   ======================================== */
+
+.deep-focus-mode {
+  background: #020617;
+  color: white;
+}
+
+.deep-focus-mode .timer-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ========================================
+   ANIMAÇÕES GERAIS
+   ======================================== */
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.02); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.timer-card {
+  animation: fadeInUp 0.4s ease;
+}
+
+/* ========================================
+   RESPONSIVO
+   ======================================== */
+
+@media (max-width: 640px) {
+  #timer-display { font-size: 40px; }
+  .timer-ring    { width: 180px; height: 180px; }
+  .session-hero  { flex-direction: column; }
+  .session-actions { flex-direction: column; }
+  .session-actions .btn { width: 100%; }
 }
