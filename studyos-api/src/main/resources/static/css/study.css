@@ -9,17 +9,19 @@
 
 .study-setup h2 {
   margin: 0 0 6px;
+  color: var(--text);
 }
 
 .study-setup p {
   margin: 0;
-  color: #64748b;
+  color: var(--soft-text);
 }
 
 .study-setup label {
   display: grid;
   gap: 8px;
   font-weight: 800;
+  color: var(--text);
 }
 
 .methods-grid {
@@ -33,13 +35,21 @@
   gap: 14px;
   min-height: 255px;
   padding: 20px;
-  border-top: 5px solid var(--method-color, #4f46e5);
-  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--method-color, var(--primary));
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 180ms ease,
+    border-color 0.16s ease;
 }
 
 .method-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--shadow-lg);
 }
 
 .method-card.selected {
@@ -59,7 +69,7 @@
   height: 42px;
   padding: 0 10px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--method-color) 14%, white);
+  background: color-mix(in srgb, var(--method-color) 14%, transparent);
   color: var(--method-color);
   font-size: 13px;
   font-weight: 900;
@@ -75,11 +85,12 @@
 .method-card h2 {
   margin: 0;
   font-size: 21px;
+  color: var(--text);
 }
 
 .method-card p {
   margin: 0;
-  color: #64748b;
+  color: var(--soft-text);
   line-height: 1.45;
 }
 
@@ -93,10 +104,11 @@
 .method-meta span {
   padding: 6px 10px;
   border-radius: 999px;
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--soft-text);
   font-size: 12px;
   font-weight: 900;
+  transition: background 180ms ease, color 180ms ease;
 }
 
 .method-action {
@@ -114,7 +126,7 @@
 
 .selected-label {
   margin: 0 0 6px;
-  color: #64748b;
+  color: var(--soft-text);
   font-size: 13px;
   font-weight: 900;
   text-transform: uppercase;
@@ -122,11 +134,12 @@
 
 .selected-method h2 {
   margin: 0 0 6px;
+  color: var(--text);
 }
 
 .selected-method p {
   margin: 0;
-  color: #64748b;
+  color: var(--soft-text);
 }
 
 #start-method-btn:disabled {
@@ -135,26 +148,16 @@
 }
 
 @media (max-width: 1180px) {
-  .methods-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+  .methods-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 900px) {
   .methods-grid,
-  .study-setup {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .selected-method {
-    align-items: stretch;
-    flex-direction: column;
-  }
+  .study-setup { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .selected-method { align-items: stretch; flex-direction: column; }
 }
 
 @media (max-width: 640px) {
   .methods-grid,
-  .study-setup {
-    grid-template-columns: 1fr;
-  }
+  .study-setup { grid-template-columns: 1fr; }
 }

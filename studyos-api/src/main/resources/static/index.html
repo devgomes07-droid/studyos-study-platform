@@ -3,44 +3,361 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>StudyOS</title>
 
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components.css" />
+    <script>
+        const Theme = (() => {
+          const KEY = 'studyos-theme';
+          const ROOT = document.documentElement;
+          function getSystemPreference() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          function getSaved() {
+            return localStorage.getItem(KEY) || getSystemPreference();
+          }
+          function apply(theme) {
+            ROOT.setAttribute('data-theme', theme);
+            document.querySelectorAll('[data-theme-label]').forEach((el) => {
+              el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+            });
+          }
+          function set(theme) { localStorage.setItem(KEY, theme); apply(theme); }
+          function toggle() {
+            const current = ROOT.getAttribute('data-theme') || getSaved();
+            set(current === 'dark' ? 'light' : 'dark');
+          }
+          function init() {
+            apply(getSaved());
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+              if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
+            });
+          }
+          return { init, toggle, set, getSaved };
+        })();
+        Theme.init();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <style>
+        .login-page {
+          min-height: 100vh;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        /* ── Painel esquerdo (hero) ── */
+        .login-hero {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 60px;
+          background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
+          color: #ffffff;
+          overflow: hidden;
+        }
+
+        .login-hero::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+        }
+
+        .hero-bubble {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.06);
+        }
+        .hero-bubble--1 { width: 220px; height: 220px; bottom: -60px; right: -60px; }
+        .hero-bubble--2 { width: 120px; height: 120px; top: 40px; right: 40px; }
+
+        .hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 16px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.15);
+          backdrop-filter: blur(8px);
+          font-size: 13px;
+          font-weight: 700;
+          margin-bottom: 32px;
+          width: fit-content;
+          position: relative;
+        }
+
+        .hero-title {
+          font-size: clamp(36px, 4vw, 52px);
+          font-weight: 900;
+          line-height: 1.1;
+          margin: 0 0 20px;
+          position: relative;
+        }
+
+        .hero-sub {
+          font-size: 17px;
+          line-height: 1.6;
+          opacity: 0.85;
+          margin: 0 0 48px;
+          position: relative;
+        }
+
+        .hero-features {
+          display: grid;
+          gap: 14px;
+          position: relative;
+        }
+
+        .hero-feature {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 15px;
+          font-weight: 600;
+          opacity: 0.9;
+        }
+
+        .hero-feature-icon {
+          display: grid;
+          place-items: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          background: rgba(255,255,255,0.18);
+          font-size: 17px;
+          flex-shrink: 0;
+        }
+
+        /* ── Painel direito (form) ── */
+        .login-panel {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 60px 48px;
+          background: var(--bg);
+          position: relative;
+          transition: background var(--transition);
+        }
+
+        .login-panel-inner {
+          width: 100%;
+          max-width: 380px;
+        }
+
+        .login-theme-btn {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: var(--surface);
+          color: var(--soft-text);
+          font-size: 13px;
+          font-weight: 700;
+          font-family: inherit;
+          cursor: pointer;
+          transition: background var(--transition), border-color var(--transition), color var(--transition);
+        }
+
+        .login-theme-btn:hover {
+          background: var(--muted);
+          color: var(--text);
+        }
+
+        .form-logo {
+          font-size: 26px;
+          font-weight: 900;
+          color: var(--primary);
+          margin-bottom: 8px;
+        }
+
+        .form-heading {
+          font-size: 28px;
+          font-weight: 900;
+          color: var(--text);
+          margin: 0 0 6px;
+        }
+
+        .form-hint {
+          color: var(--soft-text);
+          margin: 0 0 32px;
+          font-size: 15px;
+        }
+
+        .field {
+          display: grid;
+          gap: 6px;
+          margin-bottom: 16px;
+        }
+
+        .field label {
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--soft-text);
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .field .input {
+          padding: 14px 16px;
+          font-size: 15px;
+        }
+
+        .btn-login {
+          width: 100%;
+          padding: 15px;
+          font-size: 16px;
+          border-radius: 12px;
+          margin-top: 8px;
+          letter-spacing: 0.02em;
+        }
+
+        .form-switch {
+          text-align: center;
+          margin-top: 20px;
+          color: var(--soft-text);
+          font-size: 14px;
+        }
+
+        .form-switch a {
+          color: var(--primary);
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .form-switch a:hover { text-decoration: underline; }
+
+        #msg { text-align: center; margin-top: 12px; }
+
+        .auth-form { animation: fadeUp 0.25s ease; }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 780px) {
+          .login-page { grid-template-columns: 1fr; }
+          .login-hero { padding: 40px 32px; min-height: auto; }
+          .hero-features { display: none; }
+          .login-panel { padding: 40px 24px; }
+        }
+    </style>
 </head>
 <body>
-<main class="container">
-    <section class="auth-box">
-        <h1>StudyOS</h1>
-        <p>Sua plataforma de organizacao e evolucao nos estudos.</p>
+<div class="login-page">
 
-        <div id="login-form">
-            <h2>Entrar</h2>
+    <!-- Painel esquerdo -->
+    <div class="login-hero">
+        <div class="hero-bubble hero-bubble--1"></div>
+        <div class="hero-bubble hero-bubble--2"></div>
 
-            <input class="input" type="email" id="email" placeholder="Email" autocomplete="email" />
-            <input class="input" type="password" id="password" placeholder="Senha" autocomplete="current-password" />
+        <div class="hero-badge">🎓 Plataforma de estudos inteligente</div>
 
-            <button class="btn btn-primary" onclick="login()">Entrar</button>
+        <h1 class="hero-title">Estude mais.<br>Evolua sempre.</h1>
 
-            <p>Nao tem conta? <a href="#" onclick="showRegister()">Cadastrar</a></p>
+        <p class="hero-sub">
+            O StudyOS combina métodos científicos de aprendizado
+            com gamificação para transformar seus estudos em resultados reais.
+        </p>
+
+        <div class="hero-features">
+            <div class="hero-feature">
+                <div class="hero-feature-icon">🍅</div>
+                Pomodoro com ciclos automáticos
+            </div>
+            <div class="hero-feature">
+                <div class="hero-feature-icon">🧠</div>
+                Método Feynman com IA
+            </div>
+            <div class="hero-feature">
+                <div class="hero-feature-icon">🃏</div>
+                Flashcards com repetição espaçada
+            </div>
+            <div class="hero-feature">
+                <div class="hero-feature-icon">🏆</div>
+                XP, streaks e ranking
+            </div>
         </div>
+    </div>
 
-        <div id="register-form" style="display: none">
-            <h2>Cadastrar</h2>
+    <!-- Painel direito -->
+    <div class="login-panel">
 
-            <input class="input" type="text" id="reg-name" placeholder="Nome" autocomplete="name" />
-            <input class="input" type="email" id="reg-email" placeholder="Email" autocomplete="email" />
-            <input class="input" type="password" id="reg-password" placeholder="Senha" autocomplete="new-password" />
+        <button class="login-theme-btn" onclick="Theme.toggle()" aria-label="Alternar tema">
+      <span class="theme-toggle-track" style="width:28px;height:15px;">
+        <span class="theme-toggle-thumb" style="width:11px;height:11px;top:2px;left:2px;"></span>
+      </span>
+            <span data-theme-label>🌙 Modo escuro</span>
+        </button>
 
-            <button class="btn btn-primary" onclick="register()">Cadastrar</button>
+        <div class="login-panel-inner">
+            <div class="form-logo">StudyOS</div>
 
-            <p>Ja tem conta? <a href="#" onclick="showLogin()">Entrar</a></p>
+            <!-- Login -->
+            <div id="login-form" class="auth-form">
+                <h2 class="form-heading">Bem-vindo de volta!</h2>
+                <p class="form-hint">Entre com sua conta para continuar.</p>
+
+                <div class="field">
+                    <label>E-mail</label>
+                    <input class="input" type="email" id="email" placeholder="seuemail@exemplo.com" autocomplete="email" />
+                </div>
+
+                <div class="field">
+                    <label>Senha</label>
+                    <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+                </div>
+
+                <button class="btn btn-primary btn-login" onclick="login()">Entrar →</button>
+
+                <div class="form-switch">
+                    Não tem conta? <a onclick="showRegister()">Cadastrar grátis</a>
+                </div>
+            </div>
+
+            <!-- Cadastro -->
+            <div id="register-form" class="auth-form" style="display:none">
+                <h2 class="form-heading">Crie sua conta</h2>
+                <p class="form-hint">Comece a evoluir nos seus estudos hoje.</p>
+
+                <div class="field">
+                    <label>Nome</label>
+                    <input class="input" type="text" id="reg-name" placeholder="Seu nome" autocomplete="name" />
+                </div>
+
+                <div class="field">
+                    <label>E-mail</label>
+                    <input class="input" type="email" id="reg-email" placeholder="seuemail@exemplo.com" autocomplete="email" />
+                </div>
+
+                <div class="field">
+                    <label>Senha</label>
+                    <input class="input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password" />
+                </div>
+
+                <button class="btn btn-primary btn-login" onclick="register()">Criar conta →</button>
+
+                <div class="form-switch">
+                    Já tem conta? <a onclick="showLogin()">Entrar</a>
+                </div>
+            </div>
+
+            <p id="msg" class="form-message"></p>
         </div>
+    </div>
 
-        <p id="msg" class="form-message"></p>
-    </section>
-</main>
+</div>
 
 <script src="js/api.js"></script>
 <script src="js/utils.js"></script>

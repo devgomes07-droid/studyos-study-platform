@@ -6,6 +6,42 @@
 
     <title>StudyOS - Materias</title>
 
+    <script>
+        const Theme = (() => {
+          const KEY = 'studyos-theme';
+          const ROOT = document.documentElement;
+          function getSystemPreference() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          function getSaved() {
+            return localStorage.getItem(KEY) || getSystemPreference();
+          }
+          function apply(theme) {
+            ROOT.setAttribute('data-theme', theme);
+            document.querySelectorAll('[data-theme-label]').forEach((el) => {
+              el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+            });
+          }
+          function set(theme) {
+            localStorage.setItem(KEY, theme);
+            apply(theme);
+          }
+          function toggle() {
+            const current = ROOT.getAttribute('data-theme') || getSaved();
+            set(current === 'dark' ? 'light' : 'dark');
+          }
+          function init() {
+            apply(getSaved());
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+              if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
+            });
+          }
+          return { init, toggle, set, getSaved };
+        })();
+        Theme.init();
+    </script>
+
+
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/components.css" />
     <link rel="stylesheet" href="../css/subjects.css" />
@@ -23,6 +59,14 @@
     </nav>
 
     <div class="user-info" id="user-info"></div>
+
+    <!-- 2. Botão de tema -->
+    <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
+        <span class="theme-toggle-track">
+            <span class="theme-toggle-thumb"></span>
+        </span>
+        <span data-theme-label>🌙 Modo escuro</span>
+    </button>
 
     <button onclick="logout()" class="logout-btn">Sair</button>
 </aside>
