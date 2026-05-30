@@ -31,9 +31,7 @@ function normalizeText(value = '') {
 
 function getFilteredSubjects() {
   const term = normalizeText(searchInput.value);
-
   if (!term) return subjects;
-
   return subjects.filter((subject) => {
     return normalizeText(subject.name).includes(term)
       || normalizeText(subject.description).includes(term);
@@ -42,15 +40,10 @@ function getFilteredSubjects() {
 
 function renderSubjects() {
   const filteredSubjects = getFilteredSubjects();
-
   Utils.setText('#subjects-total', subjects.length);
 
   if (!filteredSubjects.length) {
-    subjectsGrid.innerHTML = `
-      <div class="empty-state">
-        Nenhuma materia encontrada.
-      </div>
-    `;
+    subjectsGrid.innerHTML = `<div class="empty-state">Nenhuma materia encontrada.</div>`;
     return;
   }
 
@@ -68,7 +61,6 @@ function renderSubjects() {
       <article class="subject-management-card card" style="--subject-color: ${color}">
         <div class="subject-card-header">
           <div class="subject-icon">${icon}</div>
-
           <div class="subject-card-actions">
             <button class="icon-button" onclick="editSubject(${id})" aria-label="Editar materia">
               Editar
@@ -78,15 +70,12 @@ function renderSubjects() {
             </button>
           </div>
         </div>
-
         <h2>${name}</h2>
         <p>${description}</p>
-
         <div class="subject-meta">
           <span>${Utils.formatHours(totalHours)} estudadas</span>
           <span>Meta ${weeklyGoal}h/semana</span>
         </div>
-
         <div class="progress-track" aria-label="Progresso semanal">
           <div class="progress-fill" style="width: ${progress}%"></div>
         </div>
@@ -101,18 +90,14 @@ async function loadSubjects() {
     subjects = await Api.getSubjects();
     renderSubjects();
   } catch (error) {
-    subjectsGrid.innerHTML = `
-      <div class="empty-state">
-        Nao foi possivel carregar as materias.
-      </div>
-    `;
+    subjectsGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar as materias.</div>`;
+    Toast.error('Erro ao carregar materias.');
   }
 }
 
 function resetForm() {
   editingSubjectId = null;
   form.reset();
-
   Utils.$('#subject-id').value = '';
   Utils.$('#subject-icon').value = '📚';
   Utils.$('#subject-color').value = '#4f46e5';
@@ -126,7 +111,6 @@ function openSubjectModal(subject = null) {
 
   if (subject) {
     editingSubjectId = subject.id;
-
     Utils.setText('#modal-title', 'Editar materia');
     Utils.$('#subject-id').value = subject.id;
     Utils.$('#subject-name').value = subject.name || '';
@@ -155,14 +139,8 @@ function getSubjectPayload() {
 }
 
 function validateSubject(payload) {
-  if (!payload.name) {
-    return 'Informe o nome da materia.';
-  }
-
-  if (payload.weeklyGoalHours < 1) {
-    return 'A meta semanal precisa ser de pelo menos 1 hora.';
-  }
-
+  if (!payload.name) return 'Informe o nome da materia.';
+  if (payload.weeklyGoalHours < 1) return 'A meta semanal precisa ser de pelo menos 1 hora.';
   return null;
 }
 
@@ -173,28 +151,28 @@ async function saveSubject(event) {
   const validationError = validateSubject(payload);
 
   if (validationError) {
-    Utils.showMessage('#subject-message', validationError);
+    Toast.error(validationError);
     return;
   }
 
   try {
     if (editingSubjectId) {
       await Api.updateSubject(editingSubjectId, payload);
+      Toast.success('Materia atualizada com sucesso!');
     } else {
       await Api.createSubject(payload);
+      Toast.success('Materia criada com sucesso!');
     }
-
     closeSubjectModal();
     await loadSubjects();
   } catch (error) {
-    Utils.showMessage('#subject-message', error.message || 'Erro ao salvar materia.');
+    Toast.error(error.message || 'Erro ao salvar materia.');
   }
 }
 
 function editSubject(id) {
   const subject = subjects.find((item) => item.id === id);
   if (!subject) return;
-
   openSubjectModal(subject);
 }
 
@@ -202,15 +180,22 @@ async function removeSubject(id) {
   const subject = subjects.find((item) => item.id === id);
   if (!subject) return;
 
-  const confirmed = window.confirm(`Excluir a materia "${subject.name}"?`);
+  const confirmed = await Toast.confirm(
+    `Excluir a materia "${subject.name}"?`,
+    '🗑️',
+    'Excluir',
+    'Cancelar',
+    true
+  );
 
   if (!confirmed) return;
 
   try {
     await Api.deleteSubject(id);
+    Toast.success('Materia excluida com sucesso!');
     await loadSubjects();
   } catch (error) {
-    window.alert(error.message || 'Erro ao excluir materia.');
+    Toast.error(error.message || 'Erro ao excluir materia.');
   }
 }
 
@@ -218,15 +203,11 @@ searchInput.addEventListener('input', renderSubjects);
 form.addEventListener('submit', saveSubject);
 
 modal.addEventListener('click', (event) => {
-  if (event.target === modal) {
-    closeSubjectModal();
-  }
+  if (event.target === modal) closeSubjectModal();
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && modal.classList.contains('open')) {
-    closeSubjectModal();
-  }
+  if (event.key === 'Escape' && modal.classList.contains('open')) closeSubjectModal();
 });
 
 loadSubjects();
