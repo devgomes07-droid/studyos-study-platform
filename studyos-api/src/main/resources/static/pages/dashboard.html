@@ -1,128 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StudyOS — Dashboard</title>
 
-    <title>StudyOS - Dashboard</title>
-
+    <!-- tema aplicado antes do render pra evitar flash -->
     <script>
         const Theme = (() => {
-          const KEY = 'studyos-theme';
+          const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
-          function getSystemPreference() {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          function getSaved() {
-            return localStorage.getItem(KEY) || getSystemPreference();
-          }
-          function apply(theme) {
-            ROOT.setAttribute('data-theme', theme);
-            document.querySelectorAll('[data-theme-label]').forEach((el) => {
-              el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+          function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+          function getSaved() { return localStorage.getItem(KEY) || sys(); }
+          function apply(t) {
+            ROOT.setAttribute('data-theme', t);
+            document.querySelectorAll('[data-theme-label]').forEach(el => {
+              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
             });
           }
-          function set(theme) {
-            localStorage.setItem(KEY, theme);
-            apply(theme);
-          }
           function toggle() {
-            const current = ROOT.getAttribute('data-theme') || getSaved();
-            set(current === 'dark' ? 'light' : 'dark');
+            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(KEY, next);
+            apply(next);
           }
           function init() {
             apply(getSaved());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
               if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
             });
           }
-          return { init, toggle, set, getSaved };
+          return { init, toggle, getSaved };
         })();
         Theme.init();
     </script>
 
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components.css" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/components.css"/>
+    <link rel="stylesheet" href="../css/dashboard.css"/>
 </head>
 <body class="app">
+
+<!-- ── Sidebar ─────────────────────────────── -->
 <aside class="sidebar">
     <div class="logo">StudyOS</div>
 
     <nav>
-        <a href="dashboard.html" class="active">Dashboard</a>
-        <a href="subjects.html">Materias</a>
-        <a href="study.html">Metodos</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="profile.html">Perfil</a>
+        <a href="dashboard.html" class="active">⚡ Dashboard</a>
+        <a href="subjects.html">📖 Matérias</a>
+        <a href="study.html">🧠 Métodos</a>
+        <a href="flashcards.html">🃏 Flashcards</a>
+        <a href="profile.html">👤 Perfil</a>
     </nav>
 
     <div class="user-info" id="user-info"></div>
 
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track">
-            <span class="theme-toggle-thumb"></span>
-        </span>
+        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
         <span data-theme-label>🌙 Modo escuro</span>
     </button>
 
-    <button onclick="logout()" class="logout-btn">Sair</button>
+    <button onclick="logout()" class="logout-btn">↩ Sair</button>
 </aside>
 
+<!-- ── Main ────────────────────────────────── -->
 <main class="main">
-    <section class="page-header">
-        <div>
-            <h1 class="page-title"><span id="greeting">Ola</span>, <span id="username"></span></h1>
-            <p class="page-subtitle">Escolha seu ritmo, acompanhe seu progresso e continue evoluindo.</p>
-        </div>
 
-        <button class="btn btn-primary" onclick="window.location.href='study.html'">
+    <!-- Hero -->
+    <section class="hero">
+        <div>
+            <p class="hero-greeting" id="greeting">Bom dia</p>
+            <h1 class="hero-name" id="username">Estudante</h1>
+            <p class="hero-sub">Continue de onde parou. Cada minuto conta.</p>
+        </div>
+        <button class="hero-cta" onclick="window.location.href='study.html'">
+            <span class="hero-cta-icon">▶</span>
             Iniciar estudo
         </button>
     </section>
 
-    <section class="stats-grid">
-        <article class="stat-card">
-            <span class="stat-icon">XP</span>
-            <div>
-                <p class="stat-label">XP Total</p>
-                <p class="stat-value" id="xp">0</p>
+    <!-- Stats -->
+    <div class="stats-grid">
+        <article class="stat-card stat-xp">
+            <div class="stat-header">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-badge">+<span id="xp-today">0</span> hoje</span>
             </div>
+            <p class="stat-value" id="xp">0</p>
+            <p class="stat-label">XP Total</p>
+            <div class="stat-bar-track"><div class="stat-bar-fill" id="xp-bar"></div></div>
+            <p class="stat-sub" id="next-level-xp">Próximo em 500 XP</p>
         </article>
 
-        <article class="stat-card">
-            <span class="stat-icon">NV</span>
-            <div>
-                <p class="stat-label">Nivel</p>
-                <p class="stat-value" id="level">1</p>
-            </div>
+        <article class="stat-card stat-level">
+            <div class="stat-header"><span class="stat-icon">🏆</span></div>
+            <p class="stat-value" id="level">1</p>
+            <p class="stat-label">Nível atual</p>
         </article>
 
-        <article class="stat-card">
-            <span class="stat-icon">MAT</span>
-            <div>
-                <p class="stat-label">Materias</p>
-                <p class="stat-value" id="subjects-count">0</p>
-            </div>
+        <article class="stat-card stat-streak">
+            <div class="stat-header"><span class="stat-icon" id="streak-icon">🔥</span></div>
+            <p class="stat-value" id="streak">0</p>
+            <p class="stat-label">Dias seguidos</p>
+            <p class="stat-sub" id="streak-msg">Comece hoje!</p>
         </article>
-    </section>
 
-    <section>
-        <div class="section-header">
-            <div>
-                <h2>Suas Materias</h2>
-                <p>Acompanhe onde voce ja esta estudando.</p>
+        <article class="stat-card stat-hours">
+            <div class="stat-header"><span class="stat-icon">📚</span></div>
+            <p class="stat-value" id="total-hours">0h</p>
+            <p class="stat-label">Total estudado</p>
+            <p class="stat-sub" id="subjects-count">0 matérias</p>
+        </article>
+    </div>
+
+    <!-- Charts -->
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2 class="dash-section-title">Atividade</h2>
+            <span class="dash-section-tag">Últimos 7 dias</span>
+        </div>
+        <div class="charts-row">
+            <div class="chart-card">
+                <div>
+                    <p class="chart-card-title">Horas por dia</p>
+                    <p class="chart-card-sub">Esta semana</p>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart-bar" height="160"></canvas></div>
             </div>
 
-            <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">
-                Gerenciar
-            </button>
+            <div class="chart-card">
+                <div>
+                    <p class="chart-card-title">Evolução de XP</p>
+                    <p class="chart-card-sub">Últimas semanas</p>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="chart-line" height="160"></canvas></div>
+            </div>
+
+            <div class="chart-card">
+                <div>
+                    <p class="chart-card-title">Por matéria</p>
+                    <p class="chart-card-sub">Distribuição de tempo</p>
+                </div>
+                <div class="chart-canvas-wrap pie-wrap"><canvas id="chart-pie" height="180"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matérias + Sessões -->
+    <div class="two-col">
+        <div class="dash-section">
+            <div class="dash-section-header">
+                <h2 class="dash-section-title">Matérias</h2>
+                <a href="subjects.html" class="dash-section-link">Ver todas →</a>
+            </div>
+            <div class="dash-card" id="subjects-list">
+                <div class="empty-state">Carregando...</div>
+            </div>
         </div>
 
-        <div class="subjects-list" id="subjects-list">
-            <div class="empty-state">Carregando materias...</div>
+        <div class="dash-section">
+            <div class="dash-section-header">
+                <h2 class="dash-section-title">Sessões recentes</h2>
+            </div>
+            <div class="dash-card" id="sessions-list">
+                <div class="empty-state">Carregando...</div>
+            </div>
         </div>
-    </section>
+    </div>
+
 </main>
 
 <script src="../js/api.js"></script>
