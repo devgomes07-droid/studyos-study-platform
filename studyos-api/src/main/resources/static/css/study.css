@@ -1,163 +1,315 @@
+/* ═══════════════════════════════════════════════
+   STUDY PAGE — study.css
+   Totalmente baseado em variáveis CSS (dark/light)
+═══════════════════════════════════════════════ */
+
+/* ── Setup ─────────────────────────────────── */
 .study-setup {
   display: grid;
-  grid-template-columns: 1fr minmax(260px, 360px);
+  grid-template-columns: 1fr minmax(260px, 340px);
   gap: 24px;
-  align-items: end;
-  padding: 22px;
-  margin-bottom: 24px;
+  align-items: center;
+  padding: 22px 24px;
+  margin-bottom: 20px;
 }
 
-.study-setup h2 {
-  margin: 0 0 6px;
+.setup-info h2 {
+  margin: 0 0 4px;
   color: var(--text);
 }
 
-.study-setup p {
+.setup-info p {
   margin: 0;
   color: var(--soft-text);
 }
 
-.study-setup label {
+.setup-select-label {
   display: grid;
   gap: 8px;
+  font-size: 13px;
   font-weight: 800;
-  color: var(--text);
+  color: var(--soft-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
+/* ── Filter tabs ────────────────────────────── */
+.methods-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--soft-text);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform 120ms ease;
+}
+
+.filter-btn:hover {
+  background: var(--muted-hover);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+/* ── Methods grid ───────────────────────────── */
 .methods-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
+  margin-bottom: 24px;
 }
 
+/* ── Method card ────────────────────────────── */
 .method-card {
-  display: grid;
-  gap: 14px;
-  min-height: 255px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 5px solid var(--method-color, var(--primary));
-  border-radius: 14px;
-  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--method-color, var(--primary));
+  cursor: pointer;
   transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    background 180ms ease,
-    border-color 0.16s ease;
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    background var(--transition),
+    border-color var(--transition);
+  outline: none;
 }
 
 .method-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 48px rgba(0,0,0,0.12),
+    0 0 0 1px var(--method-color, var(--primary)),
+    0 8px 24px color-mix(in srgb, var(--method-color, var(--primary)) 20%, transparent);
+}
+
+.method-card:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .method-card.selected {
-  outline: 3px solid color-mix(in srgb, var(--method-color) 28%, transparent);
+  background: color-mix(in srgb, var(--method-color, var(--primary)) 6%, var(--surface));
+  box-shadow:
+    0 0 0 2px var(--method-color, var(--primary)),
+    0 12px 32px color-mix(in srgb, var(--method-color, var(--primary)) 18%, transparent);
+  transform: translateY(-2px);
 }
 
+/* ── Card top row ───────────────────────────── */
 .method-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 
 .method-icon {
   display: grid;
   place-items: center;
-  min-width: 48px;
-  height: 42px;
-  padding: 0 10px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--method-color) 14%, transparent);
-  color: var(--method-color);
-  font-size: 13px;
-  font-weight: 900;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--method-color, var(--primary)) 14%, transparent);
+  font-size: 22px;
+  flex-shrink: 0;
+  transition: background var(--transition);
 }
 
-.method-dot {
-  width: 12px;
-  height: 12px;
+.method-category-badge {
+  padding: 4px 10px;
   border-radius: 999px;
-  background: var(--method-color);
+  background: var(--muted);
+  color: var(--soft-text);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
 }
 
-.method-card h2 {
-  margin: 0;
-  font-size: 21px;
+.method-card.selected .method-category-badge {
+  background: color-mix(in srgb, var(--method-color, var(--primary)) 15%, transparent);
+  color: var(--method-color, var(--primary));
+}
+
+/* ── Card content ───────────────────────────── */
+.method-name {
+  margin: 4px 0 0;
+  font-size: 18px;
   color: var(--text);
+  line-height: 1.2;
 }
 
-.method-card p {
+.method-desc {
   margin: 0;
   color: var(--soft-text);
+  font-size: 13px;
   line-height: 1.45;
 }
 
+.method-tip {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--muted);
+  border-radius: 8px;
+  color: var(--soft-text);
+  font-size: 12px;
+  line-height: 1.5;
+  border-left: 3px solid var(--method-color, var(--primary));
+  transition: background var(--transition);
+}
+
+/* ── Method meta tags ───────────────────────── */
 .method-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin-top: auto;
 }
 
 .method-meta span {
-  padding: 6px 10px;
+  padding: 5px 10px;
   border-radius: 999px;
   background: var(--muted);
   color: var(--soft-text);
-  font-size: 12px;
-  font-weight: 900;
-  transition: background 180ms ease, color 180ms ease;
+  font-size: 11px;
+  font-weight: 800;
+  transition: background var(--transition), color var(--transition);
 }
 
-.method-action {
-  margin-top: 4px;
+/* ── Select button ──────────────────────────── */
+.method-select-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 9px;
+  background: var(--muted);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
 }
 
-.selected-method {
+.method-select-btn:hover {
+  background: var(--muted-hover);
+  opacity: 1;
+}
+
+.method-select-btn.selected-btn {
+  background: var(--method-color, var(--primary));
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* ── Selected method panel ──────────────────── */
+.selected-method-panel {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
+  padding: 20px 24px;
+  border-top: 4px solid var(--panel-color, var(--primary));
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    box-shadow 300ms ease;
+}
+
+.selected-method-panel.has-selection {
+  box-shadow:
+    0 0 0 1px var(--panel-color, var(--primary)),
+    0 12px 40px color-mix(in srgb, var(--panel-color, var(--primary)) 14%, transparent);
+}
+
+.selected-panel-left {
+  display: flex;
   align-items: center;
-  margin-top: 24px;
-  padding: 22px;
+  gap: 16px;
+  min-width: 0;
+}
+
+.selected-panel-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel-color, var(--primary)) 14%, transparent);
+  font-size: 26px;
+  flex-shrink: 0;
+  transition: background 300ms ease;
 }
 
 .selected-label {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 800;
   color: var(--soft-text);
-  font-size: 13px;
-  font-weight: 900;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-.selected-method h2 {
-  margin: 0 0 6px;
+#selected-method-name {
+  margin: 0 0 4px;
+  font-size: 20px;
   color: var(--text);
 }
 
-.selected-method p {
+#selected-method-tip {
   margin: 0;
   color: var(--soft-text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#start-method-btn {
+  flex-shrink: 0;
+  padding: 14px 28px;
+  font-size: 15px;
+  border-radius: 12px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 #start-method-btn:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
+/* ── Responsive ─────────────────────────────── */
 @media (max-width: 1180px) {
   .methods-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 900px) {
-  .methods-grid,
-  .study-setup { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .selected-method { align-items: stretch; flex-direction: column; }
+  .methods-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .study-setup  { grid-template-columns: 1fr; }
+  .selected-method-panel { flex-direction: column; align-items: stretch; }
+  .selected-panel-left   { flex-direction: column; text-align: center; }
+  #start-method-btn      { width: 100%; }
 }
 
 @media (max-width: 640px) {
-  .methods-grid,
-  .study-setup { grid-template-columns: 1fr; }
+  .methods-grid { grid-template-columns: 1fr; }
 }

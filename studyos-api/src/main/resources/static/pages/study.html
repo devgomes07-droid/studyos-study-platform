@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>StudyOS - Metodos</title>
 
     <script>
@@ -13,19 +12,14 @@
           function getSystemPreference() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
-          function getSaved() {
-            return localStorage.getItem(KEY) || getSystemPreference();
-          }
+          function getSaved() { return localStorage.getItem(KEY) || getSystemPreference(); }
           function apply(theme) {
             ROOT.setAttribute('data-theme', theme);
             document.querySelectorAll('[data-theme-label]').forEach((el) => {
               el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
             });
           }
-          function set(theme) {
-            localStorage.setItem(KEY, theme);
-            apply(theme);
-          }
+          function set(theme) { localStorage.setItem(KEY, theme); apply(theme); }
           function toggle() {
             const current = ROOT.getAttribute('data-theme') || getSaved();
             set(current === 'dark' ? 'light' : 'dark');
@@ -48,7 +42,6 @@
 <body class="app">
 <aside class="sidebar">
     <div class="logo">StudyOS</div>
-
     <nav>
         <a href="dashboard.html">Dashboard</a>
         <a href="subjects.html">Materias</a>
@@ -56,64 +49,69 @@
         <a href="flashcards.html">Flashcards</a>
         <a href="profile.html">Perfil</a>
     </nav>
-
     <div class="user-info" id="user-info"></div>
-
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track">
-            <span class="theme-toggle-thumb"></span>
-        </span>
+        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
         <span data-theme-label>🌙 Modo escuro</span>
     </button>
-
     <button onclick="logout()" class="logout-btn">Sair</button>
 </aside>
 
 <main class="main">
+
     <section class="page-header">
         <div>
-            <h1 class="page-title">Como voce quer estudar hoje?</h1>
-            <p class="page-subtitle">
-                Escolha o metodo que combina melhor com seu ritmo, energia e objetivo agora.
-            </p>
+            <h1 class="page-title">Como quer estudar hoje?</h1>
+            <p class="page-subtitle">Cada metodo e uma experiencia diferente. Escolha o certo pro seu momento.</p>
         </div>
-
         <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">
             Gerenciar materias
         </button>
     </section>
 
+    <!-- Setup -->
     <section class="study-setup card">
-        <div>
+        <div class="setup-info">
             <h2>Preparar sessao</h2>
-            <p>Selecione uma materia antes de iniciar um metodo.</p>
+            <p>Escolha a materia e selecione um metodo abaixo.</p>
         </div>
-
-        <label>
-            Materia
+        <label class="setup-select-label">
+            <span>Materia</span>
             <select class="input" id="subject-select">
                 <option value="">Carregando materias...</option>
             </select>
         </label>
     </section>
 
+    <!-- Filtros por categoria -->
+    <div class="methods-filter" id="methods-filter">
+        <button class="filter-btn active" data-category="all">Todos</button>
+        <button class="filter-btn" data-category="timer">⏱ Timer</button>
+        <button class="filter-btn" data-category="escrita">✍️ Escrita</button>
+        <button class="filter-btn" data-category="memoria">🧠 Memoria</button>
+        <button class="filter-btn" data-category="revisao">🔄 Revisao</button>
+    </div>
+
+    <!-- Grid de metodos -->
     <section class="methods-grid" id="methods-grid">
         <div class="empty-state">Carregando metodos...</div>
     </section>
 
-    <section class="selected-method card">
-        <div>
-            <p class="selected-label">Metodo selecionado</p>
-            <h2 id="selected-method-name">Nenhum metodo selecionado</h2>
-            <p id="selected-method-description">
-                Escolha um card acima para configurar sua sessao.
-            </p>
+    <!-- Painel do metodo selecionado -->
+    <section class="selected-method-panel card" id="selected-panel">
+        <div class="selected-panel-left">
+            <div class="selected-panel-icon" id="selected-panel-icon">?</div>
+            <div>
+                <p class="selected-label">Metodo selecionado</p>
+                <h2 id="selected-method-name">Nenhum metodo selecionado</h2>
+                <p id="selected-method-tip">Escolha um card acima para comecar.</p>
+            </div>
         </div>
-
         <button class="btn btn-primary" id="start-method-btn" disabled>
             Iniciar sessao
         </button>
     </section>
+
 </main>
 
 <script src="../js/api.js"></script>
