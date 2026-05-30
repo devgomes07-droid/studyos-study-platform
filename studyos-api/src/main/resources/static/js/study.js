@@ -2,68 +2,84 @@ Utils.requireAuth();
 
 /* ═══════════════════════════════════════════════
    ENRICHMENT — dados visuais e dicas por método
-   (complementam o que vem da API)
 ═══════════════════════════════════════════════ */
 const METHOD_ENRICHMENT = {
   POMODORO: {
     category: 'timer',
     tip: '4 ciclos de 25 min com pausas. Ideal para foco intenso e tarefas longas.',
-    action: 'Iniciar ciclos 🍅'
+    action: 'Iniciar ciclos 🍅',
+    needsSetup: false
   },
   FLOW_STATE: {
     category: 'timer',
     tip: 'Imersao total. Tela escura, sem interrupcoes, timer livre. So voce e o conteudo.',
-    action: 'Entrar em flow 🌊'
+    action: 'Entrar em flow 🌊',
+    needsSetup: false
   },
   FIFTY_TWO_SEVENTEEN: {
     category: 'timer',
     tip: '52 min de foco profundo + 17 min de descanso real. Ciencia da produtividade.',
-    action: 'Iniciar bloco ⚡'
+    action: 'Iniciar bloco ⚡',
+    needsSetup: false
   },
   TIMEBOXING: {
     category: 'timer',
-    tip: 'Defina um objetivo claro e um tempo fixo. Foco no entregavel, nao no relogio.',
-    action: 'Definir objetivo 📦'
+    tip: 'Defina um objetivo claro e um tempo fixo antes de comecar. Foco no entregavel.',
+    action: 'Configurar sessao 📦',
+    needsSetup: true,
+    setupTitle: '📦 Configurar Timeboxing',
+    setupFields: [
+      { id: 'timebox-goal',     label: 'Qual e o objetivo desta sessao?',  type: 'text',   placeholder: 'Ex: Resolver 10 exercicios de calculo', required: true  },
+      { id: 'timebox-duration', label: 'Quanto tempo voce tem? (minutos)', type: 'number', placeholder: '30', min: 5, max: 180, value: 30,        required: true  }
+    ]
   },
   FEYNMAN: {
     category: 'escrita',
     tip: 'Explique o tema com suas palavras. Se nao consegue simplificar, ainda nao aprendeu.',
-    action: 'Comecar explicacao ✍️'
+    action: 'Comecar explicacao ✍️',
+    needsSetup: false
   },
   CORNELL_NOTES: {
     category: 'escrita',
     tip: 'Anote em colunas: perguntas, detalhes e resumo. Metodo da Cornell University.',
-    action: 'Comecar anotacao 📝'
+    action: 'Comecar anotacao 📝',
+    needsSetup: false
   },
   GUIDED_READING: {
     category: 'escrita',
     tip: 'Leitura ativa com anotacoes guiadas. Processe, questione e conecte ideias.',
-    action: 'Iniciar leitura 📖'
+    action: 'Iniciar leitura 📖',
+    needsSetup: false
   },
   ACTIVE_RECALL: {
     category: 'memoria',
     tip: 'Feche o material e escreva tudo que lembra. A dificuldade de lembrar consolida o aprendizado.',
-    action: 'Testar memoria 🧠'
+    action: 'Testar memoria 🧠',
+    needsSetup: false
   },
   FLASHCARDS: {
     category: 'memoria',
     tip: 'Revise seus cards com repeticao espacada. O algoritmo mostra o que voce esta esquecendo.',
-    action: 'Revisar cards 🃏'
+    action: 'Revisar cards 🃏',
+    needsSetup: false
   },
   QUESTIONS: {
     category: 'memoria',
     tip: 'Resolva questoes e registre acertos e erros. Descubra exatamente onde voce erra.',
-    action: 'Resolver questoes ❓'
+    action: 'Resolver questoes ❓',
+    needsSetup: false
   },
   FREE_REVIEW: {
     category: 'revisao',
     tip: 'Sessao livre para revisar o que ja estudou. Sem pressao, no seu ritmo.',
-    action: 'Revisar conteudo 🔄'
+    action: 'Revisar conteudo 🔄',
+    needsSetup: false
   },
   SPACED_REPETITION: {
     category: 'revisao',
     tip: 'Revisao nos intervalos certos: 1, 3, 7, 14 dias. Ciencia da memoria de longo prazo.',
-    action: 'Iniciar revisao 📅'
+    action: 'Iniciar revisao 📅',
+    needsSetup: false
   }
 };
 
@@ -74,11 +90,11 @@ let methods        = [];
 let selectedMethod = null;
 let activeCategory = 'all';
 
-const user         = Utils.getUser();
-const userInfo     = Utils.$('#user-info');
-const methodsGrid  = Utils.$('#methods-grid');
+const user          = Utils.getUser();
+const userInfo      = Utils.$('#user-info');
+const methodsGrid   = Utils.$('#methods-grid');
 const subjectSelect = Utils.$('#subject-select');
-const startButton  = Utils.$('#start-method-btn');
+const startButton   = Utils.$('#start-method-btn');
 
 /* ═══════════════════════════════════════════════
    USER INFO
@@ -93,13 +109,12 @@ if (userInfo) {
 function logout() { Utils.logout(); }
 
 /* ═══════════════════════════════════════════════
-   ENRICH — mescla dados da API com enrichment local
+   ENRICH
 ═══════════════════════════════════════════════ */
 function enrich(method) {
   const extra = METHOD_ENRICHMENT[method.id] || {
-    category: 'timer',
-    tip: method.description,
-    action: 'Iniciar sessao'
+    category: 'timer', tip: method.description,
+    action: 'Iniciar sessao', needsSetup: false
   };
   return { ...method, ...extra };
 }
@@ -107,6 +122,10 @@ function enrich(method) {
 /* ═══════════════════════════════════════════════
    RENDER METHODS
 ═══════════════════════════════════════════════ */
+function getCategoryLabel(cat) {
+  return { timer:'⏱ Timer', escrita:'✍️ Escrita', memoria:'🧠 Memoria', revisao:'🔄 Revisao' }[cat] || '📚 Estudo';
+}
+
 function renderMethods() {
   const enriched = methods.map(enrich);
   const filtered = activeCategory === 'all'
@@ -118,45 +137,33 @@ function renderMethods() {
     return;
   }
 
-  methodsGrid.innerHTML = filtered.map((method) => `
-    <article
-      class="method-card card${selectedMethod?.id === method.id ? ' selected' : ''}"
-      data-method-id="${method.id}"
-      style="--method-color: ${method.color}"
-      role="button"
-      tabindex="0"
-      aria-label="Selecionar metodo ${Utils.escapeHtml(method.name)}"
-    >
-      <div class="method-top">
-        <span class="method-icon">${Utils.escapeHtml(method.icon)}</span>
-        <span class="method-category-badge">${getCategoryLabel(method.category)}</span>
-      </div>
-
-      <h2 class="method-name">${Utils.escapeHtml(method.name)}</h2>
-      <p class="method-desc">${Utils.escapeHtml(method.description)}</p>
-
-      <p class="method-tip">${Utils.escapeHtml(method.tip)}</p>
-
-      <div class="method-meta">
-        <span>${Utils.escapeHtml(method.duration)}</span>
-        <span>${Utils.escapeHtml(method.intensity)}</span>
-      </div>
-
-      <button class="btn method-select-btn${selectedMethod?.id === method.id ? ' selected-btn' : ''}" type="button">
-        ${selectedMethod?.id === method.id ? '✓ Selecionado' : 'Selecionar'}
-      </button>
-    </article>
-  `).join('');
-}
-
-function getCategoryLabel(category) {
-  const labels = {
-    timer:   '⏱ Timer',
-    escrita: '✍️ Escrita',
-    memoria: '🧠 Memoria',
-    revisao: '🔄 Revisao'
-  };
-  return labels[category] || '📚 Estudo';
+  methodsGrid.innerHTML = filtered.map((method) => {
+    const isSelected = selectedMethod?.id === method.id;
+    return `
+      <article
+        class="method-card card${isSelected ? ' selected' : ''}"
+        data-method-id="${method.id}"
+        style="--method-color: ${method.color}"
+        role="button" tabindex="0"
+      >
+        <div class="method-top">
+          <span class="method-icon">${Utils.escapeHtml(method.icon)}</span>
+          <span class="method-category-badge">${getCategoryLabel(method.category)}</span>
+        </div>
+        <h2 class="method-name">${Utils.escapeHtml(method.name)}</h2>
+        <p class="method-desc">${Utils.escapeHtml(method.description)}</p>
+        <p class="method-tip">${Utils.escapeHtml(method.tip)}</p>
+        <div class="method-meta">
+          <span>${Utils.escapeHtml(method.duration)}</span>
+          <span>${Utils.escapeHtml(method.intensity)}</span>
+          ${method.needsSetup ? '<span>⚙️ Requer configuracao</span>' : ''}
+        </div>
+        <button class="btn method-select-btn${isSelected ? ' selected-btn' : ''}" type="button">
+          ${isSelected ? '✓ Selecionado' : 'Selecionar'}
+        </button>
+      </article>
+    `;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════
@@ -165,13 +172,10 @@ function getCategoryLabel(category) {
 Utils.$('#methods-filter').addEventListener('click', (e) => {
   const btn = e.target.closest('.filter-btn');
   if (!btn) return;
-
   activeCategory = btn.dataset.category;
-
-  document.querySelectorAll('.filter-btn').forEach((b) => {
-    b.classList.toggle('active', b === btn);
-  });
-
+  document.querySelectorAll('.filter-btn').forEach((b) =>
+    b.classList.toggle('active', b === btn)
+  );
   renderMethods();
 });
 
@@ -179,12 +183,11 @@ Utils.$('#methods-filter').addEventListener('click', (e) => {
    SELECT METHOD
 ═══════════════════════════════════════════════ */
 function selectMethod(methodId) {
-  const raw     = methods.find((m) => m.id === methodId);
+  const raw = methods.find((m) => m.id === methodId);
   if (!raw) return;
 
   selectedMethod = enrich(raw);
 
-  // Atualiza painel inferior
   const icon = Utils.$('#selected-panel-icon');
   if (icon) icon.textContent = selectedMethod.icon;
 
@@ -194,15 +197,88 @@ function selectMethod(methodId) {
 
   startButton.disabled = false;
 
-  // Destaca painel
   const panel = Utils.$('#selected-panel');
   if (panel) {
     panel.style.setProperty('--panel-color', selectedMethod.color);
     panel.classList.add('has-selection');
   }
 
-  // Re-renderiza pra refletir estado selecionado
   renderMethods();
+  Toast.info(`Metodo "${selectedMethod.name}" selecionado.`, 2500);
+}
+
+/* ═══════════════════════════════════════════════
+   SETUP MODAL (Timeboxing + futuros métodos)
+═══════════════════════════════════════════════ */
+function openSetupModal(method) {
+  // Remove modal anterior se existir
+  Utils.$('#setup-modal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop open';
+  modal.id = 'setup-modal';
+
+  const fieldsHtml = method.setupFields.map((f) => `
+    <label style="display:grid;gap:8px;font-weight:800;color:var(--text)">
+      ${f.label}
+      <input
+        class="input"
+        id="${f.id}"
+        type="${f.type}"
+        placeholder="${f.placeholder || ''}"
+        ${f.min  !== undefined ? `min="${f.min}"`   : ''}
+        ${f.max  !== undefined ? `max="${f.max}"`   : ''}
+        ${f.value !== undefined ? `value="${f.value}"` : ''}
+      />
+    </label>
+  `).join('');
+
+  modal.innerHTML = `
+    <section class="modal" style="display:grid;gap:18px">
+      <header class="modal-header">
+        <h2 style="margin:0;color:var(--text)">${method.setupTitle}</h2>
+        <button class="icon-button" id="setup-close">✕</button>
+      </header>
+      ${fieldsHtml}
+      <footer class="modal-actions">
+        <button class="btn btn-secondary" id="setup-cancel">Cancelar</button>
+        <button class="btn btn-primary"   id="setup-confirm">Iniciar sessao →</button>
+      </footer>
+    </section>
+  `;
+
+  document.body.appendChild(modal);
+
+  modal.querySelector('#setup-close').addEventListener('click',   closeSetupModal);
+  modal.querySelector('#setup-cancel').addEventListener('click',  closeSetupModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeSetupModal(); });
+
+  modal.querySelector('#setup-confirm').addEventListener('click', () => {
+    const values = {};
+    let valid = true;
+
+    method.setupFields.forEach((f) => {
+      const el  = Utils.$(`#${f.id}`);
+      const val = el?.value?.trim();
+      if (f.required && !val) {
+        Toast.warning(`Preencha o campo: ${f.label}`);
+        el?.focus();
+        valid = false;
+        return;
+      }
+      values[f.id] = f.type === 'number' ? Number(val) : val;
+    });
+
+    if (!valid) return;
+
+    closeSetupModal();
+    launchSession(values);
+  });
+}
+
+function closeSetupModal() {
+  const modal = Utils.$('#setup-modal');
+  if (modal) modal.remove();
 }
 
 /* ═══════════════════════════════════════════════
@@ -210,14 +286,23 @@ function selectMethod(methodId) {
 ═══════════════════════════════════════════════ */
 function startMethod() {
   if (!selectedMethod) {
-    window.alert('Escolha um metodo de estudo.');
+    Toast.warning('Escolha um metodo de estudo primeiro.');
     return;
   }
   if (!subjectSelect.value) {
-    window.alert('Escolha uma materia antes de iniciar.');
+    Toast.warning('Selecione uma materia antes de iniciar a sessao.');
     return;
   }
 
+  if (selectedMethod.needsSetup) {
+    openSetupModal(selectedMethod);
+    return;
+  }
+
+  launchSession();
+}
+
+function launchSession(setupValues = {}) {
   const selectedSubject = subjectSelect.selectedOptions[0];
 
   const sessionDraft = {
@@ -229,7 +314,8 @@ function startMethod() {
     color:             selectedMethod.color,
     subjectId:         Number(subjectSelect.value),
     subjectName:       selectedSubject.textContent.trim(),
-    startedAt:         new Date().toISOString()
+    startedAt:         new Date().toISOString(),
+    ...setupValues
   };
 
   localStorage.setItem('studySessionDraft', JSON.stringify(sessionDraft));
@@ -247,6 +333,7 @@ async function loadStudyMethods() {
     renderMethods();
   } catch (_) {
     methodsGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar os metodos.</div>`;
+    Toast.error('Erro ao carregar metodos de estudo.');
   }
 }
 
@@ -255,16 +342,16 @@ async function loadSubjects() {
     const subjects = await Api.getSubjects();
     if (!subjects.length) {
       subjectSelect.innerHTML = `<option value="">Nenhuma materia cadastrada</option>`;
+      Toast.warning('Voce ainda nao tem materias. Crie uma antes de estudar.');
       return;
     }
     subjectSelect.innerHTML = `
       <option value="">Escolha uma materia</option>
-      ${subjects.map((s) => `
-        <option value="${s.id}">${Utils.escapeHtml(s.name)}</option>
-      `).join('')}
+      ${subjects.map((s) => `<option value="${s.id}">${Utils.escapeHtml(s.name)}</option>`).join('')}
     `;
   } catch (_) {
     subjectSelect.innerHTML = `<option value="">Erro ao carregar materias</option>`;
+    Toast.error('Erro ao carregar suas materias.');
   }
 }
 

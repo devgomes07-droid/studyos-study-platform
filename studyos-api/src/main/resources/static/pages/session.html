@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sessão de Estudo - StudyOS</title>
 
+    <!-- Theme PRIMEIRO — evita flash e habilita o toggle -->
     <script>
         const Theme = (() => {
           const KEY = 'studyos-theme';
@@ -12,19 +13,14 @@
           function getSystemPreference() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
-          function getSaved() {
-            return localStorage.getItem(KEY) || getSystemPreference();
-          }
+          function getSaved() { return localStorage.getItem(KEY) || getSystemPreference(); }
           function apply(theme) {
             ROOT.setAttribute('data-theme', theme);
             document.querySelectorAll('[data-theme-label]').forEach((el) => {
               el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
             });
           }
-          function set(theme) {
-            localStorage.setItem(KEY, theme);
-            apply(theme);
-          }
+          function set(theme) { localStorage.setItem(KEY, theme); apply(theme); }
           function toggle() {
             const current = ROOT.getAttribute('data-theme') || getSaved();
             set(current === 'dark' ? 'light' : 'dark');
@@ -54,17 +50,15 @@
     <div class="topbar-right">
         <div id="user-info"></div>
 
-        <!-- Toggle no topbar, já que não tem sidebar -->
+        <!-- Toggle de tema na topbar -->
         <button class="theme-toggle theme-toggle--topbar" onclick="Theme.toggle()" aria-label="Alternar tema">
             <span class="theme-toggle-track">
                 <span class="theme-toggle-thumb"></span>
             </span>
-            <span data-theme-label>🌙</span>
+            <span data-theme-label>🌙 Modo escuro</span>
         </button>
 
-        <button class="btn btn-danger" onclick="logout()">
-            Sair
-        </button>
+        <button class="btn btn-danger" onclick="logout()">Sair</button>
     </div>
 </header>
 
@@ -76,7 +70,6 @@
             <h1 id="method-name">Método</h1>
             <p id="method-description">Sessão de estudo em andamento.</p>
         </div>
-
         <div class="session-subject">
             <span>Matéria</span>
             <strong id="subject-name">Carregando...</strong>
@@ -90,22 +83,18 @@
                 <small id="timer-mode">Foco</small>
             </div>
         </div>
-
         <div class="session-actions">
             <button class="btn btn-secondary" id="pause-btn">Pausar</button>
-            <button class="btn btn-success" id="finish-btn">Finalizar sessão</button>
-            <button class="btn btn-danger" id="cancel-btn">Cancelar</button>
+            <button class="btn btn-success"   id="finish-btn">Finalizar sessão</button>
+            <button class="btn btn-danger"    id="cancel-btn">Cancelar</button>
         </div>
     </section>
 
     <section class="card notes-card">
         <label>
             Anotações da sessão
-            <textarea
-                    id="session-notes"
-                    rows="7"
-                    placeholder="Escreva resumos, ideias, dificuldades, dúvidas..."
-            ></textarea>
+            <textarea id="session-notes" rows="7"
+                      placeholder="Escreva resumos, ideias, dificuldades, dúvidas..."></textarea>
         </label>
     </section>
 
@@ -121,6 +110,7 @@
 
 </main>
 
+<script src="../js/toast.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/session.js"></script>

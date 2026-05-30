@@ -443,3 +443,17 @@ body.method-FREE_REVIEW .session-hero  { border-top-color: #65a30d; }
   from { transform: rotate(-90deg) scale(0); }
   to   { transform: rotate(0deg)   scale(1); }
 }
+
+/* ── Toggle na topbar da sessão ─────────────── */
+.theme-toggle--topbar {
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--sidebar-link);
+  font-size: 12px;
+  padding: 7px 12px;
+}
+
+.theme-toggle--topbar:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--sidebar-text);
+}
