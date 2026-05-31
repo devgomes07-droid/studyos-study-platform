@@ -45,74 +45,42 @@ const Api = {
       const message = data?.message
         || Object.values(data || {})[0]
         || 'Erro na requisicao.';
-
       throw new Error(message);
     }
 
     return data;
   },
 
-  get(path) {
-    return this.request(path);
-  },
+  get(path)          { return this.request(path); },
+  post(path, body)   { return this.request(path, { method: 'POST',   body: JSON.stringify(body) }); },
+  put(path, body)    { return this.request(path, { method: 'PUT',    body: JSON.stringify(body) }); },
+  delete(path)       { return this.request(path, { method: 'DELETE' }); },
 
-  post(path, body) {
-    return this.request(path, {
-      method: 'POST',
-      body: JSON.stringify(body)
-    });
-  },
+  /* ── Auth ──────────────────────────────── */
+  login(credentials)  { return this.post('/auth/login',    credentials); },
+  register(payload)   { return this.post('/auth/register', payload);     },
 
-  put(path, body) {
-    return this.request(path, {
-      method: 'PUT',
-      body: JSON.stringify(body)
-    });
-  },
+  /* ── Subjects ──────────────────────────── */
+  getSubjects()             { return this.get('/subjects');           },
+  createSubject(payload)    { return this.post('/subjects', payload); },
+  updateSubject(id, payload){ return this.put(`/subjects/${id}`, payload); },
+  deleteSubject(id)         { return this.delete(`/subjects/${id}`); },
 
-  delete(path) {
-    return this.request(path, {
-      method: 'DELETE'
-    });
-  },
+  /* ── Study methods ─────────────────────── */
+  getStudyMethods() { return this.get('/study-methods'); },
 
-  login(credentials) {
-    return this.post('/auth/login', credentials);
-  },
+  /* ── Sessions ──────────────────────────── */
+  startSession(payload)       { return this.post('/sessions/start',         payload); },
+  finishSession(id, payload)  { return this.post(`/sessions/${id}/finish`,  payload); },
+  getSessions()               { return this.get('/sessions');                          },
 
-  register(payload) {
-    return this.post('/auth/register', payload);
+  /* ── Flashcards ────────────────────────── */
+  getFlashcards(subjectId) {
+    const query = subjectId ? `?subjectId=${subjectId}` : '';
+    return this.get(`/flashcards${query}`);
   },
-
-  getSubjects() {
-    return this.get('/subjects');
-  },
-
-  createSubject(payload) {
-    return this.post('/subjects', payload);
-  },
-
-  updateSubject(id, payload) {
-    return this.put(`/subjects/${id}`, payload);
-  },
-
-  deleteSubject(id) {
-    return this.delete(`/subjects/${id}`);
-  },
-
-  getStudyMethods() {
-    return this.get('/study-methods');
-  },
-
-  startSession(payload) {
-    return this.post('/sessions/start', payload);
-  },
-
-  finishSession(id, payload) {
-    return this.post(`/sessions/${id}/finish`, payload);
-  },
-
-  getSessions() {
-    return this.get('/sessions');
-  }
+  getFlashcardsDue()          { return this.get('/flashcards/due');                    },
+  createFlashcard(payload)    { return this.post('/flashcards', payload);              },
+  reviewFlashcard(id, quality){ return this.post(`/flashcards/${id}/review`, { quality }); },
+  deleteFlashcard(id)         { return this.delete(`/flashcards/${id}`);               },
 };
