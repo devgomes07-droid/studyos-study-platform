@@ -42,7 +42,6 @@
 <!-- ── Sidebar ─────────────────────────────── -->
 <aside class="sidebar">
     <div class="logo">StudyOS</div>
-
     <nav>
         <a href="dashboard.html">⚡ Dashboard</a>
         <a href="subjects.html">📖 Matérias</a>
@@ -50,21 +49,18 @@
         <a href="flashcards.html">🃏 Flashcards</a>
         <a href="profile.html" class="active">👤 Perfil</a>
     </nav>
-
     <div class="user-info" id="user-info"></div>
-
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
         <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
         <span data-theme-label>🌙 Modo escuro</span>
     </button>
-
     <button onclick="logout()" class="logout-btn">↩ Sair</button>
 </aside>
 
 <!-- ── Main ────────────────────────────────── -->
 <main class="main">
 
-    <!-- Hero do perfil -->
+    <!-- Hero -->
     <section class="profile-hero">
         <div class="profile-avatar-wrap">
             <div class="profile-avatar" id="profile-avatar">?</div>
@@ -78,10 +74,19 @@
                 <span class="profile-tag" id="profile-member-since"></span>
             </div>
         </div>
-        <button class="btn-edit-profile" id="btn-edit" onclick="openEditModal()">✏️ Editar perfil</button>
+        <button class="btn-edit-profile" onclick="openEditModal()">✏️ Editar perfil</button>
     </section>
 
-    <!-- XP + Level Progress -->
+    <!-- Overall + Skills -->
+    <div class="profile-overall-row">
+        <div class="overall-badge">
+            <span class="overall-number" id="overall-number">0</span>
+            <span class="overall-label">Overall</span>
+        </div>
+        <div class="overall-skills" id="overall-skills"></div>
+    </div>
+
+    <!-- XP -->
     <section class="profile-xp-section">
         <div class="xp-info">
             <span class="xp-label">Nível <strong id="xp-level">1</strong></span>
@@ -93,17 +98,17 @@
         <p class="xp-msg" id="xp-msg">Faltam 500 XP para o próximo nível</p>
     </section>
 
-    <!-- Stats gerais -->
+    <!-- Stats -->
     <div class="profile-stats-grid">
         <article class="pstat-card">
             <span class="pstat-icon">🔥</span>
             <p class="pstat-value" id="stat-streak">0</p>
-            <p class="pstat-label">Sequência atual</p>
+            <p class="pstat-label">Sequência</p>
         </article>
         <article class="pstat-card">
             <span class="pstat-icon">📚</span>
             <p class="pstat-value" id="stat-hours">0h</p>
-            <p class="pstat-label">Total estudado</p>
+            <p class="pstat-label">Estudado</p>
         </article>
         <article class="pstat-card">
             <span class="pstat-icon">🎯</span>
@@ -127,7 +132,7 @@
         </article>
     </div>
 
-    <!-- Conquistas / Badges -->
+    <!-- Conquistas -->
     <section class="profile-section">
         <div class="profile-section-header">
             <h2 class="profile-section-title">🏅 Conquistas</h2>
@@ -138,7 +143,7 @@
         </div>
     </section>
 
-    <!-- Histórico de atividade -->
+    <!-- Atividade -->
     <section class="profile-section">
         <div class="profile-section-header">
             <h2 class="profile-section-title">📅 Atividade recente</h2>
