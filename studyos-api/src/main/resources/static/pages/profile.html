@@ -1,10 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StudyOS — Perfil</title>
 
+    <script>
+        const Theme = (() => {
+          const KEY  = 'studyos-theme';
+          const ROOT = document.documentElement;
+          function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+          function getSaved() { return localStorage.getItem(KEY) || sys(); }
+          function apply(t) {
+            ROOT.setAttribute('data-theme', t);
+            document.querySelectorAll('[data-theme-label]').forEach(el => {
+              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+            });
+          }
+          function toggle() {
+            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(KEY, next);
+            apply(next);
+          }
+          function init() {
+            apply(getSaved());
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+              if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
+            });
+          }
+          return { init, toggle, getSaved };
+        })();
+        Theme.init();
+    </script>
+
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/components.css"/>
+    <link rel="stylesheet" href="../css/profile.css"/>
+</head>
+<body class="app">
+
+<!-- ── Sidebar ─────────────────────────────── -->
+<aside class="sidebar">
+    <div class="logo">StudyOS</div>
+
+    <nav>
+        <a href="dashboard.html">⚡ Dashboard</a>
+        <a href="subjects.html">📖 Matérias</a>
+        <a href="study.html">🧠 Métodos</a>
+        <a href="flashcards.html">🃏 Flashcards</a>
+        <a href="profile.html" class="active">👤 Perfil</a>
+    </nav>
+
+    <div class="user-info" id="user-info"></div>
+
+    <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
+        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+        <span data-theme-label>🌙 Modo escuro</span>
+    </button>
+
+    <button onclick="logout()" class="logout-btn">↩ Sair</button>
+</aside>
+
+<!-- ── Main ────────────────────────────────── -->
+<main class="main">
+
+    <!-- Hero do perfil -->
+    <section class="profile-hero">
+        <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profile-avatar">?</div>
+            <div class="profile-level-badge" id="profile-level-badge">1</div>
+        </div>
+        <div class="profile-hero-info">
+            <h1 class="profile-name" id="profile-name">Carregando...</h1>
+            <p class="profile-email" id="profile-email"></p>
+            <div class="profile-tags">
+                <span class="profile-tag" id="profile-rank">🥉 Iniciante</span>
+                <span class="profile-tag" id="profile-member-since"></span>
+            </div>
+        </div>
+        <button class="btn-edit-profile" id="btn-edit" onclick="openEditModal()">✏️ Editar perfil</button>
+    </section>
+
+    <!-- XP + Level Progress -->
+    <section class="profile-xp-section">
+        <div class="xp-info">
+            <span class="xp-label">Nível <strong id="xp-level">1</strong></span>
+            <span class="xp-values"><span id="xp-current">0</span> / <span id="xp-next">500</span> XP</span>
+        </div>
+        <div class="xp-bar-track">
+            <div class="xp-bar-fill" id="xp-bar-fill"></div>
+        </div>
+        <p class="xp-msg" id="xp-msg">Faltam 500 XP para o próximo nível</p>
+    </section>
+
+    <!-- Stats gerais -->
+    <div class="profile-stats-grid">
+        <article class="pstat-card">
+            <span class="pstat-icon">🔥</span>
+            <p class="pstat-value" id="stat-streak">0</p>
+            <p class="pstat-label">Sequência atual</p>
+        </article>
+        <article class="pstat-card">
+            <span class="pstat-icon">📚</span>
+            <p class="pstat-value" id="stat-hours">0h</p>
+            <p class="pstat-label">Total estudado</p>
+        </article>
+        <article class="pstat-card">
+            <span class="pstat-icon">🎯</span>
+            <p class="pstat-value" id="stat-sessions">0</p>
+            <p class="pstat-label">Sessões</p>
+        </article>
+        <article class="pstat-card">
+            <span class="pstat-icon">📖</span>
+            <p class="pstat-value" id="stat-subjects">0</p>
+            <p class="pstat-label">Matérias</p>
+        </article>
+        <article class="pstat-card">
+            <span class="pstat-icon">🃏</span>
+            <p class="pstat-value" id="stat-flashcards">0</p>
+            <p class="pstat-label">Flashcards</p>
+        </article>
+        <article class="pstat-card">
+            <span class="pstat-icon">⚡</span>
+            <p class="pstat-value" id="stat-xp">0</p>
+            <p class="pstat-label">XP Total</p>
+        </article>
+    </div>
+
+    <!-- Conquistas / Badges -->
+    <section class="profile-section">
+        <div class="profile-section-header">
+            <h2 class="profile-section-title">🏅 Conquistas</h2>
+            <span class="profile-section-count" id="badges-count">0 desbloqueadas</span>
+        </div>
+        <div class="badges-grid" id="badges-grid">
+            <div class="empty-state">Carregando conquistas...</div>
+        </div>
+    </section>
+
+    <!-- Histórico de atividade -->
+    <section class="profile-section">
+        <div class="profile-section-header">
+            <h2 class="profile-section-title">📅 Atividade recente</h2>
+        </div>
+        <div class="activity-list" id="activity-list">
+            <div class="empty-state">Carregando atividade...</div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ── Modal editar perfil ──────────────────── -->
+<div class="modal-overlay" id="edit-modal" onclick="closeEditModal(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Editar perfil</h3>
+            <button class="modal-close" onclick="closeEditModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-input" id="edit-name" placeholder="Seu nome"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="edit-email" placeholder="seu@email.com"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nova senha <span class="form-label-hint">(deixe em branco para não alterar)</span></label>
+                <input type="password" class="form-input" id="edit-password" placeholder="Mínimo 6 caracteres"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirmar senha</label>
+                <input type="password" class="form-input" id="edit-password-confirm" placeholder="Repita a senha"/>
+            </div>
+            <p class="form-msg" id="edit-msg"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeEditModal()">Cancelar</button>
+            <button class="btn-primary" onclick="saveProfile()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ public class StudySessionService {
     private final StudySessionRepository sessionRepository;
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
+    private final BadgeService badgeService;
 
     public SessionResponse start(SessionRequest request) {
 
@@ -97,10 +98,7 @@ public class StudySessionService {
                 ? subject.getTotalHoursStudied()
                 : 0.0;
 
-        subject.setTotalHoursStudied(
-                currentHours + (minutes / 60.0)
-        );
-
+        subject.setTotalHoursStudied(currentHours + (minutes / 60.0));
         subjectRepository.save(subject);
 
         if (xpEarned > 0) {
@@ -110,7 +108,12 @@ public class StudySessionService {
 
         sessionRepository.save(session);
 
-        return toResponse(session, subject);
+        // Verifica e desbloqueia badges — retorna apenas os recém-desbloqueados
+        List<String> newBadges = badgeService.checkAndUnlock(user);
+
+        SessionResponse response = toResponse(session, subject);
+        response.setNewBadges(newBadges);
+        return response;
     }
 
     public List<SessionResponse> history() {
@@ -129,93 +132,37 @@ public class StudySessionService {
         int multiplier;
 
         switch (method) {
-
-            case POMODORO -> {
-                baseXp = 15;
-                multiplier = 2;
-            }
-
-            case FLOW_STATE -> {
-                baseXp = 30;
-                multiplier = 4;
-            }
-
-            case FIFTY_TWO_SEVENTEEN -> {
-                baseXp = 20;
-                multiplier = 3;
-            }
-
-            case TIMEBOXING -> {
-                baseXp = 18;
-                multiplier = 2;
-            }
-
-            case FEYNMAN -> {
-                baseXp = 35;
-                multiplier = 5;
-            }
-
-            case ACTIVE_RECALL -> {
-                baseXp = 32;
-                multiplier = 5;
-            }
-
-            case FLASHCARDS -> {
-                baseXp = 16;
-                multiplier = 2;
-            }
-
-            case SPACED_REPETITION -> {
-                baseXp = 22;
-                multiplier = 3;
-            }
-
-            case GUIDED_READING -> {
-                baseXp = 14;
-                multiplier = 2;
-            }
-
-            case QUESTIONS -> {
-                baseXp = 30;
-                multiplier = 4;
-            }
-
-            case CORNELL_NOTES -> {
-                baseXp = 24;
-                multiplier = 3;
-            }
-
-            default -> {
-                baseXp = 10;
-                multiplier = 1;
-            }
+            case POMODORO -> { baseXp = 15; multiplier = 2; }
+            case FLOW_STATE -> { baseXp = 30; multiplier = 4; }
+            case FIFTY_TWO_SEVENTEEN -> { baseXp = 20; multiplier = 3; }
+            case TIMEBOXING -> { baseXp = 18; multiplier = 2; }
+            case FEYNMAN -> { baseXp = 35; multiplier = 5; }
+            case ACTIVE_RECALL -> { baseXp = 32; multiplier = 5; }
+            case FLASHCARDS -> { baseXp = 16; multiplier = 2; }
+            case SPACED_REPETITION -> { baseXp = 22; multiplier = 3; }
+            case GUIDED_READING -> { baseXp = 14; multiplier = 2; }
+            case QUESTIONS -> { baseXp = 30; multiplier = 4; }
+            case CORNELL_NOTES -> { baseXp = 24; multiplier = 3; }
+            default -> { baseXp = 10; multiplier = 1; }
         }
 
         int xp = baseXp + (minutes * multiplier);
 
-        if (minutes >= 60) {
-            xp += 25;
-        }
-
-        if (minutes >= 120) {
-            xp += 50;
-        }
+        if (minutes >= 60)  xp += 25;
+        if (minutes >= 120) xp += 50;
 
         return Math.min(xp, 500);
     }
 
     private User getCurrentUser() {
-
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
 
     private SessionResponse toResponse(StudySession session, Subject subject) {
-
         return SessionResponse.builder()
                 .id(session.getId())
                 .subjectId(subject.getId())
@@ -236,13 +183,8 @@ public class StudySessionService {
     }
 
     private SessionResponse toResponse(StudySession session) {
-
-        Subject subject = subjectRepository.findById(
-                session.getSubject().getId()
-        ).orElseThrow(() ->
-                new RuntimeException("Materia nao encontrada")
-        );
-
+        Subject subject = subjectRepository.findById(session.getSubject().getId())
+                .orElseThrow(() -> new RuntimeException("Materia nao encontrada"));
         return toResponse(session, subject);
     }
 }
