@@ -48,7 +48,6 @@ public class StudySessionService {
                 .build();
 
         session.setStudyMethod(method);
-
         sessionRepository.save(session);
 
         return toResponse(session, subject);
@@ -70,7 +69,6 @@ public class StudySessionService {
         }
 
         LocalDateTime endedAt = LocalDateTime.now();
-
         int minutes = Math.toIntExact(
                 Duration.between(session.getStartedAt(), endedAt).toMinutes()
         );
@@ -85,7 +83,6 @@ public class StudySessionService {
                 : StudyMethodType.FREE_REVIEW;
 
         int xpEarned = 0;
-
         if (minutes >= MIN_XP_MINUTES) {
             xpEarned = calculateXp(minutes, method);
         }
@@ -93,11 +90,8 @@ public class StudySessionService {
         session.setXpEarned(xpEarned);
 
         Subject subject = session.getSubject();
-
         double currentHours = subject.getTotalHoursStudied() != null
-                ? subject.getTotalHoursStudied()
-                : 0.0;
-
+                ? subject.getTotalHoursStudied() : 0.0;
         subject.setTotalHoursStudied(currentHours + (minutes / 60.0));
         subjectRepository.save(subject);
 
@@ -108,7 +102,6 @@ public class StudySessionService {
 
         sessionRepository.save(session);
 
-        // Verifica e desbloqueia badges — retorna apenas os recém-desbloqueados
         List<String> newBadges = badgeService.checkAndUnlock(user);
 
         SessionResponse response = toResponse(session, subject);
@@ -117,9 +110,7 @@ public class StudySessionService {
     }
 
     public List<SessionResponse> history() {
-
         User user = getCurrentUser();
-
         return sessionRepository.findByUserIdOrderByStartedAtDesc(user.getId())
                 .stream()
                 .map(this::toResponse)
@@ -127,37 +118,72 @@ public class StudySessionService {
     }
 
     private int calculateXp(int minutes, StudyMethodType method) {
-
-        int baseXp;
-        int multiplier;
+        int xp;
 
         switch (method) {
-            case POMODORO -> { baseXp = 15; multiplier = 2; }
-            case FLOW_STATE -> { baseXp = 30; multiplier = 4; }
-            case FIFTY_TWO_SEVENTEEN -> { baseXp = 20; multiplier = 3; }
-            case TIMEBOXING -> { baseXp = 18; multiplier = 2; }
-            case FEYNMAN -> { baseXp = 35; multiplier = 5; }
-            case ACTIVE_RECALL -> { baseXp = 32; multiplier = 5; }
-            case FLASHCARDS -> { baseXp = 16; multiplier = 2; }
-            case SPACED_REPETITION -> { baseXp = 22; multiplier = 3; }
-            case GUIDED_READING -> { baseXp = 14; multiplier = 2; }
-            case QUESTIONS -> { baseXp = 30; multiplier = 4; }
-            case CORNELL_NOTES -> { baseXp = 24; multiplier = 3; }
-            default -> { baseXp = 10; multiplier = 1; }
+
+            // ── Pomodoro: XP fixo por sessão concluída ──────────────
+            // Cada pomodoro é uma unidade de trabalho com começo e fim.
+            // Não faz sentido dar XP por minuto aqui.
+            case POMODORO -> xp = 30;
+
+            // ── Alta concentração: base alta + tempo, teto 150 ──────
+            // Feynman e Active Recall exigem esforço cognitivo real.
+            // Recompensa maior pra incentivar métodos difíceis.
+            case FEYNMAN        -> xp = Math.min(40 + (int)(minutes * 1.5), 150);
+            case ACTIVE_RECALL  -> xp = Math.min(35 + (int)(minutes * 1.5), 140);
+            case QUESTIONS      -> xp = Math.min(25 + (int)(minutes * 1.5), 120);
+
+            // ── Estruturado: base média + tempo, teto 110 ───────────
+            // Métodos com estrutura definida (blocos, anotações).
+            // Mais XP que livre, menos que alta concentração.
+            case CORNELL_NOTES      -> xp = Math.min(20 + minutes, 110);
+            case SPACED_REPETITION  -> xp = Math.min(15 + (int)(minutes * 1.2), 100);
+            case FIFTY_TWO_SEVENTEEN-> xp = Math.min(15 + (int)(minutes * 1.2), 100);
+            case TIMEBOXING         -> xp = Math.min(15 + (int)(minutes * 1.2), 100);
+
+            // ── Cronômetro livre: 1 XP/min, teto 90 ─────────────────
+            // Flow State é o mais fácil de farmar — teto baixo
+            // e XP por minuto mínimo pra não compensar deixar rodando.
+            case FLOW_STATE -> xp = Math.min(minutes, 90);
+
+            // ── Flashcards: por minuto, teto 80 ─────────────────────
+            // Já tem recompensa via badges (10, 20, 50 flashcards).
+            // XP moderado pra não duplicar recompensa.
+            case FLASHCARDS         -> xp = Math.min((int)(minutes * 0.9), 80);
+            case GUIDED_READING     -> xp = Math.min((int)(minutes * 0.8), 80);
+
+            // ── Padrão: XP mínimo ────────────────────────────────────
+            default -> xp = Math.min((int)(minutes * 0.5), 60);
         }
 
-        int xp = baseXp + (minutes * multiplier);
+        // Bônus de sessão longa — recompensa quem estuda mais de 1h
+        // Valores menores que antes pra não inflar o total
+        if (minutes >= 60)  xp = Math.min(xp + 15, getMaxXp(method));
+        if (minutes >= 120) xp = Math.min(xp + 25, getMaxXp(method));
 
-        if (minutes >= 60)  xp += 25;
-        if (minutes >= 120) xp += 50;
+        return xp;
+    }
 
-        return Math.min(xp, 500);
+    // Teto por método — usado nos bônus de sessão longa
+    private int getMaxXp(StudyMethodType method) {
+        return switch (method) {
+            case FEYNMAN, ACTIVE_RECALL         -> 150;
+            case QUESTIONS                      -> 120;
+            case CORNELL_NOTES                  -> 110;
+            case SPACED_REPETITION,
+                 FIFTY_TWO_SEVENTEEN,
+                 TIMEBOXING                     -> 100;
+            case FLOW_STATE                     -> 90;
+            case FLASHCARDS, GUIDED_READING     -> 80;
+            case POMODORO                       -> 30;
+            default                             -> 60;
+        };
     }
 
     private User getCurrentUser() {
         String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+                .getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
