@@ -1,60 +1,94 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StudyOS - Metodos</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StudyOS — Métodos</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
 
     <script>
         const Theme = (() => {
-          const KEY = 'studyos-theme';
+          const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
-          function getSystemPreference() {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          function getSaved() { return localStorage.getItem(KEY) || getSystemPreference(); }
-          function apply(theme) {
-            ROOT.setAttribute('data-theme', theme);
-            document.querySelectorAll('[data-theme-label]').forEach((el) => {
-              el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+          function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+          function getSaved() { return localStorage.getItem(KEY) || sys(); }
+          function apply(t) {
+            ROOT.setAttribute('data-theme', t);
+            document.querySelectorAll('[data-theme-label]').forEach(el => {
+              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
             });
           }
-          function set(theme) { localStorage.setItem(KEY, theme); apply(theme); }
           function toggle() {
-            const current = ROOT.getAttribute('data-theme') || getSaved();
-            set(current === 'dark' ? 'light' : 'dark');
+            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(KEY, next);
+            apply(next);
           }
           function init() {
             apply(getSaved());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
               if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
             });
           }
-          return { init, toggle, set, getSaved };
+          return { init, toggle, getSaved };
         })();
         Theme.init();
     </script>
 
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components.css" />
-    <link rel="stylesheet" href="../css/study.css" />
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/components.css"/>
+    <link rel="stylesheet" href="../css/study.css"/>
 </head>
 <body class="app">
-<aside class="sidebar">
-    <div class="logo">StudyOS</div>
+
+<!-- ── Botão hambúrguer (mobile) ───────────── -->
+<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
+
+<!-- ── Overlay escuro atrás da sidebar ──────── -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ── Sidebar ─────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo">StudyOS</div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
+
     <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="subjects.html">Materias</a>
-        <a href="study.html" class="active">Metodos</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="profile.html">Perfil</a>
+        <a href="dashboard.html" data-tooltip="Dashboard">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="subjects.html" data-tooltip="Matérias">
+            <span class="nav-icon">📖</span>
+            <span class="nav-label">Matérias</span>
+        </a>
+        <a href="study.html" class="active" data-tooltip="Métodos">
+            <span class="nav-icon">🧠</span>
+            <span class="nav-label">Métodos</span>
+        </a>
+        <a href="flashcards.html" data-tooltip="Flashcards">
+            <span class="nav-icon">🃏</span>
+            <span class="nav-label">Flashcards</span>
+        </a>
+        <a href="profile.html" data-tooltip="Perfil">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Perfil</span>
+        </a>
     </nav>
+
     <div class="user-info" id="user-info"></div>
+
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
         <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span data-theme-label>🌙 Modo escuro</span>
+        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
     </button>
-    <button onclick="logout()" class="logout-btn">Sair</button>
+
+    <button onclick="logout()" class="logout-btn">
+        <span class="nav-icon">↩</span>
+        <span class="nav-label">Sair</span>
+    </button>
 </aside>
 
 <main class="main">
@@ -62,54 +96,46 @@
     <section class="page-header">
         <div>
             <h1 class="page-title">Como quer estudar hoje?</h1>
-            <p class="page-subtitle">Cada metodo e uma experiencia diferente. Escolha o certo pro seu momento.</p>
+            <p class="page-subtitle">Cada método é uma experiência diferente. Escolha o certo pro seu momento.</p>
         </div>
-        <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">
-            Gerenciar materias
-        </button>
+        <button class="btn btn-secondary" onclick="window.location.href='subjects.html'">Gerenciar matérias</button>
     </section>
 
-    <!-- Setup -->
     <section class="study-setup card">
         <div class="setup-info">
-            <h2>Preparar sessao</h2>
-            <p>Escolha a materia e selecione um metodo abaixo.</p>
+            <h2>Preparar sessão</h2>
+            <p>Escolha a matéria e selecione um método abaixo.</p>
         </div>
         <label class="setup-select-label">
-            <span>Materia</span>
+            <span>Matéria</span>
             <select class="input" id="subject-select">
-                <option value="">Carregando materias...</option>
+                <option value="">Carregando matérias...</option>
             </select>
         </label>
     </section>
 
-    <!-- Filtros por categoria -->
     <div class="methods-filter" id="methods-filter">
         <button class="filter-btn active" data-category="all">Todos</button>
         <button class="filter-btn" data-category="timer">⏱ Timer</button>
         <button class="filter-btn" data-category="escrita">✍️ Escrita</button>
-        <button class="filter-btn" data-category="memoria">🧠 Memoria</button>
-        <button class="filter-btn" data-category="revisao">🔄 Revisao</button>
+        <button class="filter-btn" data-category="memoria">🧠 Memória</button>
+        <button class="filter-btn" data-category="revisao">🔄 Revisão</button>
     </div>
 
-    <!-- Grid de metodos -->
     <section class="methods-grid" id="methods-grid">
-        <div class="empty-state">Carregando metodos...</div>
+        <div class="empty-state">Carregando métodos...</div>
     </section>
 
-    <!-- Painel do metodo selecionado -->
     <section class="selected-method-panel card" id="selected-panel">
         <div class="selected-panel-left">
             <div class="selected-panel-icon" id="selected-panel-icon">?</div>
             <div>
-                <p class="selected-label">Metodo selecionado</p>
-                <h2 id="selected-method-name">Nenhum metodo selecionado</h2>
-                <p id="selected-method-tip">Escolha um card acima para comecar.</p>
+                <p class="selected-label">Método selecionado</p>
+                <h2 id="selected-method-name">Nenhum método selecionado</h2>
+                <p id="selected-method-tip">Escolha um card acima para começar.</p>
             </div>
         </div>
-        <button class="btn btn-primary" id="start-method-btn" disabled>
-            Iniciar sessao
-        </button>
+        <button class="btn btn-primary" id="start-method-btn" disabled>Iniciar sessão</button>
     </section>
 
 </main>
@@ -118,5 +144,48 @@
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/study.js"></script>
+
+<script>
+    (function () {
+        const sidebar     = document.getElementById('sidebar');
+        const overlay     = document.getElementById('sidebar-overlay');
+        const menuToggle  = document.getElementById('menu-toggle');
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
+
+        function isCollapsed() { return localStorage.getItem(COLLAPSED_KEY) === 'true'; }
+
+        function applyCollapsed(collapsed) {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            collapseBtn.textContent = collapsed ? '▶' : '◀';
+            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            localStorage.setItem(COLLAPSED_KEY, collapsed);
+        }
+
+        collapseBtn.addEventListener('click', () => { applyCollapsed(!isCollapsed()); });
+        applyCollapsed(isCollapsed());
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        sidebar.querySelectorAll('nav a').forEach(a => {
+            a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); });
+        });
+    })();
+</script>
 </body>
 </html>

@@ -1,166 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>StudyOS - Materias</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StudyOS — Matérias</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
 
     <script src="../js/toast.js"></script>
 
     <script>
         const Theme = (() => {
-          const KEY = 'studyos-theme';
+          const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
-          function getSystemPreference() {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          function getSaved() {
-            return localStorage.getItem(KEY) || getSystemPreference();
-          }
-          function apply(theme) {
-            ROOT.setAttribute('data-theme', theme);
-            document.querySelectorAll('[data-theme-label]').forEach((el) => {
-              el.textContent = theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
+          function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+          function getSaved() { return localStorage.getItem(KEY) || sys(); }
+          function apply(t) {
+            ROOT.setAttribute('data-theme', t);
+            document.querySelectorAll('[data-theme-label]').forEach(el => {
+              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
             });
           }
-          function set(theme) {
-            localStorage.setItem(KEY, theme);
-            apply(theme);
-          }
           function toggle() {
-            const current = ROOT.getAttribute('data-theme') || getSaved();
-            set(current === 'dark' ? 'light' : 'dark');
+            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(KEY, next);
+            apply(next);
           }
           function init() {
             apply(getSaved());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
               if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
             });
           }
-          return { init, toggle, set, getSaved };
+          return { init, toggle, getSaved };
         })();
         Theme.init();
     </script>
 
-
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/components.css" />
-    <link rel="stylesheet" href="../css/subjects.css" />
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/components.css"/>
+    <link rel="stylesheet" href="../css/subjects.css"/>
 </head>
 <body class="app">
-<aside class="sidebar">
-    <div class="logo">StudyOS</div>
+
+<!-- ── Botão hambúrguer (mobile) ───────────── -->
+<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
+
+<!-- ── Overlay escuro atrás da sidebar ──────── -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ── Sidebar ─────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo">StudyOS</div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
 
     <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="subjects.html" class="active">Materias</a>
-        <a href="study.html">Metodos</a>
-        <a href="flashcards.html">Flashcards</a>
-        <a href="profile.html">Perfil</a>
+        <a href="dashboard.html" data-tooltip="Dashboard">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="subjects.html" class="active" data-tooltip="Matérias">
+            <span class="nav-icon">📖</span>
+            <span class="nav-label">Matérias</span>
+        </a>
+        <a href="study.html" data-tooltip="Métodos">
+            <span class="nav-icon">🧠</span>
+            <span class="nav-label">Métodos</span>
+        </a>
+        <a href="flashcards.html" data-tooltip="Flashcards">
+            <span class="nav-icon">🃏</span>
+            <span class="nav-label">Flashcards</span>
+        </a>
+        <a href="profile.html" data-tooltip="Perfil">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Perfil</span>
+        </a>
     </nav>
 
     <div class="user-info" id="user-info"></div>
 
-    <!-- 2. Botão de tema -->
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track">
-            <span class="theme-toggle-thumb"></span>
-        </span>
-        <span data-theme-label>🌙 Modo escuro</span>
+        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
     </button>
 
-    <button onclick="logout()" class="logout-btn">Sair</button>
+    <button onclick="logout()" class="logout-btn">
+        <span class="nav-icon">↩</span>
+        <span class="nav-label">Sair</span>
+    </button>
 </aside>
 
 <main class="main">
     <section class="page-header">
         <div>
-            <h1 class="page-title">Materias</h1>
+            <h1 class="page-title">Matérias</h1>
             <p class="page-subtitle">Organize suas disciplinas, metas semanais e progresso de estudo.</p>
         </div>
-
-        <button class="btn btn-primary" onclick="openSubjectModal()">
-            Nova materia
-        </button>
+        <button class="btn btn-primary" onclick="openSubjectModal()">Nova matéria</button>
     </section>
 
     <section class="subjects-toolbar">
         <div class="search-box">
-            <input
-                    class="input"
-                    id="subject-search"
-                    type="search"
-                    placeholder="Buscar materia..."
-                    autocomplete="off"
-            />
+            <input class="input" id="subject-search" type="search" placeholder="Buscar matéria..." autocomplete="off"/>
         </div>
-
         <div class="subjects-summary card">
             <span id="subjects-total">0</span>
-            <small>materias cadastradas</small>
+            <small>matérias cadastradas</small>
         </div>
     </section>
 
     <section id="subjects-grid" class="subjects-grid">
-        <div class="empty-state">Carregando materias...</div>
+        <div class="empty-state">Carregando matérias...</div>
     </section>
 </main>
 
 <div class="modal-backdrop" id="subject-modal">
     <section class="modal">
         <header class="modal-header">
-            <h2 class="modal-title" id="modal-title">Nova materia</h2>
-            <button class="icon-button" onclick="closeSubjectModal()" aria-label="Fechar modal">
-                X
-            </button>
+            <h2 class="modal-title" id="modal-title">Nova matéria</h2>
+            <button class="icon-button" onclick="closeSubjectModal()" aria-label="Fechar modal">✕</button>
         </header>
 
         <form id="subject-form" class="subject-form">
-            <input type="hidden" id="subject-id" />
+            <input type="hidden" id="subject-id"/>
 
             <label>
                 Nome
-                <input class="input" id="subject-name" type="text" placeholder="Ex: Matematica" />
+                <input class="input" id="subject-name" type="text" placeholder="Ex: Matemática"/>
             </label>
 
             <label>
-                Descricao
-                <textarea
-                        class="textarea"
-                        id="subject-description"
-                        rows="3"
-                        placeholder="Ex: Algebra, geometria e revisoes semanais"
-                ></textarea>
+                Descrição
+                <textarea class="textarea" id="subject-description" rows="3" placeholder="Ex: Álgebra, geometria e revisões semanais"></textarea>
             </label>
 
             <div class="form-row">
                 <label>
                     Emoji
-                    <input class="input" id="subject-icon" type="text" maxlength="2" placeholder="📚" />
+                    <input class="input" id="subject-icon" type="text" maxlength="2" placeholder="📚"/>
                 </label>
-
                 <label>
                     Cor
-                    <input class="input color-input" id="subject-color" type="color" value="#4f46e5" />
+                    <input class="input color-input" id="subject-color" type="color" value="#4f46e5"/>
                 </label>
             </div>
 
             <label>
                 Meta semanal de horas
-                <input class="input" id="subject-weekly-goal" type="number" min="1" max="80" value="5" />
+                <input class="input" id="subject-weekly-goal" type="number" min="1" max="80" value="5"/>
             </label>
 
             <p id="subject-message" class="form-message"></p>
 
             <footer class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeSubjectModal()">
-                    Cancelar
-                </button>
-
-                <button type="submit" class="btn btn-primary">
-                    Salvar materia
-                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeSubjectModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar matéria</button>
             </footer>
         </form>
     </section>
@@ -169,5 +166,48 @@
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/subjects.js"></script>
+
+<script>
+    (function () {
+        const sidebar     = document.getElementById('sidebar');
+        const overlay     = document.getElementById('sidebar-overlay');
+        const menuToggle  = document.getElementById('menu-toggle');
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
+
+        function isCollapsed() { return localStorage.getItem(COLLAPSED_KEY) === 'true'; }
+
+        function applyCollapsed(collapsed) {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            collapseBtn.textContent = collapsed ? '▶' : '◀';
+            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            localStorage.setItem(COLLAPSED_KEY, collapsed);
+        }
+
+        collapseBtn.addEventListener('click', () => { applyCollapsed(!isCollapsed()); });
+        applyCollapsed(isCollapsed());
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        sidebar.querySelectorAll('nav a').forEach(a => {
+            a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); });
+        });
+    })();
+</script>
 </body>
 </html>

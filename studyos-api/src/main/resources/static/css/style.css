@@ -423,7 +423,7 @@ body.sidebar-collapsed .user-info {
   padding: 36px;
   background: var(--bg);
   transition: background var(--transition);
-  min-width: 0; /* evita overflow no grid */
+  min-width: 0;
 }
 
 /* ─── Utilitários de tipografia ──────────────── */
@@ -629,7 +629,7 @@ body.sidebar-collapsed .user-info {
   display: none;
   position: fixed;
   top: 16px;
-  right: 16px;
+  left: 16px; /* ← CORRIGIDO: era right: 16px */
   z-index: 200;
   width: 44px;
   height: 44px;
@@ -663,23 +663,20 @@ body.sidebar-collapsed .user-info {
 ════════════════════════════════════════════════ */
 @media (max-width: 860px) {
 
-  /* Layout vira 1 coluna */
   .app {
     grid-template-columns: 1fr !important;
   }
 
-  /* Mostra hambúrguer */
   .menu-toggle {
     display: flex;
   }
 
-  /* Sidebar vira drawer lateral */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 260px !important; /* ignora collapsed no mobile */
+    width: 260px !important;
     z-index: 150;
     transform: translateX(-100%);
     transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -691,7 +688,6 @@ body.sidebar-collapsed .user-info {
     transform: translateX(0);
   }
 
-  /* Esconde collapse, mostra close */
   .sidebar-collapse-btn {
     display: none;
   }
@@ -700,7 +696,6 @@ body.sidebar-collapsed .user-info {
     display: flex;
   }
 
-  /* Restaura labels no mobile */
   body.sidebar-collapsed .nav-label,
   .nav-label {
     opacity: 1 !important;
@@ -722,7 +717,6 @@ body.sidebar-collapsed .user-info {
     margin-top: auto !important;
   }
 
-  /* Main com espaço pro hambúrguer */
   .main {
     padding: 24px 16px;
     padding-top: 72px;
@@ -741,14 +735,12 @@ body.sidebar-collapsed .user-info {
    PERFIL — Responsivo
 ════════════════════════════════════════════════ */
 
-/* Cards de perfil em grid flexível */
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
-/* Card principal do perfil */
 .profile-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -760,7 +752,6 @@ body.sidebar-collapsed .user-info {
     border-color var(--transition);
 }
 
-/* Avatar / foto de perfil */
 .profile-avatar {
   width: 80px;
   height: 80px;
@@ -774,7 +765,6 @@ body.sidebar-collapsed .user-info {
   flex-shrink: 0;
 }
 
-/* Cabeçalho do perfil (avatar + nome) */
 .profile-header {
   display: flex;
   align-items: center;
@@ -801,7 +791,6 @@ body.sidebar-collapsed .user-info {
   font-size: 14px;
 }
 
-/* Stats do perfil em linha */
 .profile-stats {
   display: flex;
   gap: 16px;
@@ -832,7 +821,6 @@ body.sidebar-collapsed .user-info {
   margin-top: 2px;
 }
 
-/* Formulário de edição de perfil */
 .profile-form {
   display: grid;
   gap: 16px;
@@ -851,7 +839,6 @@ body.sidebar-collapsed .user-info {
   letter-spacing: 0.04em;
 }
 
-/* Seção de conquistas / badges */
 .profile-badges {
   display: flex;
   flex-wrap: wrap;
@@ -873,7 +860,6 @@ body.sidebar-collapsed .user-info {
   transition: background var(--transition), border-color var(--transition);
 }
 
-/* ── Mobile: perfil ── */
 @media (max-width: 600px) {
   .profile-grid {
     grid-template-columns: 1fr;

@@ -4,10 +4,11 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>StudyOS — Flashcards</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
 
     <script>
         const Theme = (() => {
-          const KEY = 'studyos-theme';
+          const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
           function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
           function getSaved() { return localStorage.getItem(KEY) || sys(); }
@@ -19,7 +20,8 @@
           }
           function toggle() {
             const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
-            localStorage.setItem(KEY, next); apply(next);
+            localStorage.setItem(KEY, next);
+            apply(next);
           }
           function init() {
             apply(getSaved());
@@ -32,7 +34,6 @@
         Theme.init();
     </script>
 
-    <!-- Syntax highlight (highlight.js — só o que precisamos) -->
     <link rel="stylesheet" id="hljs-theme"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -43,29 +44,61 @@
 </head>
 <body class="app">
 
+<!-- ── Botão hambúrguer (mobile) ───────────── -->
+<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
+
+<!-- ── Overlay escuro atrás da sidebar ──────── -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
 <!-- ── Sidebar ─────────────────────────────── -->
-<aside class="sidebar">
-    <div class="logo">StudyOS</div>
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo">StudyOS</div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
+
     <nav>
-        <a href="dashboard.html">⚡ Dashboard</a>
-        <a href="subjects.html">📖 Matérias</a>
-        <a href="study.html">🧠 Métodos</a>
-        <a href="flashcards.html" class="active">🃏 Flashcards</a>
-        <a href="profile.html">👤 Perfil</a>
+        <a href="dashboard.html" data-tooltip="Dashboard">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="subjects.html" data-tooltip="Matérias">
+            <span class="nav-icon">📖</span>
+            <span class="nav-label">Matérias</span>
+        </a>
+        <a href="study.html" data-tooltip="Métodos">
+            <span class="nav-icon">🧠</span>
+            <span class="nav-label">Métodos</span>
+        </a>
+        <a href="flashcards.html" class="active" data-tooltip="Flashcards">
+            <span class="nav-icon">🃏</span>
+            <span class="nav-label">Flashcards</span>
+        </a>
+        <a href="profile.html" data-tooltip="Perfil">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Perfil</span>
+        </a>
     </nav>
+
     <div class="user-info" id="user-info"></div>
+
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
         <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span data-theme-label>🌙 Modo escuro</span>
+        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
     </button>
-    <button onclick="logout()" class="logout-btn">↩ Sair</button>
+
+    <button onclick="logout()" class="logout-btn">
+        <span class="nav-icon">↩</span>
+        <span class="nav-label">Sair</span>
+    </button>
 </aside>
 
 <!-- ── Main ────────────────────────────────── -->
 <main class="main">
     <div class="fc-page">
 
-        <!-- Header -->
         <div class="fc-header">
             <div>
                 <h1 class="page-title">Flashcards</h1>
@@ -77,7 +110,6 @@
             </div>
         </div>
 
-        <!-- Summary -->
         <div class="fc-summary">
             <div class="fc-summary-card">
                 <div class="fc-summary-icon" style="background:rgba(var(--primary-rgb),.12)">🃏</div>
@@ -109,7 +141,6 @@
             </div>
         </div>
 
-        <!-- Due alert -->
         <div class="fc-due-alert hidden" id="due-alert">
             <div class="fc-due-alert-left">
                 <span class="fc-due-alert-icon">🔥</span>
@@ -121,17 +152,14 @@
             <button class="btn btn-primary" onclick="startStudy('due')">Revisar agora</button>
         </div>
 
-        <!-- Filters -->
         <div class="fc-filters" id="fc-filters">
             <button class="fc-chip active" onclick="setFilter('all', this)">Todos</button>
             <button class="fc-chip" onclick="setFilter('due', this)">🔔 Para revisar</button>
             <button class="fc-chip" onclick="setFilter('new', this)">✨ Novos</button>
             <button class="fc-chip" onclick="setFilter('mastered', this)">⭐ Dominados</button>
-            <!-- chips de matéria gerados pelo JS -->
             <span id="subject-chips"></span>
         </div>
 
-        <!-- Grid -->
         <div class="fc-grid" id="fc-grid">
             <div class="fc-empty">
                 <div class="fc-empty-emoji">🃏</div>
@@ -142,68 +170,38 @@
     </div>
 </main>
 
-<!-- ══════════════════════════════════════════
-     STUDY OVERLAY
-══════════════════════════════════════════ -->
+<!-- STUDY OVERLAY -->
 <div class="fc-study" id="fc-study">
-
     <div class="fc-study-topbar">
         <span class="fc-study-title" id="study-title">Revisão</span>
         <span class="fc-study-counter" id="study-counter">1 / 1</span>
         <button class="btn btn-secondary" onclick="closeStudy()">✕ Fechar</button>
     </div>
-
     <div class="fc-study-progress">
         <div class="fc-study-progress-fill" id="study-progress" style="width:0%"></div>
     </div>
-
-    <!-- flip card + done (alternados pelo JS) -->
     <div class="fc-study-center" id="study-main">
-
         <div class="fc-study-flip" id="study-flip" onclick="flipCard()">
             <div class="fc-study-flip-inner">
-
                 <div class="fc-study-face front">
                     <span class="fc-study-face-label">Pergunta</span>
                     <div class="fc-study-face-subject" id="study-subject-front"></div>
                     <div class="fc-content" id="study-question"></div>
                     <span class="fc-study-hint">clique para revelar a resposta</span>
                 </div>
-
                 <div class="fc-study-face back">
                     <span class="fc-study-face-label">Resposta</span>
                     <div class="fc-content" id="study-answer"></div>
                 </div>
-
             </div>
         </div>
-
         <div class="fc-study-actions hidden" id="study-actions">
-            <button class="fc-review-btn hard"    onclick="submitReview(1)">
-                <span class="btn-emoji">😓</span>
-                <span class="btn-label">Difícil</span>
-                <span class="btn-sub">repetir logo</span>
-            </button>
-            <button class="fc-review-btn ok"      onclick="submitReview(3)">
-                <span class="btn-emoji">🤔</span>
-                <span class="btn-label">Ok</span>
-                <span class="btn-sub">alguns dias</span>
-            </button>
-            <button class="fc-review-btn easy"    onclick="submitReview(4)">
-                <span class="btn-emoji">😊</span>
-                <span class="btn-label">Fácil</span>
-                <span class="btn-sub">mais tempo</span>
-            </button>
-            <button class="fc-review-btn perfect" onclick="submitReview(5)">
-                <span class="btn-emoji">🔥</span>
-                <span class="btn-label">Perfeito</span>
-                <span class="btn-sub">muito tempo</span>
-            </button>
+            <button class="fc-review-btn hard"    onclick="submitReview(1)"><span class="btn-emoji">😓</span><span class="btn-label">Difícil</span><span class="btn-sub">repetir logo</span></button>
+            <button class="fc-review-btn ok"      onclick="submitReview(3)"><span class="btn-emoji">🤔</span><span class="btn-label">Ok</span><span class="btn-sub">alguns dias</span></button>
+            <button class="fc-review-btn easy"    onclick="submitReview(4)"><span class="btn-emoji">😊</span><span class="btn-label">Fácil</span><span class="btn-sub">mais tempo</span></button>
+            <button class="fc-review-btn perfect" onclick="submitReview(5)"><span class="btn-emoji">🔥</span><span class="btn-label">Perfeito</span><span class="btn-sub">muito tempo</span></button>
         </div>
-
     </div>
-
-    <!-- done screen (aparece quando acabam os cards) -->
     <div class="fc-study-done" id="study-done">
         <div class="fc-done-emoji">🎉</div>
         <h2 class="fc-done-title">Sessão concluída!</h2>
@@ -213,51 +211,36 @@
             <button class="btn btn-primary"   onclick="startStudy('all')">Estudar novamente</button>
         </div>
     </div>
-
 </div>
 
-<!-- ══════════════════════════════════════════
-     CREATE MODAL
-══════════════════════════════════════════ -->
+<!-- CREATE MODAL -->
 <div class="modal-backdrop" id="create-modal">
     <div class="modal" style="max-width:580px;width:100%">
         <div class="modal-header">
             <h2>Novo flashcard</h2>
             <button class="icon-button" onclick="closeCreate()">✕</button>
         </div>
-
         <div class="fc-form">
-            <label>
-                Matéria
-                <select class="input" id="fc-subject-sel"></select>
-            </label>
-
+            <label>Matéria<select class="input" id="fc-subject-sel"></select></label>
             <label>
                 Pergunta
-                <textarea class="textarea" id="fc-question-input" rows="3"
-                          placeholder="Ex: O que é Big O notation?" oninput="updatePreview('q')"></textarea>
+                <textarea class="textarea" id="fc-question-input" rows="3" placeholder="Ex: O que é Big O notation?" oninput="updatePreview('q')"></textarea>
                 <p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p>
             </label>
-
             <div class="fc-preview-wrap" id="preview-q-wrap" style="display:none">
                 <div class="fc-preview-label">Preview</div>
                 <div class="fc-preview-content fc-content" id="preview-q"></div>
             </div>
-
             <label>
                 Resposta
-                <textarea class="textarea" id="fc-answer-input" rows="4"
-                          placeholder="Ex: Notação que descreve a complexidade de um algoritmo..." oninput="updatePreview('a')"></textarea>
+                <textarea class="textarea" id="fc-answer-input" rows="4" placeholder="Ex: Notação que descreve a complexidade de um algoritmo..." oninput="updatePreview('a')"></textarea>
             </label>
-
             <div class="fc-preview-wrap" id="preview-a-wrap" style="display:none">
                 <div class="fc-preview-label">Preview</div>
                 <div class="fc-preview-content fc-content" id="preview-a"></div>
             </div>
-
             <p class="form-message error" id="fc-err"></p>
         </div>
-
         <div class="modal-actions" style="margin-top:20px">
             <button class="btn btn-secondary" onclick="closeCreate()">Cancelar</button>
             <button class="btn btn-primary"   onclick="createCard()">Criar flashcard</button>
@@ -268,5 +251,48 @@
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/flashcards.js"></script>
+
+<script>
+    (function () {
+        const sidebar     = document.getElementById('sidebar');
+        const overlay     = document.getElementById('sidebar-overlay');
+        const menuToggle  = document.getElementById('menu-toggle');
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
+
+        function isCollapsed() { return localStorage.getItem(COLLAPSED_KEY) === 'true'; }
+
+        function applyCollapsed(collapsed) {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            collapseBtn.textContent = collapsed ? '▶' : '◀';
+            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            localStorage.setItem(COLLAPSED_KEY, collapsed);
+        }
+
+        collapseBtn.addEventListener('click', () => { applyCollapsed(!isCollapsed()); });
+        applyCollapsed(isCollapsed());
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        sidebar.querySelectorAll('nav a').forEach(a => {
+            a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); });
+        });
+    })();
+</script>
 </body>
 </html>
