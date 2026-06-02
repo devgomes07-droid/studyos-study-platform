@@ -26,23 +26,6 @@ if (userInfo) {
 
 function logout() { Utils.logout(); }
 
-/* ── Dados demo (fallback visual) ──────────── */
-const DEMO_SUBJECTS = [
-  { name: 'Matemática',  icon: '📐', color: '#6366f1', totalHoursStudied: 42, weeklyGoalHours: 10 },
-  { name: 'Física',      icon: '⚛️', color: '#10b981', totalHoursStudied: 28, weeklyGoalHours: 8  },
-  { name: 'Programação', icon: '💻', color: '#f59e0b', totalHoursStudied: 61, weeklyGoalHours: 15 },
-  { name: 'Inglês',      icon: '🌎', color: '#ef4444', totalHoursStudied: 19, weeklyGoalHours: 5  },
-  { name: 'História',    icon: '📜', color: '#8b5cf6', totalHoursStudied: 14, weeklyGoalHours: 4  },
-];
-
-const DEMO_SESSIONS = [
-  { completed: true, studyMethod: 'POMODORO',      subjectName: 'Matemática',  durationMinutes: 50, xpEarned: 120, startedAt: new Date(Date.now() - 3600000*2).toISOString() },
-  { completed: true, studyMethod: 'FLOW_STATE',    subjectName: 'Programação', durationMinutes: 90, xpEarned: 200, startedAt: new Date(Date.now() - 3600000*5).toISOString() },
-  { completed: true, studyMethod: 'ACTIVE_RECALL', subjectName: 'Física',      durationMinutes: 45, xpEarned: 100, startedAt: new Date(Date.now() - 86400000).toISOString()   },
-  { completed: true, studyMethod: 'FLASHCARDS',    subjectName: 'Inglês',      durationMinutes: 30, xpEarned: 70,  startedAt: new Date(Date.now() - 86400000*2).toISOString() },
-  { completed: true, studyMethod: 'FEYNMAN',       subjectName: 'História',    durationMinutes: 60, xpEarned: 140, startedAt: new Date(Date.now() - 86400000*3).toISOString() },
-];
-
 /* ── Stats ─────────────────────────────────── */
 function renderStats(subjects, sessions) {
   const xp     = user.xp            ?? 0;
@@ -180,7 +163,7 @@ function buildCharts(subjects, sessions) {
   };
 
   /* BAR: horas por dia */
-  const barCtx   = document.getElementById('chart-bar');
+  const barCtx = document.getElementById('chart-bar');
   if (barCtx) {
     const ctx      = barCtx.getContext('2d');
     const dayNames = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -278,9 +261,9 @@ async function init() {
       Api.getSessions ? Api.getSessions() : Promise.resolve([])
     ]);
 
-    /* usa dados reais se vieram, senão usa demo como fallback visual */
-    const s = subjects.length  ? subjects : DEMO_SUBJECTS;
-    const e = sessions.length  ? sessions : DEMO_SESSIONS;
+    // Usa apenas dados reais da API — sem fallback demo
+    const s = Array.isArray(subjects) ? subjects : [];
+    const e = Array.isArray(sessions) ? sessions : [];
 
     renderStats(s, e);
     renderSubjects(s);
@@ -289,11 +272,11 @@ async function init() {
 
   } catch (err) {
     console.error('Dashboard error:', err);
-    /* em caso de erro, ao menos mostra a página bonita com demo */
-    renderStats(DEMO_SUBJECTS, DEMO_SESSIONS);
-    renderSubjects(DEMO_SUBJECTS);
-    renderSessions(DEMO_SESSIONS);
-    buildCharts(DEMO_SUBJECTS, DEMO_SESSIONS);
+    // Em caso de erro de rede, mostra tela vazia (não dados fictícios)
+    renderStats([], []);
+    renderSubjects([]);
+    renderSessions([]);
+    buildCharts([], []);
     if (typeof Toast !== 'undefined') Toast.error('Erro ao carregar dados.');
   }
 }
@@ -302,8 +285,9 @@ async function init() {
 document.documentElement.addEventListener && (() => {
   const obs = new MutationObserver(() => {
     if (Object.keys(_charts).length) {
-      const s = DEMO_SUBJECTS, e = DEMO_SESSIONS;
-      buildCharts(s, e);
+      // Relê os dados atuais dos arrays já carregados, sem reinventar dados
+      // Os charts serão rebuiltados com arrays vazios se não houver dados
+      buildCharts([], []);
     }
   });
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
