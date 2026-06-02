@@ -39,22 +39,55 @@
 </head>
 <body class="app">
 
+<!-- ── Botão hambúrguer (mobile) ───────────── -->
+<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
+
+<!-- ── Overlay escuro atrás da sidebar ──────── -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
 <!-- ── Sidebar ─────────────────────────────── -->
-<aside class="sidebar">
-    <div class="logo">StudyOS</div>
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo">StudyOS</div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
+
     <nav>
-        <a href="dashboard.html">⚡ Dashboard</a>
-        <a href="subjects.html">📖 Matérias</a>
-        <a href="study.html">🧠 Métodos</a>
-        <a href="flashcards.html">🃏 Flashcards</a>
-        <a href="profile.html" class="active">👤 Perfil</a>
+        <a href="dashboard.html">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="subjects.html">
+            <span class="nav-icon">📖</span>
+            <span class="nav-label">Matérias</span>
+        </a>
+        <a href="study.html">
+            <span class="nav-icon">🧠</span>
+            <span class="nav-label">Métodos</span>
+        </a>
+        <a href="flashcards.html">
+            <span class="nav-icon">🃏</span>
+            <span class="nav-label">Flashcards</span>
+        </a>
+        <a href="profile.html" class="active">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Perfil</span>
+        </a>
     </nav>
+
     <div class="user-info" id="user-info"></div>
+
     <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
         <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span data-theme-label>🌙 Modo escuro</span>
+        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
     </button>
-    <button onclick="logout()" class="logout-btn">↩ Sair</button>
+
+    <button onclick="logout()" class="logout-btn">
+        <span class="nav-icon">↩</span>
+        <span class="nav-label">Sair</span>
+    </button>
 </aside>
 
 <!-- ── Main ────────────────────────────────── -->
@@ -191,5 +224,53 @@
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/profile.js"></script>
+
+<!-- Lógica da sidebar colapsável -->
+<script>
+    (function () {
+        const sidebar       = document.getElementById('sidebar');
+        const overlay       = document.getElementById('sidebar-overlay');
+        const menuToggle    = document.getElementById('menu-toggle');
+        const closeBtn      = document.getElementById('sidebar-close-btn');
+        const collapseBtn   = document.getElementById('sidebar-collapse-btn');
+        const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
+
+        function isCollapsed() {
+            return localStorage.getItem(COLLAPSED_KEY) === 'true';
+        }
+
+        function applyCollapsed(collapsed) {
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            collapseBtn.textContent = collapsed ? '▶' : '◀';
+            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            localStorage.setItem(COLLAPSED_KEY, collapsed);
+        }
+
+        collapseBtn.addEventListener('click', () => applyCollapsed(!isCollapsed()));
+        applyCollapsed(isCollapsed());
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        sidebar.querySelectorAll('nav a').forEach(a => {
+            a.addEventListener('click', () => {
+                if (window.innerWidth <= 860) closeSidebar();
+            });
+        });
+    })();
+</script>
 </body>
 </html>
