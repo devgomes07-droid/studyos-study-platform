@@ -587,3 +587,69 @@
     .profile-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .profile-avatar { width: 72px; height: 72px; font-size: 1.4rem; }
 }
+@media (max-width: 860px) {
+
+  .profile-hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.25rem;
+  }
+
+  .profile-tags {
+    justify-content: center;
+  }
+
+  .btn-edit-profile {
+    width: 100%;
+  }
+
+  .profile-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .badges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .profile-xp-section {
+    padding: 1rem;
+  }
+
+  .activity-item {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .activity-meta {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  #badge-toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+
+  .badge-toast {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
+
+  .modal {
+    margin: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pstat-value {
+    font-size: 1.3rem;
+  }
+}
