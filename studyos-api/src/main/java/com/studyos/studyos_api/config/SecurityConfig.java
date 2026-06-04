@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/pages/**",
+                                "/assets/**",
                                 "/favicon.ico",
                                 "/error"
                         ).permitAll()
