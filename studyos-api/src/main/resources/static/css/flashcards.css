@@ -670,3 +670,70 @@
 
 .fc-summary  { animation: fcFadeUp 0.3s ease both; }
 .fc-grid     { animation: fcFadeUp 0.3s 0.1s ease both; }
+
+/* ── Modal scroll fix (botão não some mais) ── */
+#create-modal .modal {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+#create-modal .modal-header {
+  flex-shrink: 0;
+}
+
+#create-modal .fc-form {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  /* scrollbar fina */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+#create-modal .fc-form::-webkit-scrollbar       { width: 4px; }
+#create-modal .fc-form::-webkit-scrollbar-track  { background: transparent; }
+#create-modal .fc-form::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 99px; }
+
+#create-modal .modal-actions {
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 0 !important;
+}
+
+/* ── Edit modal (reutiliza o mesmo estilo) ── */
+#edit-modal .modal {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+#edit-modal .modal-header  { flex-shrink: 0; }
+
+#edit-modal .fc-form {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+#edit-modal .fc-form::-webkit-scrollbar       { width: 4px; }
+#edit-modal .fc-form::-webkit-scrollbar-track  { background: transparent; }
+#edit-modal .fc-form::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 99px; }
+
+#edit-modal .modal-actions {
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 0 !important;
+}
+
+/* ── Botão editar no card ── */
+.fc-icon-btn.edit:hover {
+  background: rgba(var(--primary-rgb), .12);
+  color: var(--primary);
+}
