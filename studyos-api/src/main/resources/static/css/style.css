@@ -132,8 +132,6 @@ a {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
   min-height: 100vh;
-  width: 100vw;
-  overflow-x: hidden;
   transition: grid-template-columns 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -149,11 +147,12 @@ body.sidebar-collapsed .app {
   padding: 20px 12px;
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
-  width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
   overflow: hidden;
-  transition: background var(--transition), width 0.28s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ← sem width, sem min-width — o grid controla */
+  transition: background var(--transition);
 }
+
+/* ← remove os dois blocos body.sidebar-collapsed .sidebar */
 
 body.sidebar-collapsed .sidebar {
   width: var(--sidebar-width-collapsed);
