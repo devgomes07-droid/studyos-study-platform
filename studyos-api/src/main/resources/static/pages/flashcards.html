@@ -262,6 +262,23 @@
     </div>
 </div>
 
+<!-- ══ CONFIRM DELETE MODAL ══════════════════ -->
+<div class="modal-backdrop" id="confirm-modal">
+    <div class="modal" style="max-width:400px;width:100%">
+        <div class="modal-header">
+            <h2>🗑️ Apagar flashcard</h2>
+            <button class="icon-button" onclick="closeConfirm()">✕</button>
+        </div>
+        <p style="color:var(--soft-text);margin:16px 0 24px;font-size:15px;padding:0 4px">
+            Tem certeza? Esta ação não pode ser desfeita.
+        </p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeConfirm()">Cancelar</button>
+            <button class="btn btn-danger" id="confirm-delete-btn">Apagar</button>
+        </div>
+    </div>
+</div>
+
 <!-- ══ TOAST ══════════════════════════════════ -->
 <div id="toast-container" style="
   position:fixed; bottom:24px; right:24px;
@@ -274,7 +291,7 @@
 <script src="../js/flashcards.js"></script>
 
 <script>
-    /* ── Toast simples (fallback se não tiver toast.js) ── */
+    /* ── Toast simples (fallback) ── */
     if (typeof Toast === 'undefined') {
         window.Toast = {
             _show(msg, color) {

@@ -212,8 +212,22 @@ function renderGrid(cards) {
 /* ══════════════════════════════════════════════
    DELETE
 ══════════════════════════════════════════════ */
-async function deleteCard(id) {
-  if (!confirm('Apagar este flashcard?')) return;
+let pendingDeleteId = null;
+
+function openConfirm(id) {
+  pendingDeleteId = id;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirm() {
+  pendingDeleteId = null;
+  document.getElementById('confirm-modal').classList.remove('open');
+}
+
+document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+  if (!pendingDeleteId) return;
+  const id = pendingDeleteId;
+  closeConfirm();
   try {
     await Api.deleteFlashcard(id);
     allCards = allCards.filter(c => c.id !== id);
@@ -223,6 +237,10 @@ async function deleteCard(id) {
   } catch (err) {
     Toast.error('Erro ao apagar.');
   }
+});
+
+async function deleteCard(id) {
+  openConfirm(id);
 }
 
 /* ══════════════════════════════════════════════
