@@ -72,7 +72,7 @@ async function register() {
     const data = await Api.register({ name, email, password });
     Api.setSession(data);
 
-    showLoading('Conta criada! Preparando tudo... ✨');
+    showLoading('showLoading('Conta criada! Preparando tudo... 🚀⚡');');
     await new Promise(r => setTimeout(r, 1800));
     window.location.href = 'pages/dashboard.html';
 
