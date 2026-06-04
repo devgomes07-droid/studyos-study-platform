@@ -14,9 +14,7 @@
           function getSystemPreference() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
-          function getSaved() {
-            return localStorage.getItem(KEY) || getSystemPreference();
-          }
+          function getSaved() { return localStorage.getItem(KEY) || getSystemPreference(); }
           function apply(theme) {
             ROOT.setAttribute('data-theme', theme);
             document.querySelectorAll('[data-theme-label]').forEach((el) => {
@@ -43,13 +41,189 @@
     <link rel="stylesheet" href="css/components.css" />
 
     <style>
+        /* ════════════════════════════════════════
+           LOADING SCREEN
+        ════════════════════════════════════════ */
+        #loading-screen {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 32px;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+        }
+
+        #loading-screen.active {
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        .loading-logo-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Anel externo girando */
+        .loading-ring {
+          position: absolute;
+          width: 110px;
+          height: 110px;
+          border-radius: 50%;
+          border: 3px solid transparent;
+          border-top-color: #6366f1;
+          border-right-color: #a855f7;
+          animation: spin 1s linear infinite;
+        }
+
+        /* Anel interno girando ao contrário */
+        .loading-ring-inner {
+          position: absolute;
+          width: 88px;
+          height: 88px;
+          border-radius: 50%;
+          border: 2px solid transparent;
+          border-bottom-color: #818cf8;
+          border-left-color: #c084fc;
+          animation: spin 0.7s linear infinite reverse;
+        }
+
+        /* Brilho pulsante atrás da logo */
+        .loading-glow {
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 70%);
+          animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        .loading-logo-img {
+          width: 64px;
+          height: 64px;
+          border-radius: 16px;
+          object-fit: contain;
+          position: relative;
+          z-index: 1;
+          animation: logo-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        .loading-title {
+          font-size: 28px;
+          font-weight: 900;
+          color: #ffffff;
+          letter-spacing: -0.02em;
+          animation: fadeUp 0.4s 0.1s ease both;
+        }
+
+        .loading-title span {
+          background: linear-gradient(90deg, #818cf8, #c084fc);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .loading-msg {
+          font-size: 15px;
+          color: #94a3b8;
+          font-weight: 600;
+          animation: fadeUp 0.4s 0.2s ease both;
+          min-height: 22px;
+        }
+
+        /* Barra de progresso */
+        .loading-bar-track {
+          width: 200px;
+          height: 3px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 999px;
+          overflow: hidden;
+          animation: fadeUp 0.4s 0.3s ease both;
+        }
+
+        .loading-bar-fill {
+          height: 100%;
+          width: 0%;
+          background: linear-gradient(90deg, #6366f1, #a855f7);
+          border-radius: 999px;
+          animation: fill-bar 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Partículas flutuantes */
+        .loading-particles {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: rgba(99,102,241,0.6);
+          animation: float-particle linear infinite;
+        }
+
+        .particle:nth-child(1)  { left: 15%; animation-duration: 6s;  animation-delay: 0s;    width: 3px; height: 3px; }
+        .particle:nth-child(2)  { left: 30%; animation-duration: 8s;  animation-delay: 1s;    background: rgba(168,85,247,0.5); }
+        .particle:nth-child(3)  { left: 50%; animation-duration: 5s;  animation-delay: 0.5s;  width: 5px; height: 5px; }
+        .particle:nth-child(4)  { left: 70%; animation-duration: 7s;  animation-delay: 1.5s;  background: rgba(168,85,247,0.4); }
+        .particle:nth-child(5)  { left: 85%; animation-duration: 9s;  animation-delay: 0.2s;  width: 3px; height: 3px; }
+        .particle:nth-child(6)  { left: 40%; animation-duration: 6.5s;animation-delay: 2s;    background: rgba(129,140,248,0.5); }
+        .particle:nth-child(7)  { left: 60%; animation-duration: 7.5s;animation-delay: 0.8s;  width: 6px; height: 6px; }
+        .particle:nth-child(8)  { left: 20%; animation-duration: 5.5s;animation-delay: 1.2s;  background: rgba(192,132,252,0.4); }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { transform: scale(1);   opacity: 0.6; }
+          50%       { transform: scale(1.4); opacity: 1;   }
+        }
+
+        @keyframes logo-pop {
+          from { transform: scale(0.5); opacity: 0; }
+          to   { transform: scale(1);   opacity: 1; }
+        }
+
+        @keyframes fill-bar {
+          0%   { width: 0%; }
+          30%  { width: 40%; }
+          70%  { width: 75%; }
+          100% { width: 100%; }
+        }
+
+        @keyframes float-particle {
+          0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { transform: translateY(-20px) scale(1); opacity: 0; }
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ════════════════════════════════════════
+           LOGIN PAGE
+        ════════════════════════════════════════ */
         .login-page {
           min-height: 100vh;
           display: grid;
           grid-template-columns: 1fr 1fr;
         }
 
-        /* ── Painel esquerdo (hero) ── */
         .login-hero {
           position: relative;
           display: flex;
@@ -70,11 +244,7 @@
             radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
         }
 
-        .hero-bubble {
-          position: absolute;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.06);
-        }
+        .hero-bubble { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.06); }
         .hero-bubble--1 { width: 220px; height: 220px; bottom: -60px; right: -60px; }
         .hero-bubble--2 { width: 120px; height: 120px; top: 40px; right: 40px; }
 
@@ -93,27 +263,10 @@
           position: relative;
         }
 
-        .hero-title {
-          font-size: clamp(36px, 4vw, 52px);
-          font-weight: 900;
-          line-height: 1.1;
-          margin: 0 0 20px;
-          position: relative;
-        }
+        .hero-title { font-size: clamp(36px, 4vw, 52px); font-weight: 900; line-height: 1.1; margin: 0 0 20px; position: relative; }
+        .hero-sub   { font-size: 17px; line-height: 1.6; opacity: 0.85; margin: 0 0 48px; position: relative; }
 
-        .hero-sub {
-          font-size: 17px;
-          line-height: 1.6;
-          opacity: 0.85;
-          margin: 0 0 48px;
-          position: relative;
-        }
-
-        .hero-features {
-          display: grid;
-          gap: 14px;
-          position: relative;
-        }
+        .hero-features { display: grid; gap: 14px; position: relative; }
 
         .hero-feature {
           display: flex;
@@ -127,15 +280,13 @@
         .hero-feature-icon {
           display: grid;
           place-items: center;
-          width: 36px;
-          height: 36px;
+          width: 36px; height: 36px;
           border-radius: 10px;
           background: rgba(255,255,255,0.18);
           font-size: 17px;
           flex-shrink: 0;
         }
 
-        /* ── Painel direito (form) ── */
         .login-panel {
           display: flex;
           flex-direction: column;
@@ -147,15 +298,11 @@
           transition: background var(--transition);
         }
 
-        .login-panel-inner {
-          width: 100%;
-          max-width: 380px;
-        }
+        .login-panel-inner { width: 100%; max-width: 380px; }
 
         .login-theme-btn {
           position: absolute;
-          top: 20px;
-          right: 20px;
+          top: 20px; right: 20px;
           display: flex;
           align-items: center;
           gap: 8px;
@@ -171,36 +318,13 @@
           transition: background var(--transition), border-color var(--transition), color var(--transition);
         }
 
-        .login-theme-btn:hover {
-          background: var(--muted);
-          color: var(--text);
-        }
+        .login-theme-btn:hover { background: var(--muted); color: var(--text); }
 
-        .form-logo {
-          font-size: 26px;
-          font-weight: 900;
-          color: var(--primary);
-          margin-bottom: 8px;
-        }
+        .form-logo    { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+        .form-heading { font-size: 28px; font-weight: 900; color: var(--text); margin: 0 0 6px; }
+        .form-hint    { color: var(--soft-text); margin: 0 0 32px; font-size: 15px; }
 
-        .form-heading {
-          font-size: 28px;
-          font-weight: 900;
-          color: var(--text);
-          margin: 0 0 6px;
-        }
-
-        .form-hint {
-          color: var(--soft-text);
-          margin: 0 0 32px;
-          font-size: 15px;
-        }
-
-        .field {
-          display: grid;
-          gap: 6px;
-          margin-bottom: 16px;
-        }
+        .field { display: grid; gap: 6px; margin-bottom: 16px; }
 
         .field label {
           font-size: 13px;
@@ -210,10 +334,7 @@
           letter-spacing: 0.04em;
         }
 
-        .field .input {
-          padding: 14px 16px;
-          font-size: 15px;
-        }
+        .field .input { padding: 14px 16px; font-size: 15px; }
 
         .btn-login {
           width: 100%;
@@ -222,31 +343,22 @@
           border-radius: 12px;
           margin-top: 8px;
           letter-spacing: 0.02em;
+          transition: opacity 0.2s, transform 0.2s, background 0.2s;
         }
 
-        .form-switch {
-          text-align: center;
-          margin-top: 20px;
-          color: var(--soft-text);
-          font-size: 14px;
+        .btn-login:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          transform: none !important;
         }
 
-        .form-switch a {
-          color: var(--primary);
-          font-weight: 700;
-          cursor: pointer;
-        }
-
+        .form-switch { text-align: center; margin-top: 20px; color: var(--soft-text); font-size: 14px; }
+        .form-switch a { color: var(--primary); font-weight: 700; cursor: pointer; }
         .form-switch a:hover { text-decoration: underline; }
 
         #msg { text-align: center; margin-top: 12px; }
 
         .auth-form { animation: fadeUp 0.25s ease; }
-
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
 
         @media (max-width: 780px) {
           .login-page { grid-template-columns: 1fr; }
@@ -257,108 +369,104 @@
     </style>
 </head>
 <body>
+
+<!-- ══ LOADING SCREEN ══════════════════════════ -->
+<div id="loading-screen">
+    <div class="loading-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="loading-logo-wrap">
+        <div class="loading-glow"></div>
+        <div class="loading-ring"></div>
+        <div class="loading-ring-inner"></div>
+        <img src="assets/logo.png" alt="StudyOS" class="loading-logo-img"/>
+    </div>
+
+    <div class="loading-title">Study<span>OS</span></div>
+
+    <p class="loading-msg" id="loading-msg">Entrando no StudyOS...</p>
+
+    <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loading-bar"></div>
+    </div>
+</div>
+
+<!-- ══ LOGIN PAGE ══════════════════════════════ -->
 <div class="login-page">
 
-    <!-- Painel esquerdo -->
     <div class="login-hero">
         <div class="hero-bubble hero-bubble--1"></div>
         <div class="hero-bubble hero-bubble--2"></div>
-
         <div class="hero-badge">🎓 Plataforma de estudos inteligente</div>
-
         <h1 class="hero-title">Estude mais.<br>Evolua sempre.</h1>
-
         <p class="hero-sub">
             O StudyOS combina métodos científicos de aprendizado
             com gamificação para transformar seus estudos em resultados reais.
         </p>
-
         <div class="hero-features">
-            <div class="hero-feature">
-                <div class="hero-feature-icon">🍅</div>
-                Pomodoro com ciclos automáticos
-            </div>
-            <div class="hero-feature">
-                <div class="hero-feature-icon">🧠</div>
-                Método Feynman com IA
-            </div>
-            <div class="hero-feature">
-                <div class="hero-feature-icon">🃏</div>
-                Flashcards com repetição espaçada
-            </div>
-            <div class="hero-feature">
-                <div class="hero-feature-icon">🏆</div>
-                XP, streaks e ranking
-            </div>
+            <div class="hero-feature"><div class="hero-feature-icon">🍅</div>Pomodoro com ciclos automáticos</div>
+            <div class="hero-feature"><div class="hero-feature-icon">🧠</div>Método Feynman com IA</div>
+            <div class="hero-feature"><div class="hero-feature-icon">🃏</div>Flashcards com repetição espaçada</div>
+            <div class="hero-feature"><div class="hero-feature-icon">🏆</div>XP, streaks e ranking</div>
         </div>
     </div>
 
-    <!-- Painel direito -->
     <div class="login-panel">
-
         <button class="login-theme-btn" onclick="Theme.toggle()" aria-label="Alternar tema">
-      <span class="theme-toggle-track" style="width:28px;height:15px;">
-        <span class="theme-toggle-thumb" style="width:11px;height:11px;top:2px;left:2px;"></span>
-      </span>
+            <span class="theme-toggle-track" style="width:28px;height:15px;">
+                <span class="theme-toggle-thumb" style="width:11px;height:11px;top:2px;left:2px;"></span>
+            </span>
             <span data-theme-label>🌙 Modo escuro</span>
         </button>
 
         <div class="login-panel-inner">
             <div class="form-logo">StudyOS</div>
 
-            <!-- Login -->
             <div id="login-form" class="auth-form">
                 <h2 class="form-heading">Bem-vindo de volta!</h2>
                 <p class="form-hint">Entre com sua conta para continuar.</p>
-
                 <div class="field">
                     <label>E-mail</label>
-                    <input class="input" type="email" id="email" placeholder="seuemail@exemplo.com" autocomplete="email" />
+                    <input class="input" type="email" id="email" placeholder="seuemail@exemplo.com" autocomplete="email"/>
                 </div>
-
                 <div class="field">
                     <label>Senha</label>
-                    <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+                    <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password"/>
                 </div>
-
                 <button class="btn btn-primary btn-login" onclick="login()">Entrar →</button>
-
-                <div class="form-switch">
-                    Não tem conta? <a onclick="showRegister()">Cadastrar grátis</a>
-                </div>
+                <div class="form-switch">Não tem conta? <a onclick="showRegister()">Cadastrar grátis</a></div>
             </div>
 
-            <!-- Cadastro -->
             <div id="register-form" class="auth-form" style="display:none">
                 <h2 class="form-heading">Crie sua conta</h2>
                 <p class="form-hint">Comece a evoluir nos seus estudos hoje.</p>
-
                 <div class="field">
                     <label>Nome</label>
-                    <input class="input" type="text" id="reg-name" placeholder="Seu nome" autocomplete="name" />
+                    <input class="input" type="text" id="reg-name" placeholder="Seu nome" autocomplete="name"/>
                 </div>
-
                 <div class="field">
                     <label>E-mail</label>
-                    <input class="input" type="email" id="reg-email" placeholder="seuemail@exemplo.com" autocomplete="email" />
+                    <input class="input" type="email" id="reg-email" placeholder="seuemail@exemplo.com" autocomplete="email"/>
                 </div>
-
                 <div class="field">
                     <label>Senha</label>
-                    <input class="input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password" />
+                    <input class="input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password"/>
                 </div>
-
                 <button class="btn btn-primary btn-login" onclick="register()">Criar conta →</button>
-
-                <div class="form-switch">
-                    Já tem conta? <a onclick="showLogin()">Entrar</a>
-                </div>
+                <div class="form-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
             </div>
 
             <p id="msg" class="form-message"></p>
         </div>
     </div>
-
 </div>
 
 <script src="js/api.js"></script>
