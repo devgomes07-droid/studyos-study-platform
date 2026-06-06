@@ -56,12 +56,7 @@ public class AuthService {
             user.setResetToken(token);
             user.setResetTokenExpiry(LocalDateTime.now().plusHours(1));
             userRepository.save(user);
-            try {
-                emailService.sendPasswordResetEmail(email, token);
-            } catch (Exception e) {
-                System.err.println("ERRO AO ENVIAR EMAIL: " + e.getMessage());
-                e.printStackTrace();
-            }
+            emailService.sendPasswordResetEmail(email, token);
         });
     }
 
