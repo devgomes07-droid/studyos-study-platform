@@ -37,14 +37,12 @@ public class User {
     @Builder.Default @Column(nullable = false)
     private Integer overall = 0;
 
-    // Habilidades originais
     @Builder.Default @Column(name = "skill_consistency",  nullable = false) private Integer skillConsistency  = 1;
     @Builder.Default @Column(name = "skill_sessions",     nullable = false) private Integer skillSessions     = 1;
     @Builder.Default @Column(name = "skill_hours",        nullable = false) private Integer skillHours        = 1;
     @Builder.Default @Column(name = "skill_flashcards",   nullable = false) private Integer skillFlashcards   = 1;
     @Builder.Default @Column(name = "skill_productivity", nullable = false) private Integer skillProductivity = 1;
 
-    // Habilidades novas
     @Builder.Default @Column(name = "skill_focus",         nullable = false) private Integer skillFocus        = 1;
     @Builder.Default @Column(name = "skill_nightowl",      nullable = false) private Integer skillNightOwl     = 1;
     @Builder.Default @Column(name = "skill_discipline",    nullable = false) private Integer skillDiscipline   = 1;
@@ -56,6 +54,13 @@ public class User {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    // ── Reset de senha ──────────────────────────
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
 
     public void addXp(int amount) {
         this.xp += amount;

@@ -1,5 +1,6 @@
 const loginForm    = Utils.$('#login-form');
 const registerForm = Utils.$('#register-form');
+const forgotForm   = Utils.$('#forgot-form');
 
 function getValue(selector) {
   return Utils.$(selector)?.value.trim() || '';
@@ -83,20 +84,62 @@ async function register() {
   }
 }
 
+/* ── Esqueci a senha ────────────────────────── */
+async function forgotPassword() {
+  Utils.clearMessage('#msg');
+
+  const email   = getValue('#forgot-email');
+  const btn     = document.getElementById('forgot-btn');
+  const success = document.getElementById('forgot-success');
+
+  if (!email) {
+    Utils.showMessage('#msg', 'Informe seu email.');
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Enviando...';
+  success.style.display = 'none';
+
+  try {
+    await Api.post('/auth/forgot-password', { email });
+  } catch (err) {
+    // silencia o erro — não revela se email existe
+  } finally {
+    success.style.display = 'block';
+    btn.textContent       = 'Enviado! ✅';
+  }
+}
+
+/* ── Navegação entre forms ─────────────────── */
 function showRegister() {
-  loginForm.style.display = 'none';
+  loginForm.style.display  = 'none';
   registerForm.style.display = 'block';
+  if (forgotForm) forgotForm.style.display = 'none';
   Utils.clearMessage('#msg');
 }
 
 function showLogin() {
   registerForm.style.display = 'none';
-  loginForm.style.display = 'block';
+  if (forgotForm) forgotForm.style.display = 'none';
+  loginForm.style.display  = 'block';
   Utils.clearMessage('#msg');
 }
 
+function showForgot() {
+  loginForm.style.display    = 'none';
+  registerForm.style.display = 'none';
+  forgotForm.style.display   = 'block';
+  document.getElementById('forgot-success').style.display = 'none';
+  const btn = document.getElementById('forgot-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Enviar link →'; }
+  Utils.clearMessage('#msg');
+}
+
+/* ── Enter ──────────────────────────────────── */
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Enter') return;
   if (registerForm.style.display === 'block') register();
+  else if (forgotForm && forgotForm.style.display === 'block') forgotPassword();
   else login();
 });

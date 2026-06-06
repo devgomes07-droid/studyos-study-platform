@@ -71,7 +71,6 @@
           justify-content: center;
         }
 
-        /* Anel externo girando */
         .loading-ring {
           position: absolute;
           width: 110px;
@@ -83,7 +82,6 @@
           animation: spin 1s linear infinite;
         }
 
-        /* Anel interno girando ao contrário */
         .loading-ring-inner {
           position: absolute;
           width: 88px;
@@ -95,7 +93,6 @@
           animation: spin 0.7s linear infinite reverse;
         }
 
-        /* Brilho pulsante atrás da logo */
         .loading-glow {
           position: absolute;
           width: 80px;
@@ -138,7 +135,6 @@
           min-height: 22px;
         }
 
-        /* Barra de progresso */
         .loading-bar-track {
           width: 200px;
           height: 3px;
@@ -156,7 +152,6 @@
           animation: fill-bar 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        /* Partículas flutuantes */
         .loading-particles {
           position: absolute;
           inset: 0;
@@ -182,38 +177,12 @@
         .particle:nth-child(7)  { left: 60%; animation-duration: 7.5s;animation-delay: 0.8s;  width: 6px; height: 6px; }
         .particle:nth-child(8)  { left: 20%; animation-duration: 5.5s;animation-delay: 1.2s;  background: rgba(192,132,252,0.4); }
 
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse-glow {
-          0%, 100% { transform: scale(1);   opacity: 0.6; }
-          50%       { transform: scale(1.4); opacity: 1;   }
-        }
-
-        @keyframes logo-pop {
-          from { transform: scale(0.5); opacity: 0; }
-          to   { transform: scale(1);   opacity: 1; }
-        }
-
-        @keyframes fill-bar {
-          0%   { width: 0%; }
-          30%  { width: 40%; }
-          70%  { width: 75%; }
-          100% { width: 100%; }
-        }
-
-        @keyframes float-particle {
-          0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
-          100% { transform: translateY(-20px) scale(1); opacity: 0; }
-        }
-
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes spin         { to { transform: rotate(360deg); } }
+        @keyframes pulse-glow   { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.4);opacity:1} }
+        @keyframes logo-pop     { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
+        @keyframes fill-bar     { 0%{width:0%} 30%{width:40%} 70%{width:75%} 100%{width:100%} }
+        @keyframes float-particle { 0%{transform:translateY(100vh) scale(0);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translateY(-20px) scale(1);opacity:0} }
+        @keyframes fadeUp       { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
         /* ════════════════════════════════════════
            LOGIN PAGE
@@ -356,6 +325,34 @@
         .form-switch a { color: var(--primary); font-weight: 700; cursor: pointer; }
         .form-switch a:hover { text-decoration: underline; }
 
+        /* ── NOVO: link esqueci senha ── */
+        .form-forgot {
+          text-align: right;
+          margin-top: -8px;
+          margin-bottom: 16px;
+        }
+        .form-forgot a {
+          font-size: 13px;
+          color: var(--primary);
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .form-forgot a:hover { text-decoration: underline; }
+
+        /* ── NOVO: caixa de sucesso ── */
+        .success-box {
+          display: none;
+          background: rgba(22,163,74,.1);
+          border: 1px solid rgba(22,163,74,.3);
+          border-radius: 12px;
+          padding: 14px 16px;
+          color: #16a34a;
+          font-size: 14px;
+          font-weight: 600;
+          text-align: center;
+          margin-top: 16px;
+        }
+
         #msg { text-align: center; margin-top: 12px; }
 
         .auth-form { animation: fadeUp 0.25s ease; }
@@ -430,6 +427,7 @@
         <div class="login-panel-inner">
             <div class="form-logo">StudyOS</div>
 
+            <!-- ── Login ── -->
             <div id="login-form" class="auth-form">
                 <h2 class="form-heading">Bem-vindo de volta!</h2>
                 <p class="form-hint">Entre com sua conta para continuar.</p>
@@ -441,10 +439,15 @@
                     <label>Senha</label>
                     <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password"/>
                 </div>
+                <!-- NOVO: link esqueci senha -->
+                <div class="form-forgot">
+                    <a onclick="showForgot()">Esqueci minha senha</a>
+                </div>
                 <button class="btn btn-primary btn-login" onclick="login()">Entrar →</button>
                 <div class="form-switch">Não tem conta? <a onclick="showRegister()">Cadastrar grátis</a></div>
             </div>
 
+            <!-- ── Cadastro ── -->
             <div id="register-form" class="auth-form" style="display:none">
                 <h2 class="form-heading">Crie sua conta</h2>
                 <p class="form-hint">Comece a evoluir nos seus estudos hoje.</p>
@@ -462,6 +465,21 @@
                 </div>
                 <button class="btn btn-primary btn-login" onclick="register()">Criar conta →</button>
                 <div class="form-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
+            </div>
+
+            <!-- ── NOVO: Esqueci a senha ── -->
+            <div id="forgot-form" class="auth-form" style="display:none">
+                <h2 class="form-heading">Esqueci a senha</h2>
+                <p class="form-hint">Digite seu email e enviaremos um link para redefinir sua senha.</p>
+                <div class="field">
+                    <label>E-mail</label>
+                    <input class="input" type="email" id="forgot-email" placeholder="seuemail@exemplo.com" autocomplete="email"/>
+                </div>
+                <button class="btn btn-primary btn-login" id="forgot-btn" onclick="forgotPassword()">Enviar link →</button>
+                <div class="success-box" id="forgot-success">
+                    ✅ Se esse email estiver cadastrado, você receberá um link em breve. Verifique sua caixa de entrada!
+                </div>
+                <div class="form-switch">Lembrou a senha? <a onclick="showLogin()">Voltar ao login</a></div>
             </div>
 
             <p id="msg" class="form-message"></p>
