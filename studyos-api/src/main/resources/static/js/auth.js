@@ -102,9 +102,12 @@ async function forgotPassword() {
   success.style.display = 'none';
 
   try {
-    await Api.post('/auth/forgot-password', { email });
+    await Promise.race([
+      Api.post('/auth/forgot-password', { email }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+    ]);
   } catch (err) {
-    // silencia o erro — não revela se email existe
+    // silencia — não revela se email existe
   } finally {
     success.style.display = 'block';
     btn.textContent       = 'Enviado! ✅';
