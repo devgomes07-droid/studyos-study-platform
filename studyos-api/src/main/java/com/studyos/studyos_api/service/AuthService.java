@@ -51,13 +51,17 @@ public class AuthService {
     }
 
     public void forgotPassword(String email) {
-        // Sempre retorna sucesso para não revelar se email existe
         userRepository.findByEmail(email).ifPresent(user -> {
             String token = UUID.randomUUID().toString();
             user.setResetToken(token);
             user.setResetTokenExpiry(LocalDateTime.now().plusHours(1));
             userRepository.save(user);
-            emailService.sendPasswordResetEmail(email, token);
+            try {
+                emailService.sendPasswordResetEmail(email, token);
+            } catch (Exception e) {
+                System.err.println("ERRO AO ENVIAR EMAIL: " + e.getMessage());
+                e.printStackTrace();
+            }
         });
     }
 
