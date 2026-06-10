@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Política de Privacidade — StudyOS</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+    <script>
+        const Theme=(()=>{
+          const KEY='studyos-theme',R=document.documentElement;
+          const saved=()=>localStorage.getItem(KEY)||'dark';
+          const apply=t=>{
+            R.setAttribute('data-theme',t);
+            const lbl=document.getElementById('theme-label');
+            const tog=document.getElementById('theme-toggle');
+            if(lbl)lbl.textContent=t==='dark'?'Modo escuro':'Modo claro';
+            if(tog)tog.classList.toggle('on',t==='dark');
+          };
+          const set=t=>{localStorage.setItem(KEY,t);apply(t);};
+          const toggle=()=>set(R.getAttribute('data-theme')==='dark'?'light':'dark');
+          const init=()=>apply(saved());
+          return{init,toggle};
+        })();
+        Theme.init();
+    </script>
+
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+        :root{
+          --font:'Inter',sans-serif;
+          --t:.2s ease;
+          --p:#6c5ce7;--p-h:#5a4bd1;
+          --p-glow:rgba(108,92,231,0.25);
+          --bg:#0f0d1c;
+          --surface:#17142a;
+          --surface2:#1e1a30;
+          --border:rgba(255,255,255,0.07);
+          --border2:rgba(255,255,255,0.12);
+          --text:#f0eeff;
+          --text2:#8b84a8;
+          --text3:#4e4868;
+        }
+
+        [data-theme="light"]{
+          --bg:#f5f3ff;
+          --surface:#ffffff;
+          --surface2:#eeebff;
+          --border:rgba(0,0,0,0.07);
+          --border2:rgba(0,0,0,0.12);
+          --text:#1a1530;
+          --text2:#6a6380;
+          --text3:#b0a8c8;
+        }
+
+        html,body{
+          font-family:var(--font);
+          background:var(--bg);
+          color:var(--text);
+          -webkit-font-smoothing:antialiased;
+          transition:background var(--t),color var(--t);
+          min-height:100vh;
+        }
+
+        .topbar{
+          position:sticky;top:0;z-index:100;
+          background:var(--bg);
+          border-bottom:1px solid var(--border);
+          padding:0 32px;
+          display:flex;align-items:center;justify-content:space-between;
+          height:60px;
+          transition:background var(--t);
+        }
+        .topbar-left{display:flex;align-items:center;gap:10px;text-decoration:none;}
+        .topbar-logo{
+          width:32px;height:32px;border-radius:8px;
+          background:linear-gradient(135deg,#6c5ce7,#a29bfe);
+          display:flex;align-items:center;justify-content:center;
+          overflow:hidden;
+        }
+        .topbar-logo img{width:32px;height:32px;object-fit:cover;display:block;}
+        .topbar-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.015em;}
+        .topbar-name em{font-style:italic;color:#a29bfe;}
+
+        .topbar-right{display:flex;align-items:center;gap:8px;}
+        .theme-toggle-wrap{
+          display:flex;align-items:center;gap:8px;
+          padding:5px 12px;border-radius:999px;
+          border:1px solid var(--border2);
+          background:var(--surface);
+          cursor:pointer;transition:all var(--t);
+        }
+        .theme-toggle-wrap:hover{background:var(--surface2);}
+        #theme-label{font-size:12px;font-weight:500;color:var(--text2);}
+        .toggle-pill{
+          width:28px;height:16px;border-radius:999px;
+          background:rgba(255,255,255,0.1);
+          border:1px solid var(--border2);
+          position:relative;transition:background var(--t);
+        }
+        .toggle-pill.on{background:var(--p);}
+        .toggle-knob{
+          position:absolute;top:2px;left:2px;
+          width:10px;height:10px;border-radius:50%;
+          background:#fff;transition:transform var(--t);
+        }
+        .toggle-pill.on .toggle-knob{transform:translateX(12px);}
+
+        .btn-back{
+          display:flex;align-items:center;gap:6px;
+          padding:6px 14px;border-radius:8px;
+          border:1px solid var(--border2);
+          background:var(--surface);
+          color:var(--text2);
+          font-size:13px;font-weight:500;
+          text-decoration:none;cursor:pointer;
+          transition:all var(--t);
+        }
+        .btn-back:hover{background:var(--surface2);color:var(--text);}
+
+        .doc-hero{
+          background:linear-gradient(160deg,#0d1a2b 0%,#0a1520 60%,#080e18 100%);
+          padding:64px 32px 52px;
+          text-align:center;
+          position:relative;
+          overflow:hidden;
+        }
+        [data-theme="light"] .doc-hero{
+          background:linear-gradient(160deg,#0f2040 0%,#1a3560 50%,#0f2040 100%);
+        }
+        .doc-hero::before{
+          content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+          width:500px;height:300px;
+          background:radial-gradient(ellipse,rgba(92,162,231,0.3) 0%,transparent 70%);
+          pointer-events:none;
+        }
+        .doc-hero-badge{
+          display:inline-flex;align-items:center;gap:6px;
+          padding:4px 14px;border-radius:999px;
+          border:1px solid rgba(155,200,254,0.2);
+          background:rgba(92,162,231,0.12);
+          color:rgba(155,200,254,0.85);
+          font-size:12px;font-weight:500;
+          margin-bottom:18px;
+          position:relative;z-index:1;
+        }
+        .doc-hero h1{
+          font-size:clamp(28px,4vw,44px);
+          font-weight:800;color:#ffffff;
+          letter-spacing:-.03em;line-height:1.1;
+          margin-bottom:12px;
+          position:relative;z-index:1;
+        }
+        .doc-hero h1 span{color:#9bbefe;}
+        .doc-hero p{
+          font-size:14px;color:rgba(240,238,255,0.5);
+          position:relative;z-index:1;
+        }
+
+        .doc-wrap{
+          max-width:780px;margin:0 auto;
+          padding:52px 32px 80px;
+        }
+
+        .lgpd-banner{
+          padding:16px 20px;border-radius:12px;
+          border:1px solid rgba(92,162,231,0.25);
+          background:rgba(92,162,231,0.07);
+          display:flex;align-items:flex-start;gap:12px;
+          margin-bottom:40px;
+        }
+        .lgpd-icon{
+          width:36px;height:36px;border-radius:8px;
+          background:rgba(92,162,231,0.15);
+          display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;
+        }
+        .lgpd-icon svg{width:18px;height:18px;stroke:#9bbefe;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+        .lgpd-text{font-size:13px;line-height:1.7;color:rgba(155,200,254,0.8);}
+        .lgpd-text strong{color:#9bbefe;}
+
+        .doc-toc{
+          padding:20px 24px;
+          border-radius:12px;
+          border:1px solid var(--border);
+          background:var(--surface);
+          margin-bottom:40px;
+        }
+        .doc-toc h3{
+          font-size:12px;font-weight:700;
+          text-transform:uppercase;letter-spacing:.09em;
+          color:var(--text3);margin-bottom:12px;
+        }
+        .doc-toc ol{
+          list-style:none;
+          display:flex;flex-direction:column;gap:6px;
+          counter-reset:toc;
+        }
+        .doc-toc li{counter-increment:toc;display:flex;align-items:center;gap:8px;}
+        .doc-toc li::before{
+          content:counter(toc,decimal-leading-zero);
+          font-size:11px;font-weight:700;color:#5ca2e7;
+          font-variant-numeric:tabular-nums;
+        }
+        .doc-toc a{font-size:13px;color:var(--text2);text-decoration:none;transition:color var(--t);}
+        .doc-toc a:hover{color:#5ca2e7;}
+
+        .doc-section{margin-bottom:44px;}
+        .doc-section h2{
+          font-size:20px;font-weight:700;
+          color:var(--text);letter-spacing:-.02em;
+          margin-bottom:14px;
+          padding-bottom:12px;
+          border-bottom:1px solid var(--border);
+          display:flex;align-items:center;gap:10px;
+        }
+        .section-num{
+          width:26px;height:26px;border-radius:7px;
+          background:#5ca2e7;
+          display:flex;align-items:center;justify-content:center;
+          font-size:11px;font-weight:800;color:#fff;
+          flex-shrink:0;
+        }
+        .doc-section p{font-size:14px;line-height:1.8;color:var(--text2);margin-bottom:12px;}
+        .doc-section p:last-child{margin-bottom:0;}
+        .doc-section ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+        .doc-section ul li{
+          font-size:14px;line-height:1.7;color:var(--text2);
+          padding-left:18px;position:relative;
+        }
+        .doc-section ul li::before{
+          content:'';position:absolute;left:0;top:10px;
+          width:5px;height:5px;border-radius:50%;background:#5ca2e7;
+        }
+        .doc-section strong{color:var(--text);font-weight:600;}
+
+        .rights-grid{
+          display:grid;grid-template-columns:1fr 1fr;gap:10px;
+          margin:14px 0;
+        }
+        .right-card{
+          padding:14px 16px;border-radius:10px;
+          border:1px solid var(--border);
+          background:var(--surface);
+        }
+        .right-card-title{
+          font-size:13px;font-weight:600;color:var(--text);
+          margin-bottom:4px;display:flex;align-items:center;gap:6px;
+        }
+        .right-card-title::before{content:'✓';color:#5ca2e7;font-size:12px;}
+        .right-card p{font-size:12px;color:var(--text2);line-height:1.5;margin:0;}
+
+        .highlight-box{
+          padding:16px 20px;border-radius:10px;
+          border:1px solid rgba(92,162,231,0.2);
+          background:rgba(92,162,231,0.07);
+          font-size:13px;line-height:1.7;
+          color:rgba(155,200,254,0.8);
+          margin:14px 0;
+        }
+
+        .doc-footer{
+          border-top:1px solid var(--border);
+          padding:28px 32px;
+          text-align:center;
+          font-size:12px;color:var(--text3);
+          display:flex;align-items:center;justify-content:center;gap:20px;
+          flex-wrap:wrap;
+        }
+        .doc-footer a{color:#5ca2e7;text-decoration:none;font-weight:500;}
+        .doc-footer a:hover{text-decoration:underline;}
+
+        @media(max-width:600px){
+          .topbar{padding:0 16px;}
+          .doc-hero{padding:44px 20px 36px;}
+          .doc-wrap{padding:36px 20px 60px;}
+          .rights-grid{grid-template-columns:1fr;}
+          .doc-footer{padding:20px 16px;gap:12px;}
+        }
+    </style>
+</head>
+<body>
+
+<nav class="topbar">
+    <a class="topbar-left" href="login.html">
+        <div class="topbar-logo">
+            <img src="../assets/logo.png" alt="StudyOS" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\'font-size:14px;font-weight:800;color:#fff;font-style:italic\'>S</span>'"/>
+        </div>
+        <span class="topbar-name">Study<em>OS</em></span>
+    </a>
+    <div class="topbar-right">
+        <a class="btn-back" href="login.html">← Voltar</a>
+        <div class="theme-toggle-wrap" onclick="Theme.toggle()">
+            <div class="toggle-pill on" id="theme-toggle"><div class="toggle-knob"></div></div>
+            <span id="theme-label">Modo escuro</span>
+        </div>
+    </div>
+</nav>
+
+<div class="doc-hero">
+    <div class="doc-hero-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Documento legal
+    </div>
+    <h1>Política de <span>Privacidade</span></h1>
+    <p>Última atualização: Janeiro de 2025 &nbsp;·&nbsp; Versão 1.0</p>
+</div>
+
+<div class="doc-wrap">
+
+    <div class="lgpd-banner">
+        <div class="lgpd-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="lgpd-text">
+            <strong>Em conformidade com a LGPD (Lei nº 13.709/2018).</strong><br>
+            O StudyOS respeita e protege os dados pessoais dos seus usuários, em total conformidade com a Lei Geral de Proteção de Dados Pessoais vigente no Brasil.
+        </div>
+    </div>
+
+    <div class="doc-toc">
+        <h3>Índice</h3>
+        <ol>
+            <li><a href="#p1">Informações que Coletamos</a></li>
+            <li><a href="#p2">Como Utilizamos seus Dados</a></li>
+            <li><a href="#p3">Compartilhamento de Dados</a></li>
+            <li><a href="#p4">Armazenamento e Segurança</a></li>
+            <li><a href="#p5">Cookies e Tecnologias</a></li>
+            <li><a href="#p6">Seus Direitos (LGPD)</a></li>
+            <li><a href="#p7">Retenção de Dados</a></li>
+            <li><a href="#p8">Menores de Idade</a></li>
+            <li><a href="#p9">Alterações nesta Política</a></li>
+            <li><a href="#p10">Contato e DPO</a></li>
+        </ol>
+    </div>
+
+    <div class="doc-section" id="p1">
+        <h2><span class="section-num">01</span> Informações que Coletamos</h2>
+        <p>O StudyOS coleta apenas os dados necessários para a prestação do serviço. As categorias de dados coletados incluem:</p>
+        <ul>
+            <li><strong>Dados de cadastro:</strong> nome, endereço de e-mail e senha (armazenada de forma criptografada).</li>
+            <li><strong>Dados de uso:</strong> matérias cadastradas, sessões de estudo realizadas, flashcards criados, tempo de estudo e progresso de gamificação (XP, nível, streak).</li>
+            <li><strong>Dados técnicos:</strong> endereço IP, tipo de navegador, sistema operacional e logs de acesso, coletados automaticamente para fins de segurança e desempenho.</li>
+            <li><strong>Dados de preferência:</strong> configurações de tema (claro/escuro) e preferências de sessão armazenadas localmente no dispositivo.</li>
+        </ul>
+        <p>Não coletamos dados sensíveis como informações financeiras, documentos de identificação ou dados biométricos.</p>
+    </div>
+
+    <div class="doc-section" id="p2">
+        <h2><span class="section-num">02</span> Como Utilizamos seus Dados</h2>
+        <p>Os dados coletados são utilizados exclusivamente para as seguintes finalidades:</p>
+        <ul>
+            <li>Criar e gerenciar sua conta de acesso à plataforma.</li>
+            <li>Personalizar sua experiência de estudos e exibir seu progresso.</li>
+            <li>Gerar estatísticas e relatórios de desempenho individual.</li>
+            <li>Enviar comunicações sobre atualizações, novidades e suporte técnico.</li>
+            <li>Garantir a segurança da plataforma e prevenir acessos não autorizados.</li>
+            <li>Melhorar continuamente os serviços por meio de análise agregada e anônima de uso.</li>
+        </ul>
+        <div class="highlight-box">
+            O StudyOS não utiliza seus dados para fins publicitários e não exibe anúncios de terceiros na plataforma.
+        </div>
+    </div>
+
+    <div class="doc-section" id="p3">
+        <h2><span class="section-num">03</span> Compartilhamento de Dados</h2>
+        <p>O StudyOS <strong>não vende, aluga ou compartilha</strong> seus dados pessoais com terceiros para fins comerciais. O compartilhamento ocorre apenas nas seguintes situações:</p>
+        <ul>
+            <li><strong>Prestadores de serviço:</strong> empresas que nos auxiliam na operação da plataforma (hospedagem, banco de dados), vinculadas contratualmente a obrigações de confidencialidade.</li>
+            <li><strong>Obrigação legal:</strong> quando exigido por lei, ordem judicial ou autoridade competente.</li>
+            <li><strong>Proteção de direitos:</strong> para proteger os direitos, propriedade ou segurança do StudyOS, seus usuários ou terceiros.</li>
+        </ul>
+        <p>Qualquer parceiro que eventualmente processe dados em nosso nome está sujeito a acordo de proteção de dados compatível com a LGPD.</p>
+    </div>
+
+    <div class="doc-section" id="p4">
+        <h2><span class="section-num">04</span> Armazenamento e Segurança</h2>
+        <p>Seus dados são armazenados em servidores seguros e protegidos por medidas técnicas e organizacionais adequadas, incluindo:</p>
+        <ul>
+            <li>Criptografia de senhas com algoritmos seguros (bcrypt).</li>
+            <li>Comunicação protegida por HTTPS/TLS em todas as requisições.</li>
+            <li>Autenticação via tokens JWT com prazo de expiração.</li>
+            <li>Controle de acesso restrito aos dados por parte da equipe interna.</li>
+            <li>Monitoramento contínuo de acessos e atividades suspeitas.</li>
+        </ul>
+        <p>Embora adotemos as melhores práticas de segurança, nenhum sistema é 100% inviolável. Em caso de incidente de segurança que afete seus dados, você será notificado nos termos da LGPD.</p>
+    </div>
+
+    <div class="doc-section" id="p5">
+        <h2><span class="section-num">05</span> Cookies e Tecnologias</h2>
+        <p>O StudyOS utiliza armazenamento local (<strong>localStorage</strong>) no seu navegador para salvar preferências como o tema visual escolhido. Não utilizamos cookies de rastreamento ou publicidade.</p>
+        <p>Dados armazenados localmente permanecem no seu dispositivo e podem ser removidos a qualquer momento limpando os dados do navegador. Isso não compromete o funcionamento da conta, apenas redefine preferências visuais.</p>
+    </div>
+
+    <div class="doc-section" id="p6">
+        <h2><span class="section-num">06</span> Seus Direitos (LGPD)</h2>
+        <p>De acordo com a Lei Geral de Proteção de Dados (LGPD), você possui os seguintes direitos em relação aos seus dados pessoais:</p>
+        <div class="rights-grid">
+            <div class="right-card">
+                <div class="right-card-title">Acesso</div>
+                <p>Solicitar a confirmação e acesso aos dados que mantemos sobre você.</p>
+            </div>
+            <div class="right-card">
+                <div class="right-card-title">Correção</div>
+                <p>Solicitar a atualização de dados incompletos, inexatos ou desatualizados.</p>
+            </div>
+            <div class="right-card">
+                <div class="right-card-title">Exclusão</div>
+                <p>Solicitar a eliminação dos seus dados pessoais da nossa base.</p>
+            </div>
+            <div class="right-card">
+                <div class="right-card-title">Portabilidade</div>
+                <p>Receber seus dados em formato estruturado para uso em outro serviço.</p>
+            </div>
+            <div class="right-card">
+                <div class="right-card-title">Revogação</div>
+                <p>Revogar o consentimento para tratamento dos seus dados a qualquer momento.</p>
+            </div>
+            <div class="right-card">
+                <div class="right-card-title">Oposição</div>
+                <p>Opor-se ao tratamento de dados realizado com fundamento diverso do consentimento.</p>
+            </div>
+        </div>
+        <p>Para exercer qualquer desses direitos, entre em contato pelo e-mail indicado na seção 10.</p>
+    </div>
+
+    <div class="doc-section" id="p7">
+        <h2><span class="section-num">07</span> Retenção de Dados</h2>
+        <p>Seus dados são mantidos enquanto sua conta estiver ativa. Após o encerramento da conta, os dados são retidos por até <strong>30 dias</strong> para fins de suporte e resolução de eventuais disputas, sendo então excluídos permanentemente.</p>
+        <p>Dados técnicos de log são retidos por até 90 dias para fins de segurança e auditoria, conforme exigências legais aplicáveis.</p>
+    </div>
+
+    <div class="doc-section" id="p8">
+        <h2><span class="section-num">08</span> Menores de Idade</h2>
+        <p>O StudyOS não é direcionado a crianças menores de 13 anos. Não coletamos intencionalmente dados de menores sem o consentimento dos responsáveis legais.</p>
+        <p>Caso identifiquemos que dados de um menor foram coletados sem o devido consentimento, procederemos com a exclusão imediata. Responsáveis que identifiquem tal situação devem nos contatar imediatamente.</p>
+    </div>
+
+    <div class="doc-section" id="p9">
+        <h2><span class="section-num">09</span> Alterações nesta Política</h2>
+        <p>Esta Política de Privacidade pode ser atualizada periodicamente para refletir mudanças nas nossas práticas ou na legislação aplicável. Alterações relevantes serão comunicadas por e-mail ou notificação na plataforma com antecedência mínima de 15 dias.</p>
+        <p>A versão vigente estará sempre disponível nesta página, com a data de última atualização indicada no topo do documento.</p>
+    </div>
+
+    <div class="doc-section" id="p10">
+        <h2><span class="section-num">10</span> Contato e DPO</h2>
+        <p>Para exercer seus direitos, tirar dúvidas ou registrar reclamações sobre o tratamento dos seus dados pessoais, entre em contato com nosso Encarregado de Proteção de Dados (DPO):</p>
+        <ul>
+            <li><strong>E-mail:</strong> studyosapp@gmail.com</li>
+            <li><strong>Plataforma:</strong> Seção "Privacidade e Dados" no painel do usuário.</li>
+            <li><strong>Autoridade:</strong> Você também pode acionar a ANPD (Autoridade Nacional de Proteção de Dados) em <strong>gov.br/anpd</strong>.</li>
+        </ul>
+        <p>Respondemos a solicitações relacionadas a dados pessoais em até <strong>15 dias úteis</strong>, conforme prazo estabelecido pela LGPD.</p>
+    </div>
+
+</div>
+
+<footer class="doc-footer">
+    <span>© 2025 StudyOS. Todos os direitos reservados.</span>
+    <a href="terms.html">Termos de Uso</a>
+    <a href="privacy.html">Política de Privacidade</a>
+    <a href="login.html">Voltar ao login</a>
+</footer>
+
+</body>
+</html>
