@@ -223,6 +223,3 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-<div align="center">
-Built with ☕ Java, 💜 passion, and a lot of late-night sessions.
-</div>
