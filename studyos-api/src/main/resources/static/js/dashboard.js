@@ -274,9 +274,11 @@ async function init() {
     buildCharts([], []);
     if (typeof Toast !== 'undefined') Toast.error('Erro ao carregar dados.');
   } finally {
-    // ← esconde o loading quando tudo terminar (com ou sem erro)
-    if (window.StudyLoading) window.StudyLoading.hide();
-  }
+      // loading mínimo de 3 segundos
+      setTimeout(() => {
+        if (window.StudyLoading) window.StudyLoading.hide();
+      }, 3000);
+    }
 }
 
 document.documentElement.addEventListener && (() => {
