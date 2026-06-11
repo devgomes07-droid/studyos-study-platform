@@ -162,7 +162,6 @@ function buildCharts(subjects, sessions) {
     padding: 10,
   };
 
-  /* BAR: horas por dia */
   const barCtx = document.getElementById('chart-bar');
   if (barCtx) {
     const ctx      = barCtx.getContext('2d');
@@ -196,7 +195,6 @@ function buildCharts(subjects, sessions) {
     });
   }
 
-  /* LINE: XP acumulado por semana */
   const lineCtx = document.getElementById('chart-line');
   if (lineCtx) {
     const ctx    = lineCtx.getContext('2d');
@@ -229,7 +227,6 @@ function buildCharts(subjects, sessions) {
     });
   }
 
-  /* PIE: distribuição por matéria */
   const pieCtx = document.getElementById('chart-pie');
   if (pieCtx) {
     if (subjects.length) {
@@ -261,7 +258,6 @@ async function init() {
       Api.getSessions ? Api.getSessions() : Promise.resolve([])
     ]);
 
-    // Usa apenas dados reais da API — sem fallback demo
     const s = Array.isArray(subjects) ? subjects : [];
     const e = Array.isArray(sessions) ? sessions : [];
 
@@ -272,23 +268,20 @@ async function init() {
 
   } catch (err) {
     console.error('Dashboard error:', err);
-    // Em caso de erro de rede, mostra tela vazia (não dados fictícios)
     renderStats([], []);
     renderSubjects([]);
     renderSessions([]);
     buildCharts([], []);
     if (typeof Toast !== 'undefined') Toast.error('Erro ao carregar dados.');
+  } finally {
+    // ← esconde o loading quando tudo terminar (com ou sem erro)
+    if (window.StudyLoading) window.StudyLoading.hide();
   }
 }
 
-/* rebuilda charts ao trocar tema */
 document.documentElement.addEventListener && (() => {
   const obs = new MutationObserver(() => {
-    if (Object.keys(_charts).length) {
-      // Relê os dados atuais dos arrays já carregados, sem reinventar dados
-      // Os charts serão rebuiltados com arrays vazios se não houver dados
-      buildCharts([], []);
-    }
+    if (Object.keys(_charts).length) buildCharts([], []);
   });
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
