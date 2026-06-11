@@ -19,6 +19,17 @@ function hideLoading() {
   if (el) el.classList.remove('active');
 }
 
+/* ── Btn loading state ─────────────────────── */
+function setBtnLoading(btn, loading, text) {
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+  if (!loading) {
+    const span = btn.querySelector('.btn-txt');
+    if (span) span.textContent = text;
+  }
+}
+
 /* ── Auth ───────────────────────────────────── */
 async function login() {
   Utils.clearMessage('#msg');
@@ -31,8 +42,8 @@ async function login() {
     return;
   }
 
-  const btn = document.querySelector('#login-form .btn-login');
-  if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
+  const btn = document.querySelector('#login-form .btn-main');
+  setBtnLoading(btn, true);
 
   try {
     const data = await Api.login({ email, password });
@@ -44,7 +55,7 @@ async function login() {
 
   } catch (error) {
     hideLoading();
-    if (btn) { btn.disabled = false; btn.textContent = 'Entrar →'; }
+    setBtnLoading(btn, false, 'Entrar no StudyOS');
     Utils.showMessage('#msg', error.message || 'Email ou senha incorretos.');
   }
 }
@@ -66,8 +77,8 @@ async function register() {
     return;
   }
 
-  const btn = document.querySelector('#register-form .btn-login');
-  if (btn) { btn.disabled = true; btn.textContent = 'Criando conta...'; }
+  const btn = document.querySelector('#register-form .btn-main');
+  setBtnLoading(btn, true);
 
   try {
     const data = await Api.register({ name, email, password });
@@ -79,7 +90,7 @@ async function register() {
 
   } catch (error) {
     hideLoading();
-    if (btn) { btn.disabled = false; btn.textContent = 'Criar conta →'; }
+    setBtnLoading(btn, false, 'Criar conta');
     Utils.showMessage('#msg', error.message || 'Erro ao cadastrar usuário.');
   }
 }
@@ -97,8 +108,7 @@ async function forgotPassword() {
     return;
   }
 
-  btn.disabled    = true;
-  btn.textContent = 'Enviando...';
+  setBtnLoading(btn, true);
   success.style.display = 'none';
 
   try {
@@ -109,14 +119,19 @@ async function forgotPassword() {
   } catch (err) {
     // silencia — não revela se email existe
   } finally {
+    setBtnLoading(btn, false, 'Enviar link');
     success.style.display = 'block';
-    btn.textContent       = 'Enviado! ✅';
   }
 }
 
+/* ── Expõe no window para os onclick do HTML ── */
+window._login          = login;
+window._register       = register;
+window._forgotPassword = forgotPassword;
+
 /* ── Navegação entre forms ─────────────────── */
 function showRegister() {
-  loginForm.style.display  = 'none';
+  loginForm.style.display    = 'none';
   registerForm.style.display = 'block';
   if (forgotForm) forgotForm.style.display = 'none';
   Utils.clearMessage('#msg');
@@ -125,7 +140,7 @@ function showRegister() {
 function showLogin() {
   registerForm.style.display = 'none';
   if (forgotForm) forgotForm.style.display = 'none';
-  loginForm.style.display  = 'block';
+  loginForm.style.display    = 'block';
   Utils.clearMessage('#msg');
 }
 
@@ -134,8 +149,7 @@ function showForgot() {
   registerForm.style.display = 'none';
   forgotForm.style.display   = 'block';
   document.getElementById('forgot-success').style.display = 'none';
-  const btn = document.getElementById('forgot-btn');
-  if (btn) { btn.disabled = false; btn.textContent = 'Enviar link →'; }
+  setBtnLoading(document.getElementById('forgot-btn'), false, 'Enviar link');
   Utils.clearMessage('#msg');
 }
 
