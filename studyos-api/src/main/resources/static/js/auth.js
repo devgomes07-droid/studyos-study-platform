@@ -51,6 +51,7 @@ async function login() {
 
     showLoading('Bem-vindo de volta! 🚀');
     await new Promise(r => setTimeout(r, 1800));
+    sessionStorage.setItem('studyos-show-loading', 'true'); // ← ativa loading no dashboard
     window.location.href = 'pages/dashboard.html';
 
   } catch (error) {
@@ -86,6 +87,7 @@ async function register() {
 
     showLoading('Conta criada! Preparando tudo... 🚀⚡');
     await new Promise(r => setTimeout(r, 1800));
+    sessionStorage.setItem('studyos-show-loading', 'true'); // ← ativa loading no dashboard
     window.location.href = 'pages/dashboard.html';
 
   } catch (error) {

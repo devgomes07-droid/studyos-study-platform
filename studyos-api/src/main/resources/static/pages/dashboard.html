@@ -42,16 +42,23 @@
     <link rel="stylesheet" href="../css/dashboard.css"/>
 </head>
 <body>
+<script src="../js/loading-overlay.js"></script>
 
-<!-- loading-overlay.js REMOVIDO — só deve estar no index.html (login) -->
-
+<!-- ── Botão hambúrguer (mobile) ───────────── -->
 <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
+
+<!-- ── Overlay escuro atrás da sidebar ──────── -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ── Botão flutuante para expandir sidebar (desktop) ── -->
 <button class="sidebar-expand-btn" id="sidebar-expand-btn" aria-label="Expandir menu" title="Expandir menu">▶</button>
 
+<!-- ── App shell ───────────────────────────── -->
 <div class="app">
 
+    <!-- ── Sidebar ─────────────────────────────── -->
     <aside class="sidebar" id="sidebar">
+
         <div class="sidebar-header">
             <div class="logo">
                 <img class="logo-img" src="../assets/logo.png" alt="StudyOS">
@@ -95,9 +102,12 @@
                 <span class="nav-label">Sair</span>
             </button>
         </div>
+
     </aside>
 
+    <!-- ── Main ────────────────────────────────── -->
     <main class="main">
+
         <section class="hero">
             <div>
                 <p class="hero-greeting" id="greeting">Bom dia</p>
@@ -189,6 +199,7 @@
                 </div>
             </div>
         </div>
+
     </main>
 
 </div><!-- /.app -->
