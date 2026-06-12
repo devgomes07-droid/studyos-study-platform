@@ -2,10 +2,12 @@ package com.studyos.studyos_api.controller;
 
 import com.studyos.studyos_api.dto.AuthResponse;
 import com.studyos.studyos_api.dto.ForgotPasswordRequest;
+import com.studyos.studyos_api.dto.GoogleAuthRequest;
 import com.studyos.studyos_api.dto.LoginRequest;
 import com.studyos.studyos_api.dto.RegisterRequest;
 import com.studyos.studyos_api.dto.ResetPasswordRequest;
 import com.studyos.studyos_api.service.AuthService;
+import com.studyos.studyos_api.service.GoogleAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final GoogleAuthService googleAuthService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -28,6 +31,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> googleLogin(@RequestBody GoogleAuthRequest request) {
+        return ResponseEntity.ok(googleAuthService.authenticateWithGoogle(request.getCredential()));
     }
 
     @PostMapping("/forgot-password")

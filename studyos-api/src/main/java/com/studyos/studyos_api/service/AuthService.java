@@ -36,8 +36,8 @@ public class AuthService {
                 .createdAt(LocalDateTime.now())
                 .build();
         userRepository.save(user);
-        String token = generateJwt(user);
-        return buildResponse(token, user);
+        String token = generateJwtForUser(user);
+        return buildResponseForUser(token, user);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -46,8 +46,8 @@ public class AuthService {
         );
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        String token = generateJwt(user);
-        return buildResponse(token, user);
+        String token = generateJwtForUser(user);
+        return buildResponseForUser(token, user);
     }
 
     public void forgotPassword(String email) {
@@ -74,17 +74,19 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    private String generateJwt(User user) {
+    // Usados pelo GoogleAuthService também
+    public String generateJwtForUser(User user) {
+        String password = user.getPassword() != null ? user.getPassword() : "";
         return jwtService.generateToken(
                 org.springframework.security.core.userdetails.User
                         .withUsername(user.getEmail())
-                        .password(user.getPassword())
+                        .password(password)
                         .authorities("USER")
                         .build()
         );
     }
 
-    private AuthResponse buildResponse(String token, User user) {
+    public AuthResponse buildResponseForUser(String token, User user) {
         return AuthResponse.builder()
                 .token(token)
                 .userId(user.getId())

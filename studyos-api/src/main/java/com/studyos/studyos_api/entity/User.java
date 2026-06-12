@@ -19,11 +19,16 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    // Nullable — usuários do Google não têm senha
+    @Column
     private String password;
 
     @Column(nullable = false)
     private String name;
+
+    // ID do Google para login OAuth
+    @Column(name = "google_id", unique = true)
+    private String googleId;
 
     @Builder.Default @Column(nullable = false)
     private Integer xp = 0;
@@ -55,7 +60,6 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // ── Reset de senha ──────────────────────────
     @Column(name = "reset_token")
     private String resetToken;
 

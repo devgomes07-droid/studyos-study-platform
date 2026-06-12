@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
         const Theme=(()=>{
@@ -39,11 +40,9 @@
           --p-glow:rgba(108,92,231,0.35);
           --p-dim:rgba(108,92,231,0.15);
 
-          /* dark always on hero side */
           --hero-bg:#0d0b1a;
           --hero-bg2:#110e22;
 
-          /* panel vars — dark default */
           --bg:#0f0d1c;
           --surface:#17142a;
           --surface2:#1e1a30;
@@ -62,7 +61,6 @@
           --inp-icon:rgba(255,255,255,0.3);
         }
 
-        /* ── LIGHT THEME ── */
         [data-theme="light"]{
           --bg:#f5f3ff;
           --surface:#ffffff;
@@ -253,7 +251,7 @@
           display:flex;flex-direction:column;
           align-items:center;justify-content:center;
           padding:36px 52px;
-          background:var(--bg);  /* ← CORRIGIDO: era #0f0d1c hardcoded */
+          background:var(--bg);
           overflow:hidden;
           transition:background var(--t);
         }
@@ -315,12 +313,10 @@
           position:relative;z-index:1;
         }
 
-        /* panel header */
         .p-brand{font-size:16px;font-weight:700;color:#6c5ce7;letter-spacing:-.01em;margin-bottom:10px;}
         .p-title{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.1;margin-bottom:6px;}
         .p-sub{font-size:14px;color:var(--text2);font-weight:400;line-height:1.6;margin-bottom:24px;}
 
-        /* fields */
         .field{margin-bottom:14px;}
         .f-label{
           display:block;font-size:11px;font-weight:600;
@@ -338,8 +334,8 @@
         .f-input{
           width:100%;padding:13px 14px 13px 42px;
           border-radius:10px;
-          border:1.5px solid var(--inp-bdr);  /* ← CORRIGIDO */
-          background:var(--inp-bg);            /* ← CORRIGIDO */
+          border:1.5px solid var(--inp-bdr);
+          background:var(--inp-bg);
           color:var(--text);
           font-size:14px;font-weight:400;font-family:var(--font);
           outline:none;
@@ -403,6 +399,26 @@
         .btn-main.loading .btn-txt{display:none;}
         .btn-main.loading .btn-arrow{display:none;}
         @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* ── Google divider ── */
+        .google-divider{
+          display:flex;align-items:center;gap:12px;
+          margin:4px 0 14px;
+          color:var(--text3);
+          font-size:12px;
+          font-weight:500;
+        }
+        .google-divider::before,
+        .google-divider::after{
+          content:'';flex:1;height:1px;
+          background:var(--border2);
+        }
+
+        /* Centraliza o botão do Google */
+        .google-btn-wrap{
+          display:flex;justify-content:center;
+          margin-bottom:16px;
+        }
 
         .f-switch{
           text-align:center;margin-bottom:20px;
@@ -511,49 +527,29 @@
                 </defs>
                 <ellipse cx="155" cy="140" rx="90" ry="80" fill="url(#brain-center)" filter="url(#glow-brain)"/>
                 <g stroke="#a29bfe" stroke-width="0.7" opacity="0.5" filter="url(#glow-brain)">
-                    <path d="M155 140 Q180 100 210 90"/>
-                    <path d="M155 140 Q200 130 230 120"/>
-                    <path d="M155 140 Q190 160 215 170"/>
-                    <path d="M155 140 Q175 175 190 205"/>
-                    <path d="M155 140 Q130 100 110 85"/>
-                    <path d="M155 140 Q115 125 90 115"/>
-                    <path d="M155 140 Q120 160 100 175"/>
-                    <path d="M155 140 Q135 178 125 205"/>
-                    <path d="M155 140 Q160 105 165 75"/>
-                    <path d="M155 140 Q148 105 140 75"/>
-                    <path d="M210 90 Q230 75 245 85"/>
-                    <path d="M230 120 Q250 118 260 130"/>
-                    <path d="M215 170 Q235 175 248 165"/>
-                    <path d="M190 205 Q200 220 215 215"/>
-                    <path d="M110 85 Q95 70 80 80"/>
-                    <path d="M90 115 Q70 110 62 122"/>
-                    <path d="M100 175 Q82 178 75 168"/>
-                    <path d="M125 205 Q115 220 100 215"/>
-                    <path d="M165 75 Q168 55 180 50"/>
-                    <path d="M140 75 Q135 55 122 50"/>
+                    <path d="M155 140 Q180 100 210 90"/><path d="M155 140 Q200 130 230 120"/>
+                    <path d="M155 140 Q190 160 215 170"/><path d="M155 140 Q175 175 190 205"/>
+                    <path d="M155 140 Q130 100 110 85"/><path d="M155 140 Q115 125 90 115"/>
+                    <path d="M155 140 Q120 160 100 175"/><path d="M155 140 Q135 178 125 205"/>
+                    <path d="M155 140 Q160 105 165 75"/><path d="M155 140 Q148 105 140 75"/>
+                    <path d="M210 90 Q230 75 245 85"/><path d="M230 120 Q250 118 260 130"/>
+                    <path d="M215 170 Q235 175 248 165"/><path d="M190 205 Q200 220 215 215"/>
+                    <path d="M110 85 Q95 70 80 80"/><path d="M90 115 Q70 110 62 122"/>
+                    <path d="M100 175 Q82 178 75 168"/><path d="M125 205 Q115 220 100 215"/>
+                    <path d="M165 75 Q168 55 180 50"/><path d="M140 75 Q135 55 122 50"/>
                 </g>
                 <g fill="#a29bfe" filter="url(#glow-brain)">
                     <circle cx="155" cy="140" r="4" opacity="1"/>
-                    <circle cx="210" cy="90" r="2.5" opacity="0.9"/>
-                    <circle cx="230" cy="120" r="2" opacity="0.8"/>
-                    <circle cx="215" cy="170" r="2.5" opacity="0.85"/>
-                    <circle cx="190" cy="205" r="2" opacity="0.7"/>
-                    <circle cx="110" cy="85" r="2.5" opacity="0.9"/>
-                    <circle cx="90" cy="115" r="2" opacity="0.8"/>
-                    <circle cx="100" cy="175" r="2.5" opacity="0.85"/>
-                    <circle cx="125" cy="205" r="2" opacity="0.7"/>
-                    <circle cx="165" cy="75" r="2" opacity="0.8"/>
-                    <circle cx="140" cy="75" r="2" opacity="0.8"/>
-                    <circle cx="245" cy="85" r="1.5" opacity="0.6"/>
-                    <circle cx="260" cy="130" r="1.5" opacity="0.6"/>
-                    <circle cx="248" cy="165" r="1.5" opacity="0.6"/>
-                    <circle cx="215" cy="215" r="1.5" opacity="0.6"/>
-                    <circle cx="80" cy="80" r="1.5" opacity="0.6"/>
-                    <circle cx="62" cy="122" r="1.5" opacity="0.6"/>
-                    <circle cx="75" cy="168" r="1.5" opacity="0.6"/>
-                    <circle cx="100" cy="215" r="1.5" opacity="0.6"/>
-                    <circle cx="180" cy="50" r="1.5" opacity="0.6"/>
-                    <circle cx="122" cy="50" r="1.5" opacity="0.6"/>
+                    <circle cx="210" cy="90" r="2.5" opacity="0.9"/><circle cx="230" cy="120" r="2" opacity="0.8"/>
+                    <circle cx="215" cy="170" r="2.5" opacity="0.85"/><circle cx="190" cy="205" r="2" opacity="0.7"/>
+                    <circle cx="110" cy="85" r="2.5" opacity="0.9"/><circle cx="90" cy="115" r="2" opacity="0.8"/>
+                    <circle cx="100" cy="175" r="2.5" opacity="0.85"/><circle cx="125" cy="205" r="2" opacity="0.7"/>
+                    <circle cx="165" cy="75" r="2" opacity="0.8"/><circle cx="140" cy="75" r="2" opacity="0.8"/>
+                    <circle cx="245" cy="85" r="1.5" opacity="0.6"/><circle cx="260" cy="130" r="1.5" opacity="0.6"/>
+                    <circle cx="248" cy="165" r="1.5" opacity="0.6"/><circle cx="215" cy="215" r="1.5" opacity="0.6"/>
+                    <circle cx="80" cy="80" r="1.5" opacity="0.6"/><circle cx="62" cy="122" r="1.5" opacity="0.6"/>
+                    <circle cx="75" cy="168" r="1.5" opacity="0.6"/><circle cx="100" cy="215" r="1.5" opacity="0.6"/>
+                    <circle cx="180" cy="50" r="1.5" opacity="0.6"/><circle cx="122" cy="50" r="1.5" opacity="0.6"/>
                 </g>
             </svg>
         </div>
@@ -689,6 +685,25 @@
                     <span class="btn-arrow">→</span>
                 </button>
 
+                <!-- Google Login -->
+                <div class="google-divider">ou</div>
+                <div class="google-btn-wrap">
+                    <div id="g_id_onload"
+                         data-client_id="462877681158-kd17inekdhb8dn6baedri18v6e8878l8.apps.googleusercontent.com"
+                         data-callback="handleGoogleLogin"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-size="large"
+                         data-theme="outline"
+                         data-text="continue_with"
+                         data-shape="rectangular"
+                         data-logo_alignment="left"
+                         data-width="300">
+                    </div>
+                </div>
+
                 <div class="f-switch">Não tem conta? <a onclick="showRegister()">Cadastre-se grátis</a></div>
 
                 <div class="terms-box">
@@ -739,6 +754,21 @@
                     <span class="btn-txt">Criar conta</span>
                     <span class="btn-arrow">→</span>
                 </button>
+
+                <!-- Google no cadastro também -->
+                <div class="google-divider">ou</div>
+                <div class="google-btn-wrap">
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-size="large"
+                         data-theme="outline"
+                         data-text="signup_with"
+                         data-shape="rectangular"
+                         data-logo_alignment="left"
+                         data-width="300">
+                    </div>
+                </div>
+
                 <div class="f-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
 
                 <div class="terms-box">
@@ -785,7 +815,6 @@
 <script src="js/auth.js"></script>
 
 <script>
-    /* loading messages */
     const lmsgs=['Carregando métodos...','Sincronizando sessão...','Quase lá...','Tudo pronto!'];
     let lmi=0;
     const lel=document.getElementById('ls-msg');
@@ -832,6 +861,31 @@
         else if(active==='register-form')register();
         else if(active==='forgot-form')forgotPassword();
     });
+
+    // ── Google OAuth callback ──
+    async function handleGoogleLogin(response) {
+        try {
+            const res = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({credential: response.credential})
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                document.getElementById('msg').textContent = err.message || 'Erro ao entrar com Google';
+                document.getElementById('msg').className = 'err';
+                return;
+            }
+
+            const data = await res.json();
+            localStorage.setItem('token', data.token);
+            window.location.href = '/pages/dashboard.html';
+        } catch (e) {
+            document.getElementById('msg').textContent = 'Erro de conexão';
+            document.getElementById('msg').className = 'err';
+        }
+    }
 </script>
 </body>
 </html>
