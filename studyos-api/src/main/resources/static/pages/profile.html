@@ -6,191 +6,119 @@
     <title>StudyOS — Perfil</title>
     <link rel="icon" type="image/png" href="../assets/logo.png"/>
     <link rel="shortcut icon" href="../assets/logo.png"/>
-
     <script>
         const Theme = (() => {
           const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
           function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
           function getSaved() { return localStorage.getItem(KEY) || sys(); }
-          function apply(t) {
-            ROOT.setAttribute('data-theme', t);
-            document.querySelectorAll('[data-theme-label]').forEach(el => {
-              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
-            });
-          }
-          function toggle() {
-            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
-            localStorage.setItem(KEY, next);
-            apply(next);
-          }
-          function init() {
-            apply(getSaved());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-              if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
-            });
-          }
+          function apply(t) { ROOT.setAttribute('data-theme', t); document.querySelectorAll('[data-theme-label]').forEach(el => { el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro'; }); }
+          function toggle() { const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark'; localStorage.setItem(KEY, next); apply(next); }
+          function init() { apply(getSaved()); window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light'); }); }
           return { init, toggle, getSaved };
         })();
         Theme.init();
     </script>
-
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/components.css"/>
     <link rel="stylesheet" href="../css/profile.css"/>
 </head>
-<body class="app">
+<body>
 
-<!-- ── Botão hambúrguer (mobile) ───────────── -->
 <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
-
-<!-- ── Overlay escuro atrás da sidebar ──────── -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
+<button class="sidebar-expand-btn" id="sidebar-expand-btn" aria-label="Expandir menu" title="Expandir menu">▶</button>
 
-<!-- ── Sidebar ─────────────────────────────── -->
-<aside class="sidebar" id="sidebar">
-
-    <div class="sidebar-header">
-        <div class="logo">StudyOS</div>
-        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
-        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
-    </div>
-
-    <nav>
-        <a href="dashboard.html">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-label">Dashboard</span>
-        </a>
-        <a href="subjects.html">
-            <span class="nav-icon">📖</span>
-            <span class="nav-label">Matérias</span>
-        </a>
-        <a href="study.html">
-            <span class="nav-icon">🧠</span>
-            <span class="nav-label">Métodos</span>
-        </a>
-        <a href="flashcards.html">
-            <span class="nav-icon">🃏</span>
-            <span class="nav-label">Flashcards</span>
-        </a>
-        <a href="profile.html" class="active">
-            <span class="nav-icon">👤</span>
-            <span class="nav-label">Perfil</span>
-        </a>
-    </nav>
-
-    <div class="user-info" id="user-info"></div>
-
-    <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
-    </button>
-
-    <button onclick="logout()" class="logout-btn">
-        <span class="nav-icon">↩</span>
-        <span class="nav-label">Sair</span>
-    </button>
-</aside>
-
-<!-- ── Main ────────────────────────────────── -->
-<main class="main">
-
-    <!-- Hero -->
-    <section class="profile-hero">
-        <div class="profile-avatar-wrap">
-            <div class="profile-avatar" id="profile-avatar">?</div>
-            <div class="profile-level-badge" id="profile-level-badge">1</div>
-        </div>
-        <div class="profile-hero-info">
-            <h1 class="profile-name" id="profile-name">Carregando...</h1>
-            <p class="profile-email" id="profile-email"></p>
-            <div class="profile-tags">
-                <span class="profile-tag" id="profile-rank">🥉 Iniciante</span>
-                <span class="profile-tag" id="profile-member-since"></span>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img class="logo-img" src="../assets/logo.png" alt="StudyOS">
+                <span class="logo-text">StudyOS</span>
             </div>
+            <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+            <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
         </div>
-        <button class="btn-edit-profile" onclick="openEditModal()">✏️ Editar perfil</button>
-    </section>
+        <nav>
+            <a href="dashboard.html" data-tooltip="Dashboard"><span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span></a>
+            <a href="subjects.html" data-tooltip="Matérias"><span class="nav-icon">📖</span><span class="nav-label">Matérias</span></a>
+            <a href="study.html" data-tooltip="Métodos"><span class="nav-icon">🧠</span><span class="nav-label">Métodos</span></a>
+            <a href="flashcards.html" data-tooltip="Flashcards"><span class="nav-icon">🃏</span><span class="nav-label">Flashcards</span></a>
+            <a href="profile.html" class="active" data-tooltip="Perfil"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info" id="user-info"></div>
+            <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
+                <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+                <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
+            </button>
+            <button onclick="logout()" class="logout-btn">
+                <span class="nav-icon">↩</span><span class="nav-label">Sair</span>
+            </button>
+        </div>
+    </aside>
 
-    <!-- Overall + Skills -->
-    <div class="profile-overall-row">
-        <div class="overall-badge">
-            <span class="overall-number" id="overall-number">0</span>
-            <span class="overall-label">Overall</span>
+    <main class="main">
+        <section class="profile-hero">
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar" id="profile-avatar">?</div>
+                <div class="profile-level-badge" id="profile-level-badge">1</div>
+            </div>
+            <div class="profile-hero-info">
+                <h1 class="profile-name" id="profile-name">Carregando...</h1>
+                <p class="profile-email" id="profile-email"></p>
+                <div class="profile-tags">
+                    <span class="profile-tag" id="profile-rank">🥉 Iniciante</span>
+                    <span class="profile-tag" id="profile-member-since"></span>
+                </div>
+            </div>
+            <button class="btn-edit-profile" onclick="openEditModal()">✏️ Editar perfil</button>
+        </section>
+        <div class="profile-overall-row">
+            <div class="overall-badge">
+                <span class="overall-number" id="overall-number">0</span>
+                <span class="overall-label">Overall</span>
+            </div>
+            <div class="overall-skills" id="overall-skills"></div>
         </div>
-        <div class="overall-skills" id="overall-skills"></div>
-    </div>
+        <section class="profile-xp-section">
+            <div class="xp-info">
+                <span class="xp-label">Nível <strong id="xp-level">1</strong></span>
+                <span class="xp-values"><span id="xp-current">0</span> / <span id="xp-next">500</span> XP</span>
+            </div>
+            <div class="xp-bar-track">
+                <div class="xp-bar-fill" id="xp-bar-fill"></div>
+            </div>
+            <p class="xp-msg" id="xp-msg">Faltam 500 XP para o próximo nível</p>
+        </section>
+        <div class="profile-stats-grid">
+            <article class="pstat-card"><span class="pstat-icon">🔥</span><p class="pstat-value" id="stat-streak">0</p><p class="pstat-label">Sequência</p></article>
+            <article class="pstat-card"><span class="pstat-icon">📚</span><p class="pstat-value" id="stat-hours">0h</p><p class="pstat-label">Estudado</p></article>
+            <article class="pstat-card"><span class="pstat-icon">🎯</span><p class="pstat-value" id="stat-sessions">0</p><p class="pstat-label">Sessões</p></article>
+            <article class="pstat-card"><span class="pstat-icon">📖</span><p class="pstat-value" id="stat-subjects">0</p><p class="pstat-label">Matérias</p></article>
+            <article class="pstat-card"><span class="pstat-icon">🃏</span><p class="pstat-value" id="stat-flashcards">0</p><p class="pstat-label">Flashcards</p></article>
+            <article class="pstat-card"><span class="pstat-icon">⚡</span><p class="pstat-value" id="stat-xp">0</p><p class="pstat-label">XP Total</p></article>
+        </div>
+        <section class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">🏅 Conquistas</h2>
+                <span class="profile-section-count" id="badges-count">0 desbloqueadas</span>
+            </div>
+            <div class="badges-grid" id="badges-grid">
+                <div class="empty-state">Carregando conquistas...</div>
+            </div>
+        </section>
+        <section class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">📅 Atividade recente</h2>
+            </div>
+            <div class="activity-list" id="activity-list">
+                <div class="empty-state">Carregando atividade...</div>
+            </div>
+        </section>
+    </main>
+</div>
 
-    <!-- XP -->
-    <section class="profile-xp-section">
-        <div class="xp-info">
-            <span class="xp-label">Nível <strong id="xp-level">1</strong></span>
-            <span class="xp-values"><span id="xp-current">0</span> / <span id="xp-next">500</span> XP</span>
-        </div>
-        <div class="xp-bar-track">
-            <div class="xp-bar-fill" id="xp-bar-fill"></div>
-        </div>
-        <p class="xp-msg" id="xp-msg">Faltam 500 XP para o próximo nível</p>
-    </section>
-
-    <!-- Stats -->
-    <div class="profile-stats-grid">
-        <article class="pstat-card">
-            <span class="pstat-icon">🔥</span>
-            <p class="pstat-value" id="stat-streak">0</p>
-            <p class="pstat-label">Sequência</p>
-        </article>
-        <article class="pstat-card">
-            <span class="pstat-icon">📚</span>
-            <p class="pstat-value" id="stat-hours">0h</p>
-            <p class="pstat-label">Estudado</p>
-        </article>
-        <article class="pstat-card">
-            <span class="pstat-icon">🎯</span>
-            <p class="pstat-value" id="stat-sessions">0</p>
-            <p class="pstat-label">Sessões</p>
-        </article>
-        <article class="pstat-card">
-            <span class="pstat-icon">📖</span>
-            <p class="pstat-value" id="stat-subjects">0</p>
-            <p class="pstat-label">Matérias</p>
-        </article>
-        <article class="pstat-card">
-            <span class="pstat-icon">🃏</span>
-            <p class="pstat-value" id="stat-flashcards">0</p>
-            <p class="pstat-label">Flashcards</p>
-        </article>
-        <article class="pstat-card">
-            <span class="pstat-icon">⚡</span>
-            <p class="pstat-value" id="stat-xp">0</p>
-            <p class="pstat-label">XP Total</p>
-        </article>
-    </div>
-
-    <!-- Conquistas -->
-    <section class="profile-section">
-        <div class="profile-section-header">
-            <h2 class="profile-section-title">🏅 Conquistas</h2>
-            <span class="profile-section-count" id="badges-count">0 desbloqueadas</span>
-        </div>
-        <div class="badges-grid" id="badges-grid">
-            <div class="empty-state">Carregando conquistas...</div>
-        </div>
-    </section>
-
-    <!-- Atividade -->
-    <section class="profile-section">
-        <div class="profile-section-header">
-            <h2 class="profile-section-title">📅 Atividade recente</h2>
-        </div>
-        <div class="activity-list" id="activity-list">
-            <div class="empty-state">Carregando atividade...</div>
-        </div>
-    </section>
-
-</main>
-
-<!-- ── Modal editar perfil ──────────────────── -->
 <div class="modal-overlay" id="edit-modal" onclick="closeEditModal(event)">
     <div class="modal">
         <div class="modal-header">
@@ -226,52 +154,31 @@
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/profile.js"></script>
-
-<!-- Lógica da sidebar colapsável -->
 <script>
     (function () {
-        const sidebar       = document.getElementById('sidebar');
-        const overlay       = document.getElementById('sidebar-overlay');
-        const menuToggle    = document.getElementById('menu-toggle');
-        const closeBtn      = document.getElementById('sidebar-close-btn');
-        const collapseBtn   = document.getElementById('sidebar-collapse-btn');
+        const sidebar     = document.getElementById('sidebar');
+        const overlay     = document.getElementById('sidebar-overlay');
+        const menuToggle  = document.getElementById('menu-toggle');
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn   = document.getElementById('sidebar-expand-btn');
         const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
-
-        function isCollapsed() {
-            return localStorage.getItem(COLLAPSED_KEY) === 'true';
-        }
-
+        function isCollapsed() { return localStorage.getItem(COLLAPSED_KEY) === 'true'; }
         function applyCollapsed(collapsed) {
             document.body.classList.toggle('sidebar-collapsed', collapsed);
             collapseBtn.textContent = collapsed ? '▶' : '◀';
-            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            collapseBtn.title = collapsed ? 'Expandir menu' : 'Recolher menu';
             localStorage.setItem(COLLAPSED_KEY, collapsed);
         }
-
         collapseBtn.addEventListener('click', () => applyCollapsed(!isCollapsed()));
+        expandBtn.addEventListener('click', () => applyCollapsed(false));
         applyCollapsed(isCollapsed());
-
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
+        function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('open');    document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
         menuToggle.addEventListener('click', openSidebar);
         closeBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
-
-        sidebar.querySelectorAll('nav a').forEach(a => {
-            a.addEventListener('click', () => {
-                if (window.innerWidth <= 860) closeSidebar();
-            });
-        });
+        sidebar.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); }));
     })();
 </script>
 </body>

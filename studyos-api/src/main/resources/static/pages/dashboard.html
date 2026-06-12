@@ -7,8 +7,7 @@
     <link rel="icon" type="image/png" href="../assets/logo.png"/>
     <link rel="shortcut icon" href="../assets/logo.png"/>
 
-
-        <script>
+    <script>
         const Theme = (() => {
           const KEY  = 'studyos-theme';
           const ROOT = document.documentElement;
@@ -42,232 +41,206 @@
     <link rel="stylesheet" href="../css/components.css"/>
     <link rel="stylesheet" href="../css/dashboard.css"/>
 </head>
-<body class="app">
+<body>
 <script src="../js/loading-overlay.js"></script>
 
 <!-- ── Botão hambúrguer (mobile) ───────────── -->
-<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
-    ☰
-</button>
+<button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
 
 <!-- ── Overlay escuro atrás da sidebar ──────── -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<!-- ── Sidebar ─────────────────────────────── -->
-<aside class="sidebar" id="sidebar">
+<!-- ── Botão flutuante para expandir sidebar (desktop) ── -->
+<button class="sidebar-expand-btn" id="sidebar-expand-btn" aria-label="Expandir menu" title="Expandir menu">▶</button>
 
-    <!-- Cabeçalho da sidebar: logo + botão fechar/colapsar -->
-    <div class="sidebar-header">
-        <div class="logo">StudyOS</div>
-        <!-- Botão de colapsar (desktop) -->
-        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">
-            ◀
-        </button>
-        <!-- Botão de fechar (mobile) -->
-        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">
-            ✕
-        </button>
-    </div>
+<!-- ── App shell ───────────────────────────── -->
+<div class="app">
 
-    <nav>
-        <a href="dashboard.html" class="active">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-label">Dashboard</span>
-        </a>
-        <a href="subjects.html">
-            <span class="nav-icon">📖</span>
-            <span class="nav-label">Matérias</span>
-        </a>
-        <a href="study.html">
-            <span class="nav-icon">🧠</span>
-            <span class="nav-label">Métodos</span>
-        </a>
-        <a href="flashcards.html">
-            <span class="nav-icon">🃏</span>
-            <span class="nav-label">Flashcards</span>
-        </a>
-        <a href="profile.html">
-            <span class="nav-icon">👤</span>
-            <span class="nav-label">Perfil</span>
-        </a>
-    </nav>
+    <!-- ── Sidebar ─────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
 
-    <div class="user-info" id="user-info"></div>
-
-    <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
-    </button>
-
-    <button onclick="logout()" class="logout-btn">
-        <span class="nav-icon">↩</span>
-        <span class="nav-label">Sair</span>
-    </button>
-</aside>
-
-<!-- ── Main ────────────────────────────────── -->
-<main class="main">
-
-    <!-- Hero -->
-    <section class="hero">
-        <div>
-            <p class="hero-greeting" id="greeting">Bom dia</p>
-            <h1 class="hero-name" id="username">Estudante</h1>
-            <p class="hero-sub">Continue de onde parou. Cada minuto conta.</p>
+        <div class="sidebar-header">
+            <div class="logo">
+                <img class="logo-img" src="../assets/logo.png" alt="StudyOS">
+                <span class="logo-text">StudyOS</span>
+            </div>
+            <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+            <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
         </div>
-        <button class="hero-cta" onclick="window.location.href='study.html'">
-            <span class="hero-cta-icon">▶</span>
-            Iniciar estudo
-        </button>
-    </section>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-        <article class="stat-card stat-xp">
-            <div class="stat-header">
-                <span class="stat-icon">⚡</span>
-                <span class="stat-badge">+<span id="xp-today">0</span> hoje</span>
-            </div>
-            <p class="stat-value" id="xp">0</p>
-            <p class="stat-label">XP Total</p>
-            <div class="stat-bar-track"><div class="stat-bar-fill" id="xp-bar"></div></div>
-            <p class="stat-sub" id="next-level-xp">Próximo em 500 XP</p>
-        </article>
+        <nav>
+            <a href="dashboard.html" class="active" data-tooltip="Dashboard">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="subjects.html" data-tooltip="Matérias">
+                <span class="nav-icon">📖</span>
+                <span class="nav-label">Matérias</span>
+            </a>
+            <a href="study.html" data-tooltip="Métodos">
+                <span class="nav-icon">🧠</span>
+                <span class="nav-label">Métodos</span>
+            </a>
+            <a href="flashcards.html" data-tooltip="Flashcards">
+                <span class="nav-icon">🃏</span>
+                <span class="nav-label">Flashcards</span>
+            </a>
+            <a href="profile.html" data-tooltip="Perfil">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Perfil</span>
+            </a>
+        </nav>
 
-        <article class="stat-card stat-level">
-            <div class="stat-header"><span class="stat-icon">🏆</span></div>
-            <p class="stat-value" id="level">1</p>
-            <p class="stat-label">Nível atual</p>
-        </article>
-
-        <article class="stat-card stat-streak">
-            <div class="stat-header"><span class="stat-icon" id="streak-icon">🔥</span></div>
-            <p class="stat-value" id="streak">0</p>
-            <p class="stat-label">Dias seguidos</p>
-            <p class="stat-sub" id="streak-msg">Comece hoje!</p>
-        </article>
-
-        <article class="stat-card stat-hours">
-            <div class="stat-header"><span class="stat-icon">📚</span></div>
-            <p class="stat-value" id="total-hours">0h</p>
-            <p class="stat-label">Total estudado</p>
-            <p class="stat-sub" id="subjects-count">0 matérias</p>
-        </article>
-    </div>
-
-    <!-- Charts -->
-    <div class="dash-section">
-        <div class="dash-section-header">
-            <h2 class="dash-section-title">Atividade</h2>
-            <span class="dash-section-tag">Últimos 7 dias</span>
+        <div class="sidebar-footer">
+            <div class="user-info" id="user-info"></div>
+            <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
+                <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+                <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
+            </button>
+            <button onclick="logout()" class="logout-btn">
+                <span class="nav-icon">↩</span>
+                <span class="nav-label">Sair</span>
+            </button>
         </div>
-        <div class="charts-row">
-            <div class="chart-card">
-                <div>
-                    <p class="chart-card-title">Horas por dia</p>
-                    <p class="chart-card-sub">Esta semana</p>
-                </div>
-                <div class="chart-canvas-wrap"><canvas id="chart-bar" height="160"></canvas></div>
-            </div>
 
-            <div class="chart-card">
-                <div>
-                    <p class="chart-card-title">Evolução de XP</p>
-                    <p class="chart-card-sub">Últimas semanas</p>
-                </div>
-                <div class="chart-canvas-wrap"><canvas id="chart-line" height="160"></canvas></div>
-            </div>
+    </aside>
 
-            <div class="chart-card">
-                <div>
-                    <p class="chart-card-title">Por matéria</p>
-                    <p class="chart-card-sub">Distribuição de tempo</p>
-                </div>
-                <div class="chart-canvas-wrap pie-wrap"><canvas id="chart-pie" height="180"></canvas></div>
-            </div>
-        </div>
-    </div>
+    <!-- ── Main ────────────────────────────────── -->
+    <main class="main">
 
-    <!-- Matérias + Sessões -->
-    <div class="two-col">
-        <div class="dash-section">
-            <div class="dash-section-header">
-                <h2 class="dash-section-title">Matérias</h2>
-                <a href="subjects.html" class="dash-section-link">Ver todas →</a>
+        <section class="hero">
+            <div>
+                <p class="hero-greeting" id="greeting">Bom dia</p>
+                <h1 class="hero-name" id="username">Estudante</h1>
+                <p class="hero-sub">Continue de onde parou. Cada minuto conta.</p>
             </div>
-            <div class="dash-card" id="subjects-list">
-                <div class="empty-state">Carregando...</div>
-            </div>
+            <button class="hero-cta" onclick="window.location.href='study.html'">
+                <span class="hero-cta-icon">▶</span>
+                Iniciar estudo
+            </button>
+        </section>
+
+        <div class="stats-grid">
+            <article class="stat-card stat-xp">
+                <div class="stat-header">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-badge">+<span id="xp-today">0</span> hoje</span>
+                </div>
+                <p class="stat-value" id="xp">0</p>
+                <p class="stat-label">XP Total</p>
+                <div class="stat-bar-track"><div class="stat-bar-fill" id="xp-bar"></div></div>
+                <p class="stat-sub" id="next-level-xp">Próximo em 500 XP</p>
+            </article>
+            <article class="stat-card stat-level">
+                <div class="stat-header"><span class="stat-icon">🏆</span></div>
+                <p class="stat-value" id="level">1</p>
+                <p class="stat-label">Nível atual</p>
+            </article>
+            <article class="stat-card stat-streak">
+                <div class="stat-header"><span class="stat-icon" id="streak-icon">🔥</span></div>
+                <p class="stat-value" id="streak">0</p>
+                <p class="stat-label">Dias seguidos</p>
+                <p class="stat-sub" id="streak-msg">Comece hoje!</p>
+            </article>
+            <article class="stat-card stat-hours">
+                <div class="stat-header"><span class="stat-icon">📚</span></div>
+                <p class="stat-value" id="total-hours">0h</p>
+                <p class="stat-label">Total estudado</p>
+                <p class="stat-sub" id="subjects-count">0 matérias</p>
+            </article>
         </div>
 
         <div class="dash-section">
             <div class="dash-section-header">
-                <h2 class="dash-section-title">Sessões recentes</h2>
+                <h2 class="dash-section-title">Atividade</h2>
+                <span class="dash-section-tag">Últimos 7 dias</span>
             </div>
-            <div class="dash-card" id="sessions-list">
-                <div class="empty-state">Carregando...</div>
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div>
+                        <p class="chart-card-title">Horas por dia</p>
+                        <p class="chart-card-sub">Esta semana</p>
+                    </div>
+                    <div class="chart-canvas-wrap"><canvas id="chart-bar" height="160"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div>
+                        <p class="chart-card-title">Evolução de XP</p>
+                        <p class="chart-card-sub">Últimas semanas</p>
+                    </div>
+                    <div class="chart-canvas-wrap"><canvas id="chart-line" height="160"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div>
+                        <p class="chart-card-title">Por matéria</p>
+                        <p class="chart-card-sub">Distribuição de tempo</p>
+                    </div>
+                    <div class="chart-canvas-wrap pie-wrap"><canvas id="chart-pie" height="180"></canvas></div>
+                </div>
             </div>
         </div>
-    </div>
 
-</main>
+        <div class="two-col">
+            <div class="dash-section">
+                <div class="dash-section-header">
+                    <h2 class="dash-section-title">Matérias</h2>
+                    <a href="subjects.html" class="dash-section-link">Ver todas →</a>
+                </div>
+                <div class="dash-card" id="subjects-list">
+                    <div class="empty-state">Carregando...</div>
+                </div>
+            </div>
+            <div class="dash-section">
+                <div class="dash-section-header">
+                    <h2 class="dash-section-title">Sessões recentes</h2>
+                </div>
+                <div class="dash-card" id="sessions-list">
+                    <div class="empty-state">Carregando...</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</div><!-- /.app -->
 
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/dashboard.js"></script>
 
-<!-- Lógica da sidebar colapsável -->
 <script>
     (function () {
-        const sidebar       = document.getElementById('sidebar');
-        const overlay       = document.getElementById('sidebar-overlay');
-        const menuToggle    = document.getElementById('menu-toggle');
-        const closeBtn      = document.getElementById('sidebar-close-btn');
-        const collapseBtn   = document.getElementById('sidebar-collapse-btn');
+        const sidebar     = document.getElementById('sidebar');
+        const overlay     = document.getElementById('sidebar-overlay');
+        const menuToggle  = document.getElementById('menu-toggle');
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const collapseBtn = document.getElementById('sidebar-collapse-btn');
+        const expandBtn   = document.getElementById('sidebar-expand-btn');
         const COLLAPSED_KEY = 'studyos-sidebar-collapsed';
 
-        /* ── Desktop: colapsar / expandir ── */
-        function isCollapsed() {
-            return localStorage.getItem(COLLAPSED_KEY) === 'true';
-        }
+        function isCollapsed() { return localStorage.getItem(COLLAPSED_KEY) === 'true'; }
 
         function applyCollapsed(collapsed) {
             document.body.classList.toggle('sidebar-collapsed', collapsed);
-            collapseBtn.textContent = collapsed ? '▶' : '◀';
-            collapseBtn.title       = collapsed ? 'Expandir menu' : 'Recolher menu';
+            if (collapseBtn) {
+                collapseBtn.textContent = collapsed ? '▶' : '◀';
+                collapseBtn.title = collapsed ? 'Expandir menu' : 'Recolher menu';
+            }
             localStorage.setItem(COLLAPSED_KEY, collapsed);
         }
 
-        collapseBtn.addEventListener('click', () => {
-            applyCollapsed(!isCollapsed());
-        });
+        if (collapseBtn) collapseBtn.addEventListener('click', () => applyCollapsed(!isCollapsed()));
+        if (expandBtn)   expandBtn.addEventListener('click',   () => applyCollapsed(false));
 
-        /* Restaura estado salvo ao carregar */
         applyCollapsed(isCollapsed());
 
-        /* ── Mobile: abrir / fechar drawer ── */
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
+        function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('open');    document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
 
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        menuToggle.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-
-        /* Fecha ao navegar (links da sidebar no mobile) */
-        sidebar.querySelectorAll('nav a').forEach(a => {
-            a.addEventListener('click', () => {
-                if (window.innerWidth <= 860) closeSidebar();
-            });
-        });
+        if (menuToggle) menuToggle.addEventListener('click', openSidebar);
+        if (closeBtn)   closeBtn.addEventListener('click', closeSidebar);
+        if (overlay)    overlay.addEventListener('click', closeSidebar);
+        sidebar.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); }));
     })();
 </script>
 </body>

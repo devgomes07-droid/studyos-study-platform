@@ -6,153 +6,108 @@
     <title>StudyOS — Flashcards</title>
     <link rel="icon" type="image/png" href="../assets/logo.png"/>
     <link rel="shortcut icon" href="../assets/logo.png"/>
-
     <script>
         const Theme = (() => {
-          const KEY  = 'studyos-theme';
-          const ROOT = document.documentElement;
+          const KEY = 'studyos-theme', ROOT = document.documentElement;
           function sys() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
           function getSaved() { return localStorage.getItem(KEY) || sys(); }
-          function apply(t) {
-            ROOT.setAttribute('data-theme', t);
-            document.querySelectorAll('[data-theme-label]').forEach(el => {
-              el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro';
-            });
-          }
-          function toggle() {
-            const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark';
-            localStorage.setItem(KEY, next);
-            apply(next);
-          }
-          function init() {
-            apply(getSaved());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-              if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light');
-            });
-          }
+          function apply(t) { ROOT.setAttribute('data-theme', t); document.querySelectorAll('[data-theme-label]').forEach(el => { el.textContent = t === 'dark' ? '☀️ Modo claro' : '🌙 Modo escuro'; }); }
+          function toggle() { const next = (ROOT.getAttribute('data-theme') || getSaved()) === 'dark' ? 'light' : 'dark'; localStorage.setItem(KEY, next); apply(next); }
+          function init() { apply(getSaved()); window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { if (!localStorage.getItem(KEY)) apply(e.matches ? 'dark' : 'light'); }); }
           return { init, toggle };
         })();
         Theme.init();
     </script>
-
-    <link rel="stylesheet" id="hljs-theme"
-          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"/>
+    <link rel="stylesheet" id="hljs-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/components.css"/>
     <link rel="stylesheet" href="../css/flashcards.css"/>
 </head>
-<body class="app">
+<body>
 
 <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
+<button class="sidebar-expand-btn" id="sidebar-expand-btn" aria-label="Expandir menu" title="Expandir menu">▶</button>
 
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <img src="../assets/logo.png" alt="StudyOS" class="logo-img"/>
-            <span class="logo-text nav-label">StudyOS</span>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img class="logo-img" src="../assets/logo.png" alt="StudyOS">
+                <span class="logo-text">StudyOS</span>
+            </div>
+            <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
+            <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
         </div>
-        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Recolher menu" title="Recolher menu">◀</button>
-        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Fechar menu">✕</button>
-    </div>
-    <nav>
-        <a href="dashboard.html" data-tooltip="Dashboard"><span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span></a>
-        <a href="subjects.html"  data-tooltip="Matérias"><span class="nav-icon">📖</span><span class="nav-label">Matérias</span></a>
-        <a href="study.html"     data-tooltip="Métodos"><span class="nav-icon">🧠</span><span class="nav-label">Métodos</span></a>
-        <a href="flashcards.html" class="active" data-tooltip="Flashcards"><span class="nav-icon">🃏</span><span class="nav-label">Flashcards</span></a>
-        <a href="profile.html"   data-tooltip="Perfil"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></a>
-    </nav>
-    <div class="user-info" id="user-info"></div>
-    <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
-        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-        <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
-    </button>
-    <button onclick="logout()" class="logout-btn">
-        <span class="nav-icon">↩</span><span class="nav-label">Sair</span>
-    </button>
-</aside>
-
-<main class="main">
-    <div class="fc-page">
-        <div class="fc-header">
-            <div>
-                <h1 class="page-title">Flashcards</h1>
-                <p class="page-subtitle">Estude com repetição espaçada. Suporta código e markdown.</p>
-            </div>
-            <div class="fc-header-actions">
-                <button class="btn btn-secondary" id="btn-study-all" style="display:none" onclick="startStudy('all')">▶ Estudar todos</button>
-                <button class="btn btn-primary" onclick="openCreate()">+ Novo card</button>
-            </div>
+        <nav>
+            <a href="dashboard.html" data-tooltip="Dashboard"><span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span></a>
+            <a href="subjects.html" data-tooltip="Matérias"><span class="nav-icon">📖</span><span class="nav-label">Matérias</span></a>
+            <a href="study.html" data-tooltip="Métodos"><span class="nav-icon">🧠</span><span class="nav-label">Métodos</span></a>
+            <a href="flashcards.html" class="active" data-tooltip="Flashcards"><span class="nav-icon">🃏</span><span class="nav-label">Flashcards</span></a>
+            <a href="profile.html" data-tooltip="Perfil"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info" id="user-info"></div>
+            <button class="theme-toggle" onclick="Theme.toggle()" aria-label="Alternar tema">
+                <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+                <span class="nav-label" data-theme-label>🌙 Modo escuro</span>
+            </button>
+            <button onclick="logout()" class="logout-btn">
+                <span class="nav-icon">↩</span><span class="nav-label">Sair</span>
+            </button>
         </div>
+    </aside>
 
-        <div class="fc-summary">
-            <div class="fc-summary-card">
-                <div class="fc-summary-icon" style="background:rgba(var(--primary-rgb),.12)">🃏</div>
-                <div class="fc-summary-info">
-                    <p class="fc-summary-value" id="stat-total">0</p>
-                    <p class="fc-summary-label">Total</p>
-                </div>
-            </div>
-            <div class="fc-summary-card">
-                <div class="fc-summary-icon" style="background:rgba(239,68,68,.12)">🔔</div>
-                <div class="fc-summary-info">
-                    <p class="fc-summary-value" id="stat-due">0</p>
-                    <p class="fc-summary-label">Para hoje</p>
-                </div>
-            </div>
-            <div class="fc-summary-card">
-                <div class="fc-summary-icon" style="background:rgba(245,158,11,.12)">⭐</div>
-                <div class="fc-summary-info">
-                    <p class="fc-summary-value" id="stat-mastered">0</p>
-                    <p class="fc-summary-label">Dominados</p>
-                </div>
-            </div>
-            <div class="fc-summary-card">
-                <div class="fc-summary-icon" style="background:rgba(16,185,129,.12)">📅</div>
-                <div class="fc-summary-info">
-                    <p class="fc-summary-value" id="stat-streak">0</p>
-                    <p class="fc-summary-label">Dias revisando</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="fc-due-alert hidden" id="due-alert">
-            <div class="fc-due-alert-left">
-                <span class="fc-due-alert-icon">🔥</span>
+    <main class="main">
+        <div class="fc-page">
+            <div class="fc-header">
                 <div>
-                    <p class="fc-due-alert-title" id="due-alert-title">Cards para revisar!</p>
-                    <p class="fc-due-alert-sub"   id="due-alert-sub">Revise agora para manter seu progresso.</p>
+                    <h1 class="page-title">Flashcards</h1>
+                    <p class="page-subtitle">Estude com repetição espaçada. Suporta código e markdown.</p>
+                </div>
+                <div class="fc-header-actions">
+                    <button class="btn btn-secondary" id="btn-study-all" style="display:none" onclick="startStudy('all')">▶ Estudar todos</button>
+                    <button class="btn btn-primary" onclick="openCreate()">+ Novo card</button>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="startStudy('due')">Revisar agora</button>
+            <div class="fc-summary">
+                <div class="fc-summary-card"><div class="fc-summary-icon" style="background:rgba(var(--primary-rgb),.12)">🃏</div><div class="fc-summary-info"><p class="fc-summary-value" id="stat-total">0</p><p class="fc-summary-label">Total</p></div></div>
+                <div class="fc-summary-card"><div class="fc-summary-icon" style="background:rgba(239,68,68,.12)">🔔</div><div class="fc-summary-info"><p class="fc-summary-value" id="stat-due">0</p><p class="fc-summary-label">Para hoje</p></div></div>
+                <div class="fc-summary-card"><div class="fc-summary-icon" style="background:rgba(245,158,11,.12)">⭐</div><div class="fc-summary-info"><p class="fc-summary-value" id="stat-mastered">0</p><p class="fc-summary-label">Dominados</p></div></div>
+                <div class="fc-summary-card"><div class="fc-summary-icon" style="background:rgba(16,185,129,.12)">📅</div><div class="fc-summary-info"><p class="fc-summary-value" id="stat-streak">0</p><p class="fc-summary-label">Dias revisando</p></div></div>
+            </div>
+            <div class="fc-due-alert hidden" id="due-alert">
+                <div class="fc-due-alert-left">
+                    <span class="fc-due-alert-icon">🔥</span>
+                    <div>
+                        <p class="fc-due-alert-title" id="due-alert-title">Cards para revisar!</p>
+                        <p class="fc-due-alert-sub" id="due-alert-sub">Revise agora para manter seu progresso.</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="startStudy('due')">Revisar agora</button>
+            </div>
+            <div class="fc-filters" id="fc-filters">
+                <button class="fc-chip active" onclick="setFilter('all', this)">Todos</button>
+                <button class="fc-chip" onclick="setFilter('due', this)">🔔 Para revisar</button>
+                <button class="fc-chip" onclick="setFilter('new', this)">✨ Novos</button>
+                <button class="fc-chip" onclick="setFilter('mastered', this)">⭐ Dominados</button>
+                <span id="subject-chips"></span>
+            </div>
+            <div class="fc-grid" id="fc-grid">
+                <div class="fc-empty"><div class="fc-empty-emoji">🃏</div><h3>Carregando...</h3></div>
+            </div>
         </div>
+    </main>
+</div>
 
-        <div class="fc-filters" id="fc-filters">
-            <button class="fc-chip active" onclick="setFilter('all', this)">Todos</button>
-            <button class="fc-chip" onclick="setFilter('due',      this)">🔔 Para revisar</button>
-            <button class="fc-chip" onclick="setFilter('new',      this)">✨ Novos</button>
-            <button class="fc-chip" onclick="setFilter('mastered', this)">⭐ Dominados</button>
-            <span id="subject-chips"></span>
-        </div>
-
-        <div class="fc-grid" id="fc-grid">
-            <div class="fc-empty"><div class="fc-empty-emoji">🃏</div><h3>Carregando...</h3></div>
-        </div>
-    </div>
-</main>
-
-<!-- ══ STUDY OVERLAY ══════════════════════════ -->
 <div class="fc-study" id="fc-study">
     <div class="fc-study-topbar">
-        <span class="fc-study-title"   id="study-title">Revisão</span>
+        <span class="fc-study-title" id="study-title">Revisão</span>
         <span class="fc-study-counter" id="study-counter">1 / 1</span>
         <button class="btn btn-secondary" onclick="closeStudy()">✕ Fechar</button>
     </div>
-    <div class="fc-study-progress">
-        <div class="fc-study-progress-fill" id="study-progress" style="width:0%"></div>
-    </div>
+    <div class="fc-study-progress"><div class="fc-study-progress-fill" id="study-progress" style="width:0%"></div></div>
     <div class="fc-study-center" id="study-main">
         <div class="fc-study-flip" id="study-flip" onclick="flipCard()">
             <div class="fc-study-flip-inner">
@@ -181,97 +136,51 @@
         <p class="fc-done-sub" id="study-done-sub">Você revisou todos os cards.</p>
         <div class="fc-done-actions">
             <button class="btn btn-secondary" onclick="closeStudy()">Voltar</button>
-            <button class="btn btn-primary"   onclick="startStudy('all')">Estudar novamente</button>
+            <button class="btn btn-primary" onclick="startStudy('all')">Estudar novamente</button>
         </div>
     </div>
 </div>
 
-<!-- ══ CREATE MODAL ═══════════════════════════ -->
 <div class="modal-backdrop" id="create-modal">
     <div class="modal" style="max-width:580px;width:100%">
-        <div class="modal-header">
-            <h2>Novo flashcard</h2>
-            <button class="icon-button" onclick="closeCreate()">✕</button>
-        </div>
+        <div class="modal-header"><h2>Novo flashcard</h2><button class="icon-button" onclick="closeCreate()">✕</button></div>
         <div class="fc-form">
             <label>Matéria<select class="input" id="fc-subject-sel"></select></label>
-            <label>
-                Pergunta
-                <textarea class="textarea" id="fc-question-input" rows="3"
-                          placeholder="Ex: O que é Big O notation?"
-                          oninput="updatePreview('q')"></textarea>
-                <p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p>
-            </label>
-            <div class="fc-preview-wrap" id="preview-q-wrap" style="display:none">
-                <div class="fc-preview-label">Preview</div>
-                <div class="fc-preview-content fc-content" id="preview-q"></div>
-            </div>
-            <label>
-                Resposta
-                <textarea class="textarea" id="fc-answer-input" rows="4"
-                          placeholder="Ex: Notação que descreve a complexidade..."
-                          oninput="updatePreview('a')"></textarea>
-            </label>
-            <div class="fc-preview-wrap" id="preview-a-wrap" style="display:none">
-                <div class="fc-preview-label">Preview</div>
-                <div class="fc-preview-content fc-content" id="preview-a"></div>
-            </div>
+            <label>Pergunta<textarea class="textarea" id="fc-question-input" rows="3" placeholder="Ex: O que é Big O notation?" oninput="updatePreview('q')"></textarea><p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p></label>
+            <div class="fc-preview-wrap" id="preview-q-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="preview-q"></div></div>
+            <label>Resposta<textarea class="textarea" id="fc-answer-input" rows="4" placeholder="Ex: Notação que descreve a complexidade..." oninput="updatePreview('a')"></textarea></label>
+            <div class="fc-preview-wrap" id="preview-a-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="preview-a"></div></div>
             <p class="form-message error" id="fc-err"></p>
         </div>
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeCreate()">Cancelar</button>
-            <button class="btn btn-primary"   onclick="createCard()">Criar flashcard</button>
+            <button class="btn btn-primary" onclick="createCard()">Criar flashcard</button>
         </div>
     </div>
 </div>
 
-<!-- ══ EDIT MODAL ════════════════════════════ -->
 <div class="modal-backdrop" id="edit-modal">
     <div class="modal" style="max-width:580px;width:100%">
-        <div class="modal-header">
-            <h2>Editar flashcard</h2>
-            <button class="icon-button" onclick="closeEdit()">✕</button>
-        </div>
+        <div class="modal-header"><h2>Editar flashcard</h2><button class="icon-button" onclick="closeEdit()">✕</button></div>
         <div class="fc-form">
             <label>Matéria<select class="input" id="edit-subject-sel"></select></label>
-            <label>
-                Pergunta
-                <textarea class="textarea" id="edit-question-input" rows="3"
-                          oninput="updateEditPreview('q')"></textarea>
-                <p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p>
-            </label>
-            <div class="fc-preview-wrap" id="edit-preview-q-wrap" style="display:none">
-                <div class="fc-preview-label">Preview</div>
-                <div class="fc-preview-content fc-content" id="edit-preview-q"></div>
-            </div>
-            <label>
-                Resposta
-                <textarea class="textarea" id="edit-answer-input" rows="4"
-                          oninput="updateEditPreview('a')"></textarea>
-            </label>
-            <div class="fc-preview-wrap" id="edit-preview-a-wrap" style="display:none">
-                <div class="fc-preview-label">Preview</div>
-                <div class="fc-preview-content fc-content" id="edit-preview-a"></div>
-            </div>
+            <label>Pergunta<textarea class="textarea" id="edit-question-input" rows="3" oninput="updateEditPreview('q')"></textarea><p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p></label>
+            <div class="fc-preview-wrap" id="edit-preview-q-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="edit-preview-q"></div></div>
+            <label>Resposta<textarea class="textarea" id="edit-answer-input" rows="4" oninput="updateEditPreview('a')"></textarea></label>
+            <div class="fc-preview-wrap" id="edit-preview-a-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="edit-preview-a"></div></div>
             <p class="form-message error" id="edit-err"></p>
         </div>
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeEdit()">Cancelar</button>
-            <button class="btn btn-primary"   onclick="saveEdit()">Salvar alterações</button>
+            <button class="btn btn-primary" onclick="saveEdit()">Salvar alterações</button>
         </div>
     </div>
 </div>
 
-<!-- ══ CONFIRM DELETE MODAL ══════════════════ -->
 <div class="modal-backdrop" id="confirm-modal">
     <div class="modal" style="max-width:400px;width:100%">
-        <div class="modal-header">
-            <h2>🗑️ Apagar flashcard</h2>
-            <button class="icon-button" onclick="closeConfirm()">✕</button>
-        </div>
-        <p style="color:var(--soft-text);margin:16px 0 24px;font-size:15px;padding:0 4px">
-            Tem certeza? Esta ação não pode ser desfeita.
-        </p>
+        <div class="modal-header"><h2>🗑️ Apagar flashcard</h2><button class="icon-button" onclick="closeConfirm()">✕</button></div>
+        <p style="color:var(--soft-text);margin:16px 0 24px;font-size:15px;padding:0 4px">Tem certeza? Esta ação não pode ser desfeita.</p>
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeConfirm()">Cancelar</button>
             <button class="btn btn-danger" id="confirm-delete-btn">Apagar</button>
@@ -279,71 +188,37 @@
     </div>
 </div>
 
-<!-- ══ TOAST ══════════════════════════════════ -->
-<div id="toast-container" style="
-  position:fixed; bottom:24px; right:24px;
-  display:flex; flex-direction:column; gap:10px;
-  z-index:9999; pointer-events:none;
-"></div>
+<div id="toast-container" style="position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:9999;pointer-events:none;"></div>
 
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/flashcards.js"></script>
-
 <script>
-    /* ── Toast simples (fallback) ── */
     if (typeof Toast === 'undefined') {
         window.Toast = {
-            _show(msg, color) {
-                const el = document.createElement('div');
-                el.textContent = msg;
-                el.style.cssText = `
-                    background:${color}; color:#fff; padding:12px 20px;
-                    border-radius:12px; font-size:14px; font-weight:700;
-                    box-shadow:0 8px 24px rgba(0,0,0,0.2);
-                    animation: toastIn .25s ease;
-                    pointer-events:auto;
-                `;
-                const c = document.getElementById('toast-container');
-                c.appendChild(el);
-                setTimeout(() => el.remove(), 3000);
-            },
+            _show(msg, color) { const el = document.createElement('div'); el.textContent = msg; el.style.cssText = `background:${color};color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:toastIn .25s ease;pointer-events:auto;`; document.getElementById('toast-container').appendChild(el); setTimeout(() => el.remove(), 3000); },
             success(m) { this._show('✅ ' + m, '#16a34a'); },
             error(m)   { this._show('❌ ' + m, '#dc2626'); },
         };
-        const s = document.createElement('style');
-        s.textContent = '@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}';
-        document.head.appendChild(s);
+        const s = document.createElement('style'); s.textContent = '@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}'; document.head.appendChild(s);
     }
-
-    /* ── Sidebar ── */
     (function () {
-        const sidebar     = document.getElementById('sidebar');
-        const overlay     = document.getElementById('sidebar-overlay');
-        const menuToggle  = document.getElementById('menu-toggle');
-        const closeBtn    = document.getElementById('sidebar-close-btn');
-        const collapseBtn = document.getElementById('sidebar-collapse-btn');
-        const KEY = 'studyos-sidebar-collapsed';
-
+        const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay'),
+              menuToggle = document.getElementById('menu-toggle'), closeBtn = document.getElementById('sidebar-close-btn'),
+              collapseBtn = document.getElementById('sidebar-collapse-btn'),
+              expandBtn = document.getElementById('sidebar-expand-btn'),
+              KEY = 'studyos-sidebar-collapsed';
         function isCollapsed() { return localStorage.getItem(KEY) === 'true'; }
-        function applyCollapsed(c) {
-            document.body.classList.toggle('sidebar-collapsed', c);
-            collapseBtn.textContent = c ? '▶' : '◀';
-            collapseBtn.title       = c ? 'Expandir menu' : 'Recolher menu';
-            localStorage.setItem(KEY, c);
-        }
+        function applyCollapsed(c) { document.body.classList.toggle('sidebar-collapsed', c); collapseBtn.textContent = c ? '▶' : '◀'; collapseBtn.title = c ? 'Expandir menu' : 'Recolher menu'; localStorage.setItem(KEY, c); }
         collapseBtn.addEventListener('click', () => applyCollapsed(!isCollapsed()));
+        expandBtn.addEventListener('click', () => applyCollapsed(false));
         applyCollapsed(isCollapsed());
-
-        function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('open');    document.body.style.overflow='hidden'; }
-        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow=''; }
-
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
         menuToggle.addEventListener('click', openSidebar);
         closeBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
-        sidebar.querySelectorAll('nav a').forEach(a =>
-            a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); })
-        );
+        sidebar.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 860) closeSidebar(); }));
     })();
 </script>
 </body>
