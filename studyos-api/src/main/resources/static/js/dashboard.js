@@ -26,6 +26,10 @@ if (userInfo) {
 
 function logout() { Utils.logout(); }
 
+/* ── Guarda dados carregados para rebuild de tema ── */
+let _lastSubjects = [];
+let _lastSessions = [];
+
 /* ── Stats ─────────────────────────────────── */
 function renderStats(subjects, sessions) {
   const xp     = user.xp            ?? 0;
@@ -144,6 +148,10 @@ function renderSessions(sessions) {
 let _charts = {};
 
 function buildCharts(subjects, sessions) {
+  /* guarda para rebuild ao trocar tema */
+  if (subjects.length) _lastSubjects = subjects;
+  if (sessions.length) _lastSessions = sessions;
+
   const isDark    = document.documentElement.getAttribute('data-theme') === 'dark';
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
   const textColor = isDark ? '#94a3b8' : '#64748b';
@@ -162,6 +170,7 @@ function buildCharts(subjects, sessions) {
     padding: 10,
   };
 
+  /* BAR */
   const barCtx = document.getElementById('chart-bar');
   if (barCtx) {
     const ctx      = barCtx.getContext('2d');
@@ -171,15 +180,15 @@ function buildCharts(subjects, sessions) {
     for (let i = 6; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
       labels.push(dayNames[d.getDay()]);
-      const h = sessions
+      const h = _lastSessions
         .filter(s => s.completed && new Date(s.startedAt).toDateString() === d.toDateString())
         .reduce((a, s) => a + (s.durationMinutes || 0) / 60, 0);
       data.push(Math.round(h * 10) / 10);
     }
 
     const grad = ctx.createLinearGradient(0, 0, 0, 160);
-    grad.addColorStop(0, 'rgba(99,102,241,0.9)');
-    grad.addColorStop(1, 'rgba(99,102,241,0.3)');
+    grad.addColorStop(0, isDark ? 'rgba(99,102,241,0.9)' : 'rgba(79,70,229,0.85)');
+    grad.addColorStop(1, isDark ? 'rgba(99,102,241,0.3)' : 'rgba(79,70,229,0.3)');
 
     _charts.bar = new Chart(ctx, {
       type: 'bar',
@@ -195,6 +204,7 @@ function buildCharts(subjects, sessions) {
     });
   }
 
+  /* LINE */
   const lineCtx = document.getElementById('chart-line');
   if (lineCtx) {
     const ctx    = lineCtx.getContext('2d');
@@ -203,19 +213,19 @@ function buildCharts(subjects, sessions) {
     for (let i = 6; i >= 0; i--) {
       const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate() - i * 7);
       labels.push(`S${7 - i}`);
-      const xp = sessions
+      const xp = _lastSessions
         .filter(s => s.completed && new Date(s.startedAt) <= weekEnd)
         .reduce((a, s) => a + (s.xpEarned || 0), 0);
       data.push(xp);
     }
 
     const grad = ctx.createLinearGradient(0, 0, 0, 160);
-    grad.addColorStop(0, 'rgba(99,102,241,0.25)');
+    grad.addColorStop(0, isDark ? 'rgba(99,102,241,0.25)' : 'rgba(79,70,229,0.2)');
     grad.addColorStop(1, 'rgba(99,102,241,0)');
 
     _charts.line = new Chart(ctx, {
       type: 'line',
-      data: { labels, datasets: [{ data, borderColor: '#6366f1', borderWidth: 2.5, backgroundColor: grad, fill: true, tension: 0.4, pointBackgroundColor: '#6366f1', pointRadius: 4, pointHoverRadius: 6 }] },
+      data: { labels, datasets: [{ data, borderColor: isDark ? '#6366f1' : '#4f46e5', borderWidth: 2.5, backgroundColor: grad, fill: true, tension: 0.4, pointBackgroundColor: isDark ? '#6366f1' : '#4f46e5', pointRadius: 4, pointHoverRadius: 6 }] },
       options: {
         responsive: true,
         plugins: { legend: { display: false }, tooltip: { ...tooltipDefaults, callbacks: { label: c => ` ${c.raw} XP` } } },
@@ -227,14 +237,15 @@ function buildCharts(subjects, sessions) {
     });
   }
 
+  /* PIE */
   const pieCtx = document.getElementById('chart-pie');
   if (pieCtx) {
-    if (subjects.length) {
+    if (_lastSubjects.length) {
       _charts.pie = new Chart(pieCtx.getContext('2d'), {
         type: 'doughnut',
         data: {
-          labels: subjects.map(s => s.name),
-          datasets: [{ data: subjects.map(s => s.totalHoursStudied || 0), backgroundColor: subjects.map(s => s.color || '#6366f1'), borderWidth: 0, hoverOffset: 6 }]
+          labels: _lastSubjects.map(s => s.name),
+          datasets: [{ data: _lastSubjects.map(s => s.totalHoursStudied || 0), backgroundColor: _lastSubjects.map(s => s.color || '#6366f1'), borderWidth: 0, hoverOffset: 6 }]
         },
         options: {
           responsive: true, cutout: '68%',
@@ -274,16 +285,17 @@ async function init() {
     buildCharts([], []);
     if (typeof Toast !== 'undefined') Toast.error('Erro ao carregar dados.');
   } finally {
-      // loading mínimo de 3 segundos
-      setTimeout(() => {
-        if (window.StudyLoading) window.StudyLoading.hide();
-      }, 3000);
-    }
+    setTimeout(() => {
+      if (window.StudyLoading) window.StudyLoading.hide();
+    }, 3000);
+  }
 }
 
-document.documentElement.addEventListener && (() => {
+/* ── Rebuild charts ao trocar tema ─────────── */
+(() => {
   const obs = new MutationObserver(() => {
-    if (Object.keys(_charts).length) buildCharts([], []);
+    /* usa os dados já carregados, não arrays vazios */
+    buildCharts(_lastSubjects, _lastSessions);
   });
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
