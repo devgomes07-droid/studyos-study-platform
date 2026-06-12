@@ -62,6 +62,13 @@ public class GoogleAuthService {
             System.out.println("Tamanho do credential recebido: " + (credential == null ? "null" : credential.length()));
             System.out.println("Primeiros 50 chars do credential: " + (credential == null ? "null" : credential.substring(0, Math.min(50, credential.length()))));
 
+            // Decodifica o JWT manualmente (sem verificar assinatura) so para debug
+            String[] parts = credential.split("\\.");
+            if (parts.length >= 2) {
+                String payloadJson = new String(java.util.Base64.getUrlDecoder().decode(parts[1]));
+                System.out.println("Payload bruto do token (sem verificacao): " + payloadJson);
+            }
+
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(), GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(googleClientId))
