@@ -57,6 +57,11 @@ public class GoogleAuthService {
 
     private GoogleIdToken.Payload verifyToken(String credential) {
         try {
+            System.out.println("=== DEBUG GOOGLE AUTH ===");
+            System.out.println("Client ID configurado: [" + googleClientId + "]");
+            System.out.println("Tamanho do credential recebido: " + (credential == null ? "null" : credential.length()));
+            System.out.println("Primeiros 50 chars do credential: " + (credential == null ? "null" : credential.substring(0, Math.min(50, credential.length()))));
+
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(), GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(googleClientId))
@@ -64,10 +69,14 @@ public class GoogleAuthService {
 
             GoogleIdToken idToken = verifier.verify(credential);
             if (idToken == null) {
+                System.out.println("verifier.verify() retornou NULL");
                 throw new RuntimeException("Token do Google inválido");
             }
+            System.out.println("Token verificado com sucesso. Audience do token: " + idToken.getPayload().getAudienceAsList());
             return idToken.getPayload();
         } catch (Exception e) {
+            System.out.println("EXCEPTION na verificação: " + e.getClass().getName());
+            e.printStackTrace();
             throw new RuntimeException("Erro ao verificar token do Google: " + e.getMessage());
         }
     }
