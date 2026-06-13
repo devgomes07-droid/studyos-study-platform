@@ -83,7 +83,13 @@ public class GoogleAuthService {
                 throw new RuntimeException("Issuer invalido: " + issuer);
             }
 
-            if (!claims.getAudience().contains(googleClientId)) {
+            String clientIdTrimmed = googleClientId.trim();
+            boolean audienceMatches = claims.getAudience().stream()
+                    .anyMatch(aud -> aud.trim().equals(clientIdTrimmed));
+
+            if (!audienceMatches) {
+                System.out.println("DEBUG audience token: [" + claims.getAudience() + "]");
+                System.out.println("DEBUG googleClientId: [" + googleClientId + "]");
                 throw new RuntimeException("Audience invalida: " + claims.getAudience());
             }
 
