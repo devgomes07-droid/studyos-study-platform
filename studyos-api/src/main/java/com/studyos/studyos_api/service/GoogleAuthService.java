@@ -88,21 +88,6 @@ public class GoogleAuthService {
                     .anyMatch(aud -> aud.trim().equals(clientIdTrimmed));
 
             if (!audienceMatches) {
-                System.out.println("DEBUG audience token: [" + claims.getAudience() + "]");
-                System.out.println("DEBUG googleClientId: [" + googleClientId + "]");
-                System.out.println("DEBUG googleClientId length: " + googleClientId.length());
-                if (!claims.getAudience().isEmpty()) {
-                    String tokenAud = claims.getAudience().get(0).trim();
-                    String configId = googleClientId.trim();
-                    System.out.println("DEBUG tokenAud length: " + tokenAud.length());
-                    System.out.println("DEBUG configId length: " + configId.length());
-                    StringBuilder tokenCodes = new StringBuilder();
-                    for (char c : tokenAud.toCharArray()) tokenCodes.append((int) c).append(",");
-                    StringBuilder configCodes = new StringBuilder();
-                    for (char c : configId.toCharArray()) configCodes.append((int) c).append(",");
-                    System.out.println("DEBUG tokenAud codes: " + tokenCodes);
-                    System.out.println("DEBUG configId codes: " + configCodes);
-                }
                 throw new RuntimeException("Audience invalida: " + claims.getAudience());
             }
 
@@ -113,8 +98,6 @@ public class GoogleAuthService {
 
             return claims;
         } catch (Exception e) {
-            System.out.println("EXCEPTION na verificação: " + e.getClass().getName() + " - " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException("Erro ao verificar token do Google: " + e.getMessage());
         }
     }
