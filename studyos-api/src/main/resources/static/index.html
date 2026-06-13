@@ -880,6 +880,10 @@
 
             const data = await res.json();
             localStorage.setItem('token', data.token);
+
+            showLoading('Bem-vindo de volta! 🚀');
+            await new Promise(r => setTimeout(r, 1800));
+            sessionStorage.setItem('studyos-show-loading', 'true');
             window.location.href = '/pages/dashboard.html';
         } catch (e) {
             document.getElementById('msg').textContent = 'Erro de conexão';
