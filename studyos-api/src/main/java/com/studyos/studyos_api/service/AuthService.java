@@ -26,14 +26,14 @@ public class AuthService {
     private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
-        String email = request.getEmail().toLowerCase().trim(); // normaliza
+        String email = request.getEmail().toLowerCase().trim();
 
         if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new RuntimeException("Email já cadastrado");
         }
 
         User user = User.builder()
-                .email(email) // salva normalizado
+                .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .createdAt(LocalDateTime.now())
@@ -45,13 +45,11 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        String email = request.getEmail().toLowerCase().trim(); // normaliza
+        String email = request.getEmail().toLowerCase().trim();
 
-        // Busca o usuário antes de autenticar pra checar se é conta Google
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Bloqueia login manual em conta criada pelo Google
         if ("GOOGLE_OAUTH".equals(user.getPassword())) {
             throw new RuntimeException("Esta conta usa login com Google. Clique em 'Entrar com Google'.");
         }
@@ -65,7 +63,7 @@ public class AuthService {
     }
 
     public void forgotPassword(String email) {
-        String normalizedEmail = email.toLowerCase().trim(); // normaliza
+        String normalizedEmail = email.toLowerCase().trim();
         userRepository.findByEmailIgnoreCase(normalizedEmail).ifPresent(user -> {
             String token = UUID.randomUUID().toString();
             user.setResetToken(token);
@@ -89,7 +87,6 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    // Usados pelo GoogleAuthService também
     public String generateJwtForUser(User user) {
         String password = user.getPassword() != null ? user.getPassword() : "";
         return jwtService.generateToken(
@@ -109,6 +106,20 @@ public class AuthService {
                 .email(user.getEmail())
                 .xp(user.getXp())
                 .level(user.getLevel())
+                .currentStreak(user.getCurrentStreak())
+                .overall(user.getOverall())
+                .skillConsistency(user.getSkillConsistency())
+                .skillSessions(user.getSkillSessions())
+                .skillHours(user.getSkillHours())
+                .skillFlashcards(user.getSkillFlashcards())
+                .skillProductivity(user.getSkillProductivity())
+                .skillFocus(user.getSkillFocus())
+                .skillNightOwl(user.getSkillNightOwl())
+                .skillDiscipline(user.getSkillDiscipline())
+                .skillPerfectionist(user.getSkillPerfectionist())
+                .skillExplorer(user.getSkillExplorer())
+                .focusRate(user.getFocusRate())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }
