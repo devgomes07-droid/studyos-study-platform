@@ -26,37 +26,52 @@ public class AuthService {
     private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        String email = request.getEmail().toLowerCase().trim(); // normaliza
+
+        if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new RuntimeException("Email já cadastrado");
         }
+
         User user = User.builder()
-                .email(request.getEmail())
+                .email(email) // salva normalizado
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .createdAt(LocalDateTime.now())
                 .build();
         userRepository.save(user);
+
         String token = generateJwtForUser(user);
         return buildResponseForUser(token, user);
     }
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-        User user = userRepository.findByEmail(request.getEmail())
+        String email = request.getEmail().toLowerCase().trim(); // normaliza
+
+        // Busca o usuário antes de autenticar pra checar se é conta Google
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Bloqueia login manual em conta criada pelo Google
+        if ("GOOGLE_OAUTH".equals(user.getPassword())) {
+            throw new RuntimeException("Esta conta usa login com Google. Clique em 'Entrar com Google'.");
+        }
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, request.getPassword())
+        );
+
         String token = generateJwtForUser(user);
         return buildResponseForUser(token, user);
     }
 
     public void forgotPassword(String email) {
-        userRepository.findByEmail(email).ifPresent(user -> {
+        String normalizedEmail = email.toLowerCase().trim(); // normaliza
+        userRepository.findByEmailIgnoreCase(normalizedEmail).ifPresent(user -> {
             String token = UUID.randomUUID().toString();
             user.setResetToken(token);
             user.setResetTokenExpiry(LocalDateTime.now().plusHours(1));
             userRepository.save(user);
-            emailService.sendPasswordResetEmail(email, token);
+            emailService.sendPasswordResetEmail(normalizedEmail, token);
         });
     }
 

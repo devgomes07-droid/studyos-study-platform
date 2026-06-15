@@ -39,17 +39,18 @@ public class GoogleAuthService {
         String email;
         String name;
         try {
-            email = claims.getStringClaim("email");
+            email = claims.getStringClaim("email").toLowerCase().trim(); // normaliza
             name = claims.getStringClaim("name");
         } catch (Exception e) {
             throw new RuntimeException("Erro ao ler dados do token do Google: " + e.getMessage());
         }
 
         User user = userRepository.findByGoogleId(googleId)
-                .or(() -> userRepository.findByEmail(email))
+                .or(() -> userRepository.findByEmailIgnoreCase(email)) // case-insensitive
                 .orElse(null);
 
         if (user == null) {
+            // Cria conta nova via Google
             user = User.builder()
                     .email(email)
                     .name(name != null ? name : email)
@@ -59,6 +60,7 @@ public class GoogleAuthService {
                     .build();
             userRepository.save(user);
         } else if (user.getGoogleId() == null) {
+            // Conta manual existente — só vincula o googleId, não sobrescreve nada
             user.setGoogleId(googleId);
             userRepository.save(user);
         }
