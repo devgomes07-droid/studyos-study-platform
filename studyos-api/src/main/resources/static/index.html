@@ -400,7 +400,6 @@
         .btn-main.loading .btn-arrow{display:none;}
         @keyframes spin{to{transform:rotate(360deg)}}
 
-        /* ── Google divider ── */
         .google-divider{
           display:flex;align-items:center;gap:12px;
           margin:4px 0 14px;
@@ -414,7 +413,6 @@
           background:var(--border2);
         }
 
-        /* Centraliza o botão do Google */
         .google-btn-wrap{
           display:flex;justify-content:center;
           margin-bottom:16px;
@@ -460,6 +458,11 @@
           color:rgba(255,255,255,0.15);
           z-index:2;
           pointer-events:none;
+        }
+
+        /* ══ COMPLETE PROFILE FORM ══ */
+        #complete-form .p-sub {
+          margin-bottom: 20px;
         }
 
         @media(max-width:900px){
@@ -685,7 +688,6 @@
                     <span class="btn-arrow">→</span>
                 </button>
 
-                <!-- Google Login -->
                 <div class="google-divider">ou</div>
                 <div class="google-btn-wrap">
                     <div id="g_id_onload"
@@ -724,7 +726,7 @@
                         <span class="f-icon">
                             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </span>
-                        <input class="f-input" type="text" id="reg-name" placeholder="Seu nome" autocomplete="name"/>
+                        <input class="f-input" type="text" id="reg-name" placeholder="Seu nome completo" autocomplete="name"/>
                     </div>
                 </div>
                 <div class="field">
@@ -755,7 +757,6 @@
                     <span class="btn-arrow">→</span>
                 </button>
 
-                <!-- Google no cadastro também -->
                 <div class="google-divider">ou</div>
                 <div class="google-btn-wrap">
                     <div class="g_id_signin"
@@ -802,6 +803,29 @@
                 <div class="f-switch">Lembrou? <a onclick="showLogin()">Voltar ao login</a></div>
             </div>
 
+            <!-- ── COMPLETE PROFILE (novo usuário Google) ── -->
+            <div id="complete-form" class="auth-form" style="display:none">
+                <div class="p-brand">StudyOS</div>
+                <h2 class="p-title">Quase lá! 🎉</h2>
+                <p class="p-sub">Como podemos te chamar?</p>
+
+                <div class="field">
+                    <label class="f-label">Seu nome completo</label>
+                    <div class="f-wrap">
+                        <span class="f-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </span>
+                        <input class="f-input" type="text" id="complete-name" placeholder="Ex: Gabriel Gomes" autocomplete="name"/>
+                    </div>
+                </div>
+
+                <button class="btn-main" id="complete-btn" onclick="completeProfile()">
+                    <div class="spinner"></div>
+                    <span class="btn-txt">Entrar no StudyOS</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
             <p id="msg"></p>
         </div>
     </div>
@@ -839,7 +863,7 @@
     }
 
     function switchForm(id){
-        ['login-form','register-form','forgot-form'].forEach(f=>{
+        ['login-form','register-form','forgot-form','complete-form'].forEach(f=>{
             const el=document.getElementById(f);
             el.style.display=f===id?'':'none';
             if(f===id){el.style.animation='none';el.offsetHeight;el.style.animation='';}
@@ -856,13 +880,16 @@
 
     document.addEventListener('keydown',e=>{
         if(e.key!=='Enter')return;
-        const active=['login-form','register-form','forgot-form'].find(f=>document.getElementById(f).style.display!=='none');
+        const active=['login-form','register-form','forgot-form','complete-form'].find(f=>document.getElementById(f).style.display!=='none');
         if(active==='login-form')login();
         else if(active==='register-form')register();
         else if(active==='forgot-form')forgotPassword();
+        else if(active==='complete-form')completeProfile();
     });
 
-    // ── Google OAuth callback ──
+    // guarda dados do Google temporariamente
+    let _pendingGoogleData = null;
+
     async function handleGoogleLogin(response) {
         try {
             const res = await fetch('/api/auth/google', {
@@ -879,15 +906,65 @@
             }
 
             const data = await res.json();
-            localStorage.setItem('token', data.token);
 
-            showLoading('Bem-vindo de volta! 🚀');
-            await new Promise(r => setTimeout(r, 1800));
+            // Se o nome é o email (ex: gabriel@gmail.com), pede nome real
+            const nameIsEmail = !data.name || data.name === data.email || data.name.includes('@');
+            if (nameIsEmail) {
+                _pendingGoogleData = data;
+                switchForm('complete-form');
+                return;
+            }
+
+            // Nome ok — salva e entra
+            Api.setSession(data);
+            await new Promise(r => setTimeout(r, 300));
             sessionStorage.setItem('studyos-show-loading', 'true');
             window.location.href = '/pages/dashboard.html';
+
         } catch (e) {
             document.getElementById('msg').textContent = 'Erro de conexão';
             document.getElementById('msg').className = 'err';
+        }
+    }
+
+    async function completeProfile() {
+        const name = document.getElementById('complete-name').value.trim();
+        if (!name) {
+            document.getElementById('msg').textContent = 'Informe seu nome.';
+            document.getElementById('msg').className = 'err';
+            return;
+        }
+
+        const btn = document.getElementById('complete-btn');
+        btn.disabled = true;
+        btn.classList.add('loading');
+
+        try {
+            // Atualiza o nome via API
+            const token = _pendingGoogleData.token;
+            const res = await fetch('/api/users/me/name', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name })
+            });
+
+            if (res.ok) {
+                _pendingGoogleData.name = name;
+            }
+
+            Api.setSession(_pendingGoogleData);
+            sessionStorage.setItem('studyos-show-loading', 'true');
+            window.location.href = '/pages/dashboard.html';
+
+        } catch (e) {
+            // mesmo com erro na API, salva e entra com o nome digitado
+            _pendingGoogleData.name = name;
+            Api.setSession(_pendingGoogleData);
+            sessionStorage.setItem('studyos-show-loading', 'true');
+            window.location.href = '/pages/dashboard.html';
         }
     }
 </script>

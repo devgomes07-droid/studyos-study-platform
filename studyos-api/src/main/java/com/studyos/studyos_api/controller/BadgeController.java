@@ -40,7 +40,7 @@ public class BadgeController {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
 }
