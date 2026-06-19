@@ -34,8 +34,26 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<AuthResponse> googleLogin(@RequestBody GoogleAuthRequest request) {
-        return ResponseEntity.ok(googleAuthService.authenticateWithGoogle(request.getCredential()));
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest request) {
+        try {
+            // Se tem nome, é o segundo passo do cadastro
+            if (request.getName() != null && !request.getName().isBlank()) {
+                return ResponseEntity.ok(googleAuthService.registerWithGoogle(
+                        request.getCredential(), request.getName()));
+            }
+            return ResponseEntity.ok(googleAuthService.authenticateWithGoogle(
+                    request.getCredential(), request.getMode()));
+
+        } catch (GoogleAuthService.NeedsNameException e) {
+            return ResponseEntity.status(202).body(Map.of(
+                    "needsName", true,
+                    "email", e.email,
+                    "googleId", e.googleId,
+                    "googleName", e.googleName != null ? e.googleName : ""
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/forgot-password")

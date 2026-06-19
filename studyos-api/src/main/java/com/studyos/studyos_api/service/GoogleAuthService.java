@@ -32,35 +32,71 @@ public class GoogleAuthService {
     private static final String GOOGLE_ISSUER_1 = "https://accounts.google.com";
     private static final String GOOGLE_ISSUER_2 = "accounts.google.com";
 
-    public AuthResponse authenticateWithGoogle(String credential) {
+    public AuthResponse authenticateWithGoogle(String credential, String mode) {
         JWTClaimsSet claims = verifyToken(credential);
 
         String googleId = claims.getSubject();
         String email;
         String name;
         try {
-            email = claims.getStringClaim("email").toLowerCase().trim(); // normaliza
+            email = claims.getStringClaim("email").toLowerCase().trim();
             name = claims.getStringClaim("name");
         } catch (Exception e) {
             throw new RuntimeException("Erro ao ler dados do token do Google: " + e.getMessage());
         }
 
         User user = userRepository.findByGoogleId(googleId)
-                .or(() -> userRepository.findByEmailIgnoreCase(email)) // case-insensitive
+                .or(() -> userRepository.findByEmailIgnoreCase(email))
+                .orElse(null);
+
+        if ("login".equals(mode)) {
+            // LOGIN — só entra se já tem conta
+            if (user == null) {
+                throw new RuntimeException("Conta não encontrada. Faça o cadastro primeiro.");
+            }
+            if (user.getGoogleId() == null) {
+                user.setGoogleId(googleId);
+                userRepository.save(user);
+            }
+        } else {
+            // REGISTER — precisa do nome antes de criar
+            if (user == null) {
+                throw new NeedsNameException(email, googleId, name);
+            } else if (user.getGoogleId() == null) {
+                user.setGoogleId(googleId);
+                userRepository.save(user);
+            }
+        }
+
+        String token = authService.generateJwtForUser(user);
+        return authService.buildResponseForUser(token, user);
+    }
+
+    public AuthResponse registerWithGoogle(String credential, String name) {
+        JWTClaimsSet claims = verifyToken(credential);
+
+        String googleId = claims.getSubject();
+        String email;
+        try {
+            email = claims.getStringClaim("email").toLowerCase().trim();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao ler dados do token do Google: " + e.getMessage());
+        }
+
+        User user = userRepository.findByGoogleId(googleId)
+                .or(() -> userRepository.findByEmailIgnoreCase(email))
                 .orElse(null);
 
         if (user == null) {
-            // Cria conta nova via Google
             user = User.builder()
                     .email(email)
-                    .name(name != null ? name : email)
+                    .name(name.trim())
                     .googleId(googleId)
                     .password("GOOGLE_OAUTH")
                     .createdAt(LocalDateTime.now())
                     .build();
             userRepository.save(user);
         } else if (user.getGoogleId() == null) {
-            // Conta manual existente — só vincula o googleId, não sobrescreve nada
             user.setGoogleId(googleId);
             userRepository.save(user);
         }
@@ -69,10 +105,22 @@ public class GoogleAuthService {
         return authService.buildResponseForUser(token, user);
     }
 
+    public static class NeedsNameException extends RuntimeException {
+        public final String email;
+        public final String googleId;
+        public final String googleName;
+
+        public NeedsNameException(String email, String googleId, String googleName) {
+            super("NEEDS_NAME");
+            this.email = email;
+            this.googleId = googleId;
+            this.googleName = googleName;
+        }
+    }
+
     private JWTClaimsSet verifyToken(String credential) {
         try {
             JWKSource<SecurityContext> keySource = new RemoteJWKSet<>(new URL(GOOGLE_JWKS_URL));
-
             ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
             JWSVerificationKeySelector<SecurityContext> keySelector =
                     new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, keySource);
@@ -99,6 +147,8 @@ public class GoogleAuthService {
             }
 
             return claims;
+        } catch (NeedsNameException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao verificar token do Google: " + e.getMessage());
         }

@@ -39,10 +39,8 @@
           --p:#6c5ce7;--p-h:#5a4bd1;--p-light:#a29bfe;
           --p-glow:rgba(108,92,231,0.35);
           --p-dim:rgba(108,92,231,0.15);
-
           --hero-bg:#0d0b1a;
           --hero-bg2:#110e22;
-
           --bg:#0f0d1c;
           --surface:#17142a;
           --surface2:#1e1a30;
@@ -88,7 +86,6 @@
           -webkit-font-smoothing:antialiased;
         }
 
-        /* ══ LOADING ══ */
         #ls{
           position:fixed;inset:0;z-index:9999;
           background:#06050a;
@@ -113,7 +110,6 @@
         @keyframes bar{0%{width:0}35%{width:44%}75%{width:82%}100%{width:100%}}
         @keyframes dpulse{0%,100%{opacity:.25;transform:scale(.75)}50%{opacity:1;transform:scale(1)}}
 
-        /* ══ PAGE ══ */
         .page{
           width:100vw;height:100vh;
           display:grid;grid-template-columns:54% 46%;
@@ -121,7 +117,6 @@
         }
         .page.in{opacity:1;}
 
-        /* ════ HERO ════ */
         .hero{
           position:relative;
           background:linear-gradient(160deg,#120d2b 0%,#0d0a1e 40%,#0a0818 100%);
@@ -129,349 +124,99 @@
           display:flex;flex-direction:column;
           padding:32px 52px 40px;
         }
-
-        .hero-glow-main{
-          position:absolute;
-          top:-120px;left:-80px;
-          width:600px;height:600px;
-          background:radial-gradient(ellipse at 30% 30%,rgba(88,60,200,0.55) 0%,rgba(60,30,140,0.25) 45%,transparent 75%);
-          pointer-events:none;z-index:0;
-        }
-        .hero-glow-bottom{
-          position:absolute;
-          bottom:-100px;left:0;right:0;
-          height:300px;
-          background:radial-gradient(ellipse at 40% 100%,rgba(80,40,180,0.3) 0%,transparent 70%);
-          pointer-events:none;z-index:0;
-        }
-
-        .hero-brain{
-          position:absolute;
-          top:-10px;right:-30px;
-          width:320px;height:320px;
-          pointer-events:none;z-index:1;
-          opacity:0.7;
-        }
+        .hero-glow-main{position:absolute;top:-120px;left:-80px;width:600px;height:600px;background:radial-gradient(ellipse at 30% 30%,rgba(88,60,200,0.55) 0%,rgba(60,30,140,0.25) 45%,transparent 75%);pointer-events:none;z-index:0;}
+        .hero-glow-bottom{position:absolute;bottom:-100px;left:0;right:0;height:300px;background:radial-gradient(ellipse at 40% 100%,rgba(80,40,180,0.3) 0%,transparent 70%);pointer-events:none;z-index:0;}
+        .hero-brain{position:absolute;top:-10px;right:-30px;width:320px;height:320px;pointer-events:none;z-index:1;opacity:0.7;}
         .hero-brain svg{width:100%;height:100%;}
-
-        .hnav{
-          position:relative;z-index:5;
-          display:flex;align-items:center;gap:10px;
-          margin-bottom:auto;
-        }
-        .hnav-logo{
-          width:38px;height:38px;border-radius:10px;
-          overflow:hidden;flex-shrink:0;
-          background:linear-gradient(135deg,#6c5ce7,#a29bfe);
-          display:flex;align-items:center;justify-content:center;
-          box-shadow:0 0 18px rgba(108,92,231,.5);
-        }
+        .hnav{position:relative;z-index:5;display:flex;align-items:center;gap:10px;margin-bottom:auto;}
+        .hnav-logo{width:38px;height:38px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(108,92,231,.5);}
         .hnav-logo img{width:38px;height:38px;display:block;object-fit:cover;}
         .hnav-logo-fallback{font-size:20px;font-weight:800;color:#fff;font-style:italic;}
         .hnav-name{font-size:20px;font-weight:600;color:#f0eeff;letter-spacing:-.015em;}
         .hnav-name em{font-style:italic;color:#a29bfe;}
-
-        .hero-badge{
-          position:relative;z-index:5;
-          display:inline-flex;align-items:center;gap:8px;
-          padding:5px 14px 5px 10px;
-          border-radius:999px;
-          border:1px solid rgba(162,155,254,0.2);
-          background:rgba(108,92,231,0.1);
-          color:rgba(162,155,254,0.85);
-          font-size:12px;font-weight:500;
-          margin-bottom:24px;margin-top:60px;
-          width:fit-content;
-        }
-        .badge-icon{font-size:13px;}
-
-        .hero-headline{
-          position:relative;z-index:5;
-          font-size:clamp(40px,4.2vw,64px);
-          font-weight:800;
-          color:#ffffff;
-          line-height:1.05;
-          letter-spacing:-.03em;
-          margin-bottom:18px;
-        }
+        .hero-badge{position:relative;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 10px;border-radius:999px;border:1px solid rgba(162,155,254,0.2);background:rgba(108,92,231,0.1);color:rgba(162,155,254,0.85);font-size:12px;font-weight:500;margin-bottom:24px;margin-top:60px;width:fit-content;}
+        .hero-headline{position:relative;z-index:5;font-size:clamp(40px,4.2vw,64px);font-weight:800;color:#ffffff;line-height:1.05;letter-spacing:-.03em;margin-bottom:18px;}
         .hero-headline .hl-accent{color:#a29bfe;}
-
-        .hero-sub{
-          position:relative;z-index:5;
-          font-size:14px;
-          color:rgba(240,238,255,0.5);
-          font-weight:400;
-          line-height:1.75;
-          max-width:380px;
-          margin-bottom:40px;
-        }
-
-        .hero-features{
-          position:relative;z-index:5;
-          display:flex;flex-direction:column;gap:16px;
-          margin-bottom:auto;
-        }
+        .hero-sub{position:relative;z-index:5;font-size:14px;color:rgba(240,238,255,0.5);font-weight:400;line-height:1.75;max-width:380px;margin-bottom:40px;}
+        .hero-features{position:relative;z-index:5;display:flex;flex-direction:column;gap:16px;margin-bottom:auto;}
         .hfeat{display:flex;align-items:flex-start;gap:14px;}
-        .hfeat-icon{
-          width:38px;height:38px;border-radius:10px;
-          background:rgba(108,92,231,0.18);
-          border:1px solid rgba(108,92,231,0.25);
-          display:flex;align-items:center;justify-content:center;
-          flex-shrink:0;
-        }
-        .hfeat-icon svg{
-          width:18px;height:18px;
-          stroke:#a29bfe;fill:none;
-          stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-        }
+        .hfeat-icon{width:38px;height:38px;border-radius:10px;background:rgba(108,92,231,0.18);border:1px solid rgba(108,92,231,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+        .hfeat-icon svg{width:18px;height:18px;stroke:#a29bfe;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
         .hfeat-title{font-size:14px;font-weight:600;color:#f0eeff;line-height:1.3;margin-bottom:2px;}
         .hfeat-desc{font-size:12px;color:rgba(240,238,255,0.4);line-height:1.4;}
-
-        .hero-quote-box{
-          position:relative;z-index:5;
-          margin-top:32px;
-          padding:16px 20px;
-          border-radius:12px;
-          border:1px solid rgba(108,92,231,0.2);
-          background:rgba(108,92,231,0.07);
-          display:flex;align-items:flex-start;gap:12px;
-          max-width:380px;
-        }
+        .hero-quote-box{position:relative;z-index:5;margin-top:32px;padding:16px 20px;border-radius:12px;border:1px solid rgba(108,92,231,0.2);background:rgba(108,92,231,0.07);display:flex;align-items:flex-start;gap:12px;max-width:380px;}
         .hq-mark{font-size:28px;font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0;margin-top:-4px;}
         .hq-text{font-size:13px;color:rgba(162,155,254,0.8);font-weight:400;line-height:1.6;}
+        .hero-div{position:absolute;right:0;top:5%;bottom:5%;width:1px;z-index:10;background:linear-gradient(180deg,transparent,rgba(108,92,231,.35) 28%,rgba(162,155,254,.5) 50%,rgba(108,92,231,.35) 72%,transparent);}
 
-        .hero-div{
-          position:absolute;right:0;top:5%;bottom:5%;width:1px;z-index:10;
-          background:linear-gradient(180deg,transparent,rgba(108,92,231,.35) 28%,rgba(162,155,254,.5) 50%,rgba(108,92,231,.35) 72%,transparent);
-        }
-
-        /* ════ PANEL ════ */
-        .panel{
-          position:relative;
-          display:flex;flex-direction:column;
-          align-items:center;justify-content:center;
-          padding:36px 52px;
-          background:var(--bg);
-          overflow:hidden;
-          transition:background var(--t);
-        }
-        .panel::before{
-          content:'';position:absolute;top:-80px;left:-80px;
-          width:320px;height:320px;
-          background:radial-gradient(circle,var(--p-glow) 0%,transparent 70%);
-          pointer-events:none;opacity:.3;
-        }
-
-        .panel-topbar{
-          position:absolute;top:0;left:0;right:0;
-          padding:14px 20px;
-          display:flex;align-items:center;justify-content:flex-end;
-          gap:10px;
-          z-index:10;
-        }
-        .theme-moon{
-          width:32px;height:32px;border-radius:50%;
-          border:1px solid var(--border2);
-          background:var(--surface);
-          display:flex;align-items:center;justify-content:center;
-          cursor:pointer;
-          color:var(--text2);
-          transition:all var(--t);
-        }
+        .panel{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 52px;background:var(--bg);overflow:hidden;transition:background var(--t);}
+        .panel::before{content:'';position:absolute;top:-80px;left:-80px;width:320px;height:320px;background:radial-gradient(circle,var(--p-glow) 0%,transparent 70%);pointer-events:none;opacity:.3;}
+        .panel-topbar{position:absolute;top:0;left:0;right:0;padding:14px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;z-index:10;}
+        .theme-moon{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all var(--t);}
         .theme-moon:hover{background:var(--surface2);}
         .theme-moon svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-
-        .theme-toggle-wrap{
-          display:flex;align-items:center;gap:8px;
-          padding:5px 14px;
-          border-radius:999px;
-          border:1px solid var(--border2);
-          background:var(--surface);
-          cursor:pointer;
-          transition:all var(--t);
-        }
+        .theme-toggle-wrap{display:flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;transition:all var(--t);}
         .theme-toggle-wrap:hover{background:var(--surface2);}
         #theme-label{font-size:12px;font-weight:500;color:var(--text2);}
-        .toggle-pill{
-          width:32px;height:18px;border-radius:999px;
-          background:rgba(255,255,255,0.1);
-          border:1px solid var(--border2);
-          position:relative;
-          transition:background var(--t);
-        }
+        .toggle-pill{width:32px;height:18px;border-radius:999px;background:rgba(255,255,255,0.1);border:1px solid var(--border2);position:relative;transition:background var(--t);}
         .toggle-pill.on{background:var(--p);}
-        .toggle-knob{
-          position:absolute;top:2px;left:2px;
-          width:12px;height:12px;border-radius:50%;
-          background:#fff;
-          transition:transform var(--t);
-        }
+        .toggle-knob{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform var(--t);}
         .toggle-pill.on .toggle-knob{transform:translateX(14px);}
-
-        .panel-inner{
-          width:100%;max-width:340px;
-          position:relative;z-index:1;
-        }
-
+        .panel-inner{width:100%;max-width:340px;position:relative;z-index:1;}
         .p-brand{font-size:16px;font-weight:700;color:#6c5ce7;letter-spacing:-.01em;margin-bottom:10px;}
         .p-title{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.1;margin-bottom:6px;}
         .p-sub{font-size:14px;color:var(--text2);font-weight:400;line-height:1.6;margin-bottom:24px;}
-
         .field{margin-bottom:14px;}
-        .f-label{
-          display:block;font-size:11px;font-weight:600;
-          color:var(--text3);text-transform:uppercase;
-          letter-spacing:.09em;margin-bottom:6px;
-        }
+        .f-label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px;}
         .f-wrap{position:relative;display:flex;align-items:center;}
-        .f-icon{
-          position:absolute;left:13px;
-          display:flex;align-items:center;
-          pointer-events:none;
-          color:var(--inp-icon);
-        }
+        .f-icon{position:absolute;left:13px;display:flex;align-items:center;pointer-events:none;color:var(--inp-icon);}
         .f-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-        .f-input{
-          width:100%;padding:13px 14px 13px 42px;
-          border-radius:10px;
-          border:1.5px solid var(--inp-bdr);
-          background:var(--inp-bg);
-          color:var(--text);
-          font-size:14px;font-weight:400;font-family:var(--font);
-          outline:none;
-          transition:border-color var(--t),box-shadow var(--t),background var(--t);
-        }
+        .f-input{width:100%;padding:13px 14px 13px 42px;border-radius:10px;border:1.5px solid var(--inp-bdr);background:var(--inp-bg);color:var(--text);font-size:14px;font-weight:400;font-family:var(--font);outline:none;transition:border-color var(--t),box-shadow var(--t),background var(--t);}
         .f-input::placeholder{color:var(--text3);}
         .f-input:focus{border-color:var(--inp-focus);box-shadow:0 0 0 3px rgba(108,92,231,0.25);}
         .has-right{padding-right:42px;}
-
-        .pw-eye{
-          position:absolute;right:12px;
-          background:none;border:none;cursor:pointer;
-          color:var(--text3);padding:2px;
-          display:flex;align-items:center;
-          transition:color var(--t);
-        }
+        .pw-eye{position:absolute;right:12px;background:none;border:none;cursor:pointer;color:var(--text3);padding:2px;display:flex;align-items:center;transition:color var(--t);}
         .pw-eye:hover{color:var(--text2);}
         .pw-eye svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-
-        .mid-row{
-          display:flex;align-items:center;justify-content:space-between;
-          margin-bottom:18px;margin-top:-4px;
-        }
+        .mid-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;margin-top:-4px;}
         .remember-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;}
-        .remember-check{
-          width:16px;height:16px;border-radius:4px;
-          border:1.5px solid var(--inp-bdr);
-          background:var(--inp-bg);
-          display:flex;align-items:center;justify-content:center;
-          flex-shrink:0;
-          transition:all var(--t);
-          cursor:pointer;
-        }
+        .remember-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--inp-bdr);background:var(--inp-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--t);cursor:pointer;}
         .remember-check.checked{background:#6c5ce7;border-color:#6c5ce7;}
         .remember-check svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity var(--t);}
         .remember-check.checked svg{opacity:1;}
         .remember-label{font-size:13px;color:var(--text2);user-select:none;}
         .forgot-link{font-size:13px;color:#6c5ce7;font-weight:500;cursor:pointer;text-decoration:none;}
         .forgot-link:hover{text-decoration:underline;}
-
-        .btn-main{
-          width:100%;padding:14px;border-radius:10px;border:none;
-          background:var(--p);color:#fff;
-          font-size:15px;font-weight:700;letter-spacing:.01em;
-          font-family:var(--font);
-          cursor:pointer;
-          box-shadow:0 4px 24px var(--p-glow);
-          transition:background var(--t),box-shadow var(--t),transform .12s;
-          display:flex;align-items:center;justify-content:center;gap:10px;
-          position:relative;overflow:hidden;
-          margin-bottom:16px;
-        }
+        .btn-main{width:100%;padding:14px;border-radius:10px;border:none;background:var(--p);color:#fff;font-size:15px;font-weight:700;letter-spacing:.01em;font-family:var(--font);cursor:pointer;box-shadow:0 4px 24px var(--p-glow);transition:background var(--t),box-shadow var(--t),transform .12s;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;margin-bottom:16px;}
         .btn-main::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,.1),transparent);pointer-events:none;}
         .btn-arrow{font-size:18px;font-weight:400;}
         .btn-main:hover:not(:disabled){background:var(--p-h);transform:translateY(-1px);box-shadow:0 6px 32px var(--p-glow);}
         .btn-main:active:not(:disabled){transform:translateY(0);}
         .btn-main:disabled{opacity:.5;cursor:not-allowed;}
-
         .spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .65s linear infinite;display:none;flex-shrink:0;}
         .btn-main.loading .spinner{display:block;}
         .btn-main.loading .btn-txt{display:none;}
         .btn-main.loading .btn-arrow{display:none;}
         @keyframes spin{to{transform:rotate(360deg)}}
-
-        .google-divider{
-          display:flex;align-items:center;gap:12px;
-          margin:4px 0 14px;
-          color:var(--text3);
-          font-size:12px;
-          font-weight:500;
-        }
-        .google-divider::before,
-        .google-divider::after{
-          content:'';flex:1;height:1px;
-          background:var(--border2);
-        }
-
-        .google-btn-wrap{
-          display:flex;justify-content:center;
-          margin-bottom:16px;
-        }
-
-        .f-switch{
-          text-align:center;margin-bottom:20px;
-          font-size:13px;color:var(--text2);font-weight:400;
-        }
+        .google-divider{display:flex;align-items:center;gap:12px;margin:4px 0 14px;color:var(--text3);font-size:12px;font-weight:500;}
+        .google-divider::before,.google-divider::after{content:'';flex:1;height:1px;background:var(--border2);}
+        .google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px;}
+        .f-switch{text-align:center;margin-bottom:20px;font-size:13px;color:var(--text2);font-weight:400;}
         .f-switch a{color:#6c5ce7;font-weight:700;cursor:pointer;text-decoration:none;}
         .f-switch a:hover{text-decoration:underline;}
-
-        .terms-box{
-          padding:14px 16px;border-radius:10px;
-          border:1px solid var(--border);
-          background:var(--surface);
-          text-align:center;
-          font-size:12px;color:var(--text3);
-          line-height:1.7;
-          transition:background var(--t),border-color var(--t);
-        }
+        .terms-box{padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);text-align:center;font-size:12px;color:var(--text3);line-height:1.7;transition:background var(--t),border-color var(--t);}
         .terms-box a{color:#6c5ce7;text-decoration:none;font-weight:500;}
         .terms-box a:hover{text-decoration:underline;}
-
         #msg{text-align:center;font-size:13px;margin-top:6px;min-height:16px;color:var(--text);}
-        .ok{color:#4ade80;}
-        .err{color:#f87171;}
-
-        .success-box{
-          display:none;background:var(--ok-bg);border:1px solid var(--ok-bdr);
-          border-radius:9px;padding:11px 14px;color:var(--ok);
-          font-size:13px;font-weight:500;text-align:center;margin-top:10px;
-        }
-
+        .ok{color:#4ade80;}.err{color:#f87171;}
+        .success-box{display:none;background:var(--ok-bg);border:1px solid var(--ok-bdr);border-radius:9px;padding:11px 14px;color:var(--ok);font-size:13px;font-weight:500;text-align:center;margin-top:10px;}
         .auth-form{animation:fin .22s ease;}
         @keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-        .page-footer{
-          position:fixed;bottom:0;left:0;right:0;
-          text-align:center;
-          padding:12px;
-          font-size:11px;
-          color:rgba(255,255,255,0.15);
-          z-index:2;
-          pointer-events:none;
-        }
-
-        /* ══ COMPLETE PROFILE FORM ══ */
-        #complete-form .p-sub {
-          margin-bottom: 20px;
-        }
+        .page-footer{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:12px;font-size:11px;color:rgba(255,255,255,0.15);z-index:2;pointer-events:none;}
 
         @media(max-width:900px){
           html,body{overflow:auto;}
-          .page{
-            grid-template-columns:1fr;
-            grid-template-rows:auto auto;
-            height:auto;min-height:100vh;
-          }
+          .page{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;min-height:100vh;}
           .hero{padding:28px 28px 32px;min-height:auto;}
           .hero-brain{width:180px;height:180px;top:-10px;right:-10px;opacity:0.4;}
           .hero-badge{margin-top:36px;}
@@ -485,7 +230,6 @@
           .panel-topbar{padding:10px 14px;}
           .page-footer{display:none;}
         }
-
         @media(max-width:480px){
           .hero{padding:22px 20px 28px;}
           .panel{padding:20px 20px 36px;}
@@ -496,7 +240,6 @@
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="ls">
     <div class="ls-logo">
         <img src="assets/logo.png" alt="StudyOS" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\'font-size:22px;font-weight:800;color:#fff;font-style:italic\'>S</span>'"/>
@@ -507,10 +250,8 @@
     <div class="ls-dots"><div class="ls-dot"></div><div class="ls-dot"></div><div class="ls-dot"></div></div>
 </div>
 
-<!-- PAGE -->
 <div class="page" id="page">
 
-    <!-- ══ HERO ══ -->
     <div class="hero">
         <div class="hero-glow-main"></div>
         <div class="hero-glow-bottom"></div>
@@ -518,15 +259,8 @@
         <div class="hero-brain">
             <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.6">
                 <defs>
-                    <filter id="glow-brain">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    <radialGradient id="brain-center" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#a29bfe" stop-opacity="0.9"/>
-                        <stop offset="60%" stop-color="#6c5ce7" stop-opacity="0.4"/>
-                        <stop offset="100%" stop-color="#6c5ce7" stop-opacity="0"/>
-                    </radialGradient>
+                    <filter id="glow-brain"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    <radialGradient id="brain-center" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#a29bfe" stop-opacity="0.9"/><stop offset="60%" stop-color="#6c5ce7" stop-opacity="0.4"/><stop offset="100%" stop-color="#6c5ce7" stop-opacity="0"/></radialGradient>
                 </defs>
                 <ellipse cx="155" cy="140" rx="90" ry="80" fill="url(#brain-center)" filter="url(#glow-brain)"/>
                 <g stroke="#a29bfe" stroke-width="0.7" opacity="0.5" filter="url(#glow-brain)">
@@ -581,40 +315,20 @@
 
         <div class="hero-features">
             <div class="hfeat">
-                <div class="hfeat-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
-                <div class="hfeat-text">
-                    <div class="hfeat-title">Planos de estudo inteligentes</div>
-                    <div class="hfeat-desc">Organizados de forma personalizada para você.</div>
-                </div>
+                <div class="hfeat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div class="hfeat-text"><div class="hfeat-title">Planos de estudo inteligentes</div><div class="hfeat-desc">Organizados de forma personalizada para você.</div></div>
             </div>
             <div class="hfeat">
-                <div class="hfeat-icon">
-                    <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                </div>
-                <div class="hfeat-text">
-                    <div class="hfeat-title">Gamificação que motiva</div>
-                    <div class="hfeat-desc">XP, níveis, conquistas e rankings.</div>
-                </div>
+                <div class="hfeat-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                <div class="hfeat-text"><div class="hfeat-title">Gamificação que motiva</div><div class="hfeat-desc">XP, níveis, conquistas e rankings.</div></div>
             </div>
             <div class="hfeat">
-                <div class="hfeat-icon">
-                    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                </div>
-                <div class="hfeat-text">
-                    <div class="hfeat-title">Acompanhe seu progresso</div>
-                    <div class="hfeat-desc">Estatísticas detalhadas do seu desempenho.</div>
-                </div>
+                <div class="hfeat-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+                <div class="hfeat-text"><div class="hfeat-title">Acompanhe seu progresso</div><div class="hfeat-desc">Estatísticas detalhadas do seu desempenho.</div></div>
             </div>
             <div class="hfeat">
-                <div class="hfeat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                </div>
-                <div class="hfeat-text">
-                    <div class="hfeat-title">Técnicas comprovadas</div>
-                    <div class="hfeat-desc">Flashcards, revisão espaçada, Pomodoro e mais.</div>
-                </div>
+                <div class="hfeat-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                <div class="hfeat-text"><div class="hfeat-title">Técnicas comprovadas</div><div class="hfeat-desc">Flashcards, revisão espaçada, Pomodoro e mais.</div></div>
             </div>
         </div>
 
@@ -626,68 +340,53 @@
         <div class="hero-div"></div>
     </div>
 
-    <!-- ══ PANEL ══ -->
     <div class="panel">
-
         <div class="panel-topbar">
             <div class="theme-moon" onclick="Theme.toggle()" title="Tema">
                 <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </div>
             <div class="theme-toggle-wrap" onclick="Theme.toggle()">
-                <div class="toggle-pill on" id="theme-toggle">
-                    <div class="toggle-knob"></div>
-                </div>
+                <div class="toggle-pill on" id="theme-toggle"><div class="toggle-knob"></div></div>
                 <span id="theme-label">Modo escuro</span>
             </div>
         </div>
 
         <div class="panel-inner">
 
-            <!-- ── LOGIN ── -->
+            <!-- LOGIN -->
             <div id="login-form" class="auth-form">
                 <div class="p-brand">StudyOS</div>
                 <h2 class="p-title">Bem-vindo de volta!</h2>
                 <p class="p-sub">Entre com sua conta para continuar.</p>
-
                 <div class="field">
                     <label class="f-label">E-mail</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
                         <input class="f-input" type="email" id="email" placeholder="gabriel@studyos.com" autocomplete="email"/>
                     </div>
                 </div>
-
                 <div class="field">
                     <label class="f-label">Senha</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
                         <input class="f-input has-right" type="password" id="password" placeholder="••••••••" autocomplete="current-password"/>
                         <button class="pw-eye" type="button" onclick="togglePw('password',this)" tabindex="-1">
                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                 </div>
-
                 <div class="mid-row">
                     <div class="remember-wrap" onclick="toggleRemember()">
-                        <div class="remember-check checked" id="remember-check">
-                            <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-                        </div>
+                        <div class="remember-check checked" id="remember-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
                         <span class="remember-label">Lembrar de mim</span>
                     </div>
                     <a class="forgot-link" onclick="showForgot()">Esqueceu sua senha?</a>
                 </div>
-
                 <button class="btn-main" id="login-btn" onclick="login()">
                     <div class="spinner"></div>
                     <span class="btn-txt">Entrar no StudyOS</span>
                     <span class="btn-arrow">→</span>
                 </button>
-
                 <div class="google-divider">ou</div>
                 <div class="google-btn-wrap">
                     <div id="g_id_onload"
@@ -695,105 +394,72 @@
                          data-callback="handleGoogleLogin"
                          data-auto_prompt="false">
                     </div>
-                    <div class="g_id_signin"
-                         data-type="standard"
-                         data-size="large"
-                         data-theme="outline"
-                         data-text="continue_with"
-                         data-shape="rectangular"
-                         data-logo_alignment="left"
-                         data-width="300">
-                    </div>
+                    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="left" data-width="300"></div>
                 </div>
-
                 <div class="f-switch">Não tem conta? <a onclick="showRegister()">Cadastre-se grátis</a></div>
-
                 <div class="terms-box">
                     Ao continuar, você concorda com nossos<br>
                     <a href="/pages/terms.html">Termos de Uso</a>, &amp; <a href="/pages/privacy.html">Política de Privacidade</a>.
                 </div>
             </div>
 
-            <!-- ── REGISTER ── -->
+            <!-- REGISTER -->
             <div id="register-form" class="auth-form" style="display:none">
                 <div class="p-brand">StudyOS</div>
                 <h2 class="p-title">Crie sua conta!</h2>
                 <p class="p-sub">Junte-se a quem estuda com método e evolui de verdade.</p>
-
                 <div class="field">
                     <label class="f-label">Nome</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                         <input class="f-input" type="text" id="reg-name" placeholder="Seu nome completo" autocomplete="name"/>
                     </div>
                 </div>
                 <div class="field">
                     <label class="f-label">E-mail</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
                         <input class="f-input" type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email"/>
                     </div>
                 </div>
                 <div class="field">
                     <label class="f-label">Senha</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
                         <input class="f-input has-right" type="password" id="reg-password" placeholder="Mín. 6 caracteres" autocomplete="new-password"/>
                         <button class="pw-eye" type="button" onclick="togglePw('reg-password',this)" tabindex="-1">
                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                 </div>
-
                 <button class="btn-main" id="register-btn" onclick="register()">
                     <div class="spinner"></div>
                     <span class="btn-txt">Criar conta</span>
                     <span class="btn-arrow">→</span>
                 </button>
-
                 <div class="google-divider">ou</div>
                 <div class="google-btn-wrap">
-                    <div class="g_id_signin"
-                         data-type="standard"
-                         data-size="large"
-                         data-theme="outline"
-                         data-text="signup_with"
-                         data-shape="rectangular"
-                         data-logo_alignment="left"
-                         data-width="300">
-                    </div>
+                    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="signup_with" data-shape="rectangular" data-logo_alignment="left" data-width="300"></div>
                 </div>
-
                 <div class="f-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
-
                 <div class="terms-box">
                     Ao criar sua conta, você concorda com nossos<br>
                     <a href="/pages/terms.html">Termos de Uso</a> &amp; <a href="/pages/privacy.html">Política de Privacidade</a>.
                 </div>
             </div>
 
-            <!-- ── FORGOT ── -->
+            <!-- FORGOT -->
             <div id="forgot-form" class="auth-form" style="display:none">
                 <div class="p-brand">StudyOS</div>
                 <h2 class="p-title">Esqueceu sua senha?</h2>
                 <p class="p-sub">Informe seu e-mail e enviamos o link de redefinição agora.</p>
-
                 <div class="field">
                     <label class="f-label">E-mail</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></span>
                         <input class="f-input" type="email" id="forgot-email" placeholder="seu@email.com" autocomplete="email"/>
                     </div>
                 </div>
-
                 <button class="btn-main" id="forgot-btn" onclick="forgotPassword()">
                     <div class="spinner"></div>
                     <span class="btn-txt">Enviar link</span>
@@ -803,22 +469,18 @@
                 <div class="f-switch">Lembrou? <a onclick="showLogin()">Voltar ao login</a></div>
             </div>
 
-            <!-- ── COMPLETE PROFILE (novo usuário Google) ── -->
+            <!-- COMPLETE PROFILE -->
             <div id="complete-form" class="auth-form" style="display:none">
                 <div class="p-brand">StudyOS</div>
                 <h2 class="p-title">Quase lá! 🎉</h2>
                 <p class="p-sub">Como podemos te chamar?</p>
-
                 <div class="field">
                     <label class="f-label">Seu nome completo</label>
                     <div class="f-wrap">
-                        <span class="f-icon">
-                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </span>
+                        <span class="f-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                         <input class="f-input" type="text" id="complete-name" placeholder="Ex: Gabriel Gomes" autocomplete="name"/>
                     </div>
                 </div>
-
                 <button class="btn-main" id="complete-btn" onclick="completeProfile()">
                     <div class="spinner"></div>
                     <span class="btn-txt">Entrar no StudyOS</span>
@@ -829,7 +491,6 @@
             <p id="msg"></p>
         </div>
     </div>
-
 </div>
 
 <div class="page-footer">© 2024 StudyOS. Todos os direitos reservados.</div>
@@ -862,6 +523,9 @@
         c.classList.toggle('checked');
     }
 
+    let _googleMode = 'login';
+    let _pendingCredential = null;
+
     function switchForm(id){
         ['login-form','register-form','forgot-form','complete-form'].forEach(f=>{
             const el=document.getElementById(f);
@@ -870,13 +534,14 @@
         });
         document.getElementById('msg').textContent='';
     }
-    function showLogin()    {switchForm('login-form');}
-    function showRegister() {switchForm('register-form');}
-    function showForgot()   {switchForm('forgot-form');}
 
-    function login()          {if(typeof window._login==='function')window._login();}
-    function register()       {if(typeof window._register==='function')window._register();}
-    function forgotPassword() {if(typeof window._forgotPassword==='function')window._forgotPassword();}
+    function showLogin()    { _googleMode='login';    switchForm('login-form');    }
+    function showRegister() { _googleMode='register'; switchForm('register-form'); }
+    function showForgot()   {                         switchForm('forgot-form');   }
+
+    function login()          { if(typeof window._login==='function')window._login(); }
+    function register()       { if(typeof window._register==='function')window._register(); }
+    function forgotPassword() { if(typeof window._forgotPassword==='function')window._forgotPassword(); }
 
     document.addEventListener('keydown',e=>{
         if(e.key!=='Enter')return;
@@ -887,37 +552,33 @@
         else if(active==='complete-form')completeProfile();
     });
 
-    // guarda dados do Google temporariamente
-    let _pendingGoogleData = null;
-
     async function handleGoogleLogin(response) {
         try {
             const res = await fetch('/api/auth/google', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({credential: response.credential})
+                body: JSON.stringify({
+                    credential: response.credential,
+                    mode: _googleMode
+                })
             });
-
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                document.getElementById('msg').textContent = err.message || 'Erro ao entrar com Google';
-                document.getElementById('msg').className = 'err';
-                return;
-            }
 
             const data = await res.json();
 
-            // Se o nome é o email (ex: gabriel@gmail.com), pede nome real
-            const nameIsEmail = !data.name || data.name === data.email || data.name.includes('@');
-            if (nameIsEmail) {
-                _pendingGoogleData = data;
+            if (res.status === 202 && data.needsName) {
+                _pendingCredential = response.credential;
+                document.getElementById('complete-name').value = data.googleName || '';
                 switchForm('complete-form');
                 return;
             }
 
-            // Nome ok — salva e entra
+            if (!res.ok) {
+                document.getElementById('msg').textContent = data.message || 'Erro ao entrar com Google';
+                document.getElementById('msg').className = 'err';
+                return;
+            }
+
             Api.setSession(data);
-            await new Promise(r => setTimeout(r, 300));
             sessionStorage.setItem('studyos-show-loading', 'true');
             window.location.href = '/pages/dashboard.html';
 
@@ -940,31 +601,35 @@
         btn.classList.add('loading');
 
         try {
-            // Atualiza o nome via API
-            const token = _pendingGoogleData.token;
-            const res = await fetch('/api/users/me/name', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ name })
+            const res = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    credential: _pendingCredential,
+                    mode: 'register',
+                    name: name
+                })
             });
 
-            if (res.ok) {
-                _pendingGoogleData.name = name;
+            const data = await res.json();
+
+            if (!res.ok) {
+                document.getElementById('msg').textContent = data.message || 'Erro ao cadastrar';
+                document.getElementById('msg').className = 'err';
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                return;
             }
 
-            Api.setSession(_pendingGoogleData);
+            Api.setSession(data);
             sessionStorage.setItem('studyos-show-loading', 'true');
             window.location.href = '/pages/dashboard.html';
 
         } catch (e) {
-            // mesmo com erro na API, salva e entra com o nome digitado
-            _pendingGoogleData.name = name;
-            Api.setSession(_pendingGoogleData);
-            sessionStorage.setItem('studyos-show-loading', 'true');
-            window.location.href = '/pages/dashboard.html';
+            document.getElementById('msg').textContent = 'Erro de conexão';
+            document.getElementById('msg').className = 'err';
+            btn.disabled = false;
+            btn.classList.remove('loading');
         }
     }
 </script>
