@@ -50,15 +50,49 @@
         .btn-solid:hover::after{opacity:1}
         .btn-solid:hover{background:var(--p-h);box-shadow:0 8px 26px var(--p-glow)}
         .btn-solid:active{filter:brightness(.95)}
-        .nav-burger{display:none;width:38px;height:38px;align-items:center;justify-content:center;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);cursor:pointer;flex-shrink:0;transition:border-color .2s,background .2s,transform .2s}
-        .nav-burger:hover{border-color:var(--p-light);background:rgba(108,92,231,.1)}
+
+        /* ══════════ NAV BURGER (animado) ══════════ */
+        .nav-burger{display:none;width:40px;height:40px;align-items:center;justify-content:center;background:none;border:1px solid var(--border2);border-radius:10px;color:var(--text);cursor:pointer;flex-shrink:0;transition:border-color .25s,background .25s,transform .2s;position:relative;z-index:160}
+        .nav-burger:hover{border-color:rgba(162,155,254,.55);background:rgba(108,92,231,.1)}
         .nav-burger:active{transform:scale(.92)}
-        .mobile-menu{position:fixed;top:0;right:0;bottom:0;width:80%;max-width:320px;background:var(--surface);border-left:1px solid var(--border2);z-index:150;transform:translateX(100%);transition:transform .4s var(--ease);padding:90px 28px 28px;display:flex;flex-direction:column;gap:6px;box-shadow:-20px 0 60px rgba(0,0,0,.4)}
-        .mobile-menu.open{transform:translateX(0)}
-        .mobile-menu a{font-size:16px;font-weight:600;color:var(--text2);padding:14px 4px;border-bottom:1px solid var(--border);transition:color .2s,padding-left .2s}
-        .mobile-menu a:hover{color:#fff;padding-left:8px}
-        .mobile-menu .btn-solid{margin-top:18px;text-align:center}
-        .mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:140;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(2px)}
+        .burger-lines{position:relative;width:18px;height:13px;display:block}
+        .burger-lines span{position:absolute;left:0;width:18px;height:2px;border-radius:2px;background:currentColor;transition:transform .35s var(--ease),opacity .25s var(--ease),width .25s var(--ease)}
+        .burger-lines span:nth-child(1){top:0}
+        .burger-lines span:nth-child(2){top:5.5px;width:13px;left:5px}
+        .burger-lines span:nth-child(3){top:11px}
+        .nav-burger:hover .burger-lines span:nth-child(2){width:18px;left:0}
+        .nav-burger.is-open .burger-lines span:nth-child(1){top:5.5px;transform:rotate(45deg)}
+        .nav-burger.is-open .burger-lines span:nth-child(2){opacity:0;transform:translateX(8px)}
+        .nav-burger.is-open .burger-lines span:nth-child(3){top:5.5px;transform:rotate(-45deg)}
+
+        /* ══════════ MOBILE DRAWER ══════════ */
+        .mobile-menu{position:fixed;top:0;right:0;bottom:0;width:84%;max-width:340px;background:linear-gradient(165deg,var(--surface) 0%,var(--bg) 100%);border-left:1px solid var(--border2);z-index:150;transform:translateX(100%);transition:transform .45s var(--ease);padding:0;display:flex;flex-direction:column;box-shadow:-30px 0 70px rgba(0,0,0,.5);visibility:hidden}
+        .mobile-menu.open{transform:translateX(0);visibility:visible}
+        .mobile-menu-head{display:flex;align-items:center;gap:10px;padding:22px 24px;border-bottom:1px solid var(--border)}
+        .mobile-menu-head .mm-logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 0 16px rgba(108,92,231,.5)}
+        .mobile-menu-head .mm-logo-icon img{width:100%;height:100%;object-fit:cover;display:block}
+        .mobile-menu-head .mm-logo-text{font-size:16px;font-weight:700}
+        .mobile-menu-head .mm-logo-text em{font-style:italic;color:var(--p-light)}
+        .mobile-menu-body{flex:1;overflow-y:auto;padding:18px 18px 0;display:flex;flex-direction:column;gap:2px}
+        .mm-section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:14px 10px 8px}
+        .mobile-menu a.mm-link{display:flex;align-items:center;gap:12px;font-size:15.5px;font-weight:600;color:var(--text2);padding:13px 10px;border-radius:11px;transition:color .2s,background .2s,transform .2s;opacity:0;transform:translateX(18px)}
+        .mobile-menu a.mm-link:active{transform:scale(.97)}
+        .mobile-menu a.mm-link:hover{color:#fff;background:rgba(255,255,255,.05)}
+        .mobile-menu a.mm-link .mm-ico{width:30px;height:30px;border-radius:8px;background:rgba(108,92,231,.14);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:background .2s,transform .25s var(--ease)}
+        .mobile-menu a.mm-link:hover .mm-ico{background:rgba(108,92,231,.28);transform:scale(1.08) rotate(-6deg)}
+        .mobile-menu a.mm-link .mm-arrow{margin-left:auto;opacity:0;transform:translateX(-4px);transition:opacity .2s,transform .2s;color:var(--p-light);flex-shrink:0}
+        .mobile-menu a.mm-link:hover .mm-arrow{opacity:1;transform:translateX(0)}
+        .mobile-menu.open a.mm-link{animation:mmLinkIn .45s var(--ease) forwards}
+        .mobile-menu.open a.mm-link:nth-child(1){animation-delay:.08s}
+        .mobile-menu.open a.mm-link:nth-child(2){animation-delay:.13s}
+        .mobile-menu.open a.mm-link:nth-child(3){animation-delay:.18s}
+        .mobile-menu.open a.mm-link:nth-child(4){animation-delay:.23s}
+        @keyframes mmLinkIn{to{opacity:1;transform:translateX(0)}}
+        .mm-divider{height:1px;background:var(--border);margin:14px 10px}
+        .mobile-menu-foot{padding:18px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+        .mobile-menu-foot .btn-ghost{text-align:center;border:1px solid var(--border2);border-radius:11px;padding:13px}
+        .mobile-menu-foot .btn-solid{text-align:center;padding:14px;border-radius:11px;font-size:15px}
+        .mobile-overlay{position:fixed;inset:0;background:rgba(5,3,10,.6);z-index:140;opacity:0;pointer-events:none;transition:opacity .35s ease;backdrop-filter:blur(3px)}
         .mobile-overlay.open{opacity:1;pointer-events:auto}
 
         /* ══════════ HERO ══════════ */
@@ -140,7 +174,7 @@
         .sec-title{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.15;color:#fff;margin-bottom:14px}
         .sec-sub{font-size:16px;color:var(--text2);line-height:1.6}
 
-        /* ══════════ POSITION (texto menor, sem travessão, com reveal) ══════════ */
+        /* ══════════ POSITION ══════════ */
         .position{padding:90px 0 40px}
         .position-line{text-align:center;font-size:clamp(15px,1.6vw,18px);font-weight:600;line-height:1.6;color:var(--text2);max-width:620px;margin:0 auto}
         .position-line strong{color:#fff;font-weight:800}
@@ -400,6 +434,7 @@
           .final-cta-title{font-size:24px}
           .final-cta-sub{font-size:14px}
           .how-frame-body{min-height:100px;padding:11px}
+          .mobile-menu{width:88%;max-width:320px}
         }
         @media(max-width:380px){
           .hero-badge{font-size:11.5px;padding:5px 11px 5px 9px}
@@ -413,7 +448,10 @@
         }
         @media(max-height:480px) and (orientation:landscape){
           .hero{padding:110px 0 50px}
-          .mobile-menu{padding:70px 24px 24px}
+          .mobile-menu-head{padding:16px 20px}
+          .mobile-menu-body{padding:10px 18px 0}
+          .mm-section-label{padding:8px 10px 4px}
+          .mobile-menu a.mm-link{padding:9px 10px}
         }
         @media (prefers-reduced-motion: reduce){
           *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
@@ -444,21 +482,30 @@
         <div class="nav-cta">
             <a href="login.html" class="btn-ghost">Entrar</a>
             <a href="login.html" class="btn-solid">Criar conta grátis</a>
-            <button class="nav-burger" id="navBurger" aria-label="Abrir menu">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false">
+                <span class="burger-lines"><span></span><span></span><span></span></span>
             </button>
         </div>
     </div>
 </nav>
 
 <div class="mobile-overlay" id="mobileOverlay"></div>
-<div class="mobile-menu" id="mobileMenu">
-    <a href="#features">Funcionalidades</a>
-    <a href="#how">Como funciona</a>
-    <a href="#testimonials">Depoimentos</a>
-    <a href="#faq">Perguntas</a>
-    <a href="login.html">Entrar</a>
-    <a href="login.html" class="btn-solid">Criar conta grátis</a>
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+    <div class="mobile-menu-head">
+        <div class="mm-logo-icon"><img src="assets/logo.png" alt="StudyOS" onerror="this.parentNode.style.display='flex';this.style.display='none'"/></div>
+        <span class="mm-logo-text">Study<em>OS</em></span>
+    </div>
+    <div class="mobile-menu-body">
+        <span class="mm-section-label">Navegar</span>
+        <a href="#features" class="mm-link"><span class="mm-ico">⚡</span>Funcionalidades<span class="mm-arrow">→</span></a>
+        <a href="#how" class="mm-link"><span class="mm-ico">🧭</span>Como funciona<span class="mm-arrow">→</span></a>
+        <a href="#testimonials" class="mm-link"><span class="mm-ico">💬</span>Depoimentos<span class="mm-arrow">→</span></a>
+        <a href="#faq" class="mm-link"><span class="mm-ico">❓</span>Perguntas<span class="mm-arrow">→</span></a>
+    </div>
+    <div class="mobile-menu-foot">
+        <a href="login.html" class="btn-ghost">Entrar</a>
+        <a href="login.html" class="btn-solid">Criar conta grátis</a>
+    </div>
 </div>
 
 <section class="hero">
@@ -952,12 +999,27 @@
       const burger=document.getElementById('navBurger');
       const menu=document.getElementById('mobileMenu');
       const overlay=document.getElementById('mobileOverlay');
-      function open(){menu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';}
-      function close(){menu.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';}
-      burger.addEventListener('click',open);
+      function open(){
+        menu.classList.add('open');
+        overlay.classList.add('open');
+        burger.classList.add('is-open');
+        burger.setAttribute('aria-expanded','true');
+        document.body.style.overflow='hidden';
+      }
+      function close(){
+        menu.classList.remove('open');
+        overlay.classList.remove('open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded','false');
+        document.body.style.overflow='';
+      }
+      burger.addEventListener('click',()=>{
+        burger.classList.contains('is-open') ? close() : open();
+      });
       overlay.addEventListener('click',close);
       menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
       window.addEventListener('resize',()=>{ if(window.innerWidth>980) close(); });
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
     })();
 
     document.querySelectorAll('.faq-item').forEach(item=>{
