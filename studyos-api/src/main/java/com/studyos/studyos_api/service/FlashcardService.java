@@ -21,6 +21,7 @@ public class FlashcardService {
     private final FlashcardRepository flashcardRepository;
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
+    private final GeminiAIService geminiAIService;
 
     public List<FlashcardResponse> listAll(Long subjectId) {
         User user = getCurrentUser();
@@ -38,8 +39,7 @@ public class FlashcardService {
 
     public FlashcardResponse create(FlashcardRequest request) {
         User user = getCurrentUser();
-        Subject subject = subjectRepository.findById(request.getSubjectId())
-                .orElseThrow(() -> new RuntimeException("Materia nao encontrada"));
+        Subject subject = findOwnedSubjectOrThrow(request.getSubjectId(), user.getId());
 
         Flashcard card = Flashcard.builder()
                 .user(user)
@@ -52,19 +52,70 @@ public class FlashcardService {
         return toResponse(flashcardRepository.save(card));
     }
 
+    /**
+     * Edita um flashcard existente. Garante que o card pertence ao usuário logado
+     * antes de permitir qualquer alteração (corrige falha de IDOR).
+     */
+    public FlashcardResponse update(Long id, FlashcardRequest request) {
+        User user = getCurrentUser();
+        Flashcard card = findOwnedCardOrThrow(id, user.getId());
+
+        if (request.getSubjectId() != null) {
+            Subject subject = findOwnedSubjectOrThrow(request.getSubjectId(), user.getId());
+            card.setSubject(subject);
+        }
+        if (request.getQuestion() != null && !request.getQuestion().isBlank()) {
+            card.setQuestion(request.getQuestion());
+        }
+        if (request.getAnswer() != null && !request.getAnswer().isBlank()) {
+            card.setAnswer(request.getAnswer());
+        }
+
+        return toResponse(flashcardRepository.save(card));
+    }
+
+    /**
+     * Aplica o algoritmo SM-2. Garante que o card pertence ao usuário logado
+     * antes de permitir a revisão (corrige falha de IDOR).
+     */
     public FlashcardResponse review(Long id, int quality) {
-        Flashcard card = flashcardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Flashcard nao encontrado"));
+        User user = getCurrentUser();
+        Flashcard card = findOwnedCardOrThrow(id, user.getId());
         card.review(quality);
         return toResponse(flashcardRepository.save(card));
     }
 
+    /**
+     * Soft delete. Garante que o card pertence ao usuário logado
+     * antes de permitir a exclusão (corrige falha de IDOR).
+     */
     public void delete(Long id) {
-        Flashcard card = flashcardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Flashcard nao encontrado"));
+        User user = getCurrentUser();
+        Flashcard card = findOwnedCardOrThrow(id, user.getId());
         card.setActive(false);
         flashcardRepository.save(card);
     }
+
+    /**
+     * Gera uma pergunta de flashcard a partir de uma resposta, usando IA (Gemini).
+     * Se subjectId for informado, usa o nome da matéria como contexto extra.
+     */
+    public String generateQuestion(String answer, Long subjectId) {
+        if (answer == null || answer.isBlank()) {
+            throw new IllegalArgumentException("Informe a resposta antes de gerar a pergunta.");
+        }
+
+        String subjectName = null;
+        if (subjectId != null) {
+            User user = getCurrentUser();
+            subjectName = subjectRepository.findByIdAndUserId(subjectId, user.getId())
+                    .map(Subject::getName)
+                    .orElse(null);
+        }
+        return geminiAIService.generateQuestion(answer, subjectName);
+    }
+
+    /* ── Helpers ──────────────────────────────────────────── */
 
     private User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -72,9 +123,19 @@ public class FlashcardService {
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
 
-    private FlashcardResponse toResponse(Flashcard f) {
-        Subject s = subjectRepository.findById(f.getSubject().getId())
+    private Flashcard findOwnedCardOrThrow(Long cardId, Long userId) {
+        return flashcardRepository.findByIdAndUserId(cardId, userId)
+                .orElseThrow(() -> new RuntimeException("Flashcard nao encontrado"));
+    }
+
+    private Subject findOwnedSubjectOrThrow(Long subjectId, Long userId) {
+        return subjectRepository.findByIdAndUserId(subjectId, userId)
                 .orElseThrow(() -> new RuntimeException("Materia nao encontrada"));
+    }
+
+    private FlashcardResponse toResponse(Flashcard f) {
+        // f.getSubject() já vem carregado (lazy proxy) — não precisa buscar de novo no banco.
+        Subject s = f.getSubject();
         return FlashcardResponse.builder()
                 .id(f.getId())
                 .subjectId(s.getId())

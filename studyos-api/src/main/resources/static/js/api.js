@@ -81,6 +81,11 @@ const Api = {
   },
   getFlashcardsDue()          { return this.get('/flashcards/due');                    },
   createFlashcard(payload)    { return this.post('/flashcards', payload);              },
+  // ── NOVO: faltava esse método, usado em saveEdit() no flashcards.js ──
+  updateFlashcard(id, payload){ return this.put(`/flashcards/${id}`, payload);         },
+  generateQuestion(answer, subjectId) {
+    return this.post('/flashcards/generate-question', { answer, subjectId });
+  },
   reviewFlashcard(id, quality){ return this.post(`/flashcards/${id}/review`, { quality }); },
   deleteFlashcard(id)         { return this.delete(`/flashcards/${id}`);               },
 };

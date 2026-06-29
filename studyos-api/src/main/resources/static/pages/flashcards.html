@@ -146,10 +146,11 @@
         <div class="modal-header"><h2>Novo flashcard</h2><button class="icon-button" onclick="closeCreate()">✕</button></div>
         <div class="fc-form">
             <label>Matéria<select class="input" id="fc-subject-sel"></select></label>
-            <label>Pergunta<textarea class="textarea" id="fc-question-input" rows="3" placeholder="Ex: O que é Big O notation?" oninput="updatePreview('q')"></textarea><p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p></label>
-            <div class="fc-preview-wrap" id="preview-q-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="preview-q"></div></div>
-            <label>Resposta<textarea class="textarea" id="fc-answer-input" rows="4" placeholder="Ex: Notação que descreve a complexidade..." oninput="updatePreview('a')"></textarea></label>
+            <label>Resposta<textarea class="textarea" id="fc-answer-input" rows="4" placeholder="Cole ou digite a resposta aqui..." oninput="updatePreview('a')"></textarea></label>
             <div class="fc-preview-wrap" id="preview-a-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="preview-a"></div></div>
+            <button type="button" class="btn btn-secondary" id="fc-ai-btn" onclick="generateQuestionAI()" style="justify-self:start">🧠 Gerar pergunta com IA</button>
+            <label>Pergunta<textarea class="textarea" id="fc-question-input" rows="3" placeholder="Ex: O que é Big O notation? (ou gere com IA acima)" oninput="updatePreview('q')"></textarea><p class="fc-format-hint">Use <code>`código`</code> para inline, <code>```</code> para bloco.</p></label>
+            <div class="fc-preview-wrap" id="preview-q-wrap" style="display:none"><div class="fc-preview-label">Preview</div><div class="fc-preview-content fc-content" id="preview-q"></div></div>
             <p class="form-message error" id="fc-err"></p>
         </div>
         <div class="modal-actions">
