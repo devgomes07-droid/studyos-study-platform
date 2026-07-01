@@ -20,10 +20,9 @@ public class GeminiAIService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    // modelo estável do tier gratuito
+    // linha nova
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
-
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
