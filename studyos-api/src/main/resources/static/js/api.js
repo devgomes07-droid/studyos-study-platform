@@ -70,22 +70,21 @@ const Api = {
   getStudyMethods() { return this.get('/study-methods'); },
 
   /* ── Sessions ──────────────────────────── */
-  startSession(payload)       { return this.post('/sessions/start',         payload); },
-  finishSession(id, payload)  { return this.post(`/sessions/${id}/finish`,  payload); },
-  getSessions()               { return this.get('/sessions');                          },
+  startSession(payload)       { return this.post('/sessions/start',        payload); },
+  finishSession(id, payload)  { return this.post(`/sessions/${id}/finish`, payload); },
+  getSessions()               { return this.get('/sessions');                         },
 
   /* ── Flashcards ────────────────────────── */
   getFlashcards(subjectId) {
     const query = subjectId ? `?subjectId=${subjectId}` : '';
     return this.get(`/flashcards${query}`);
   },
-  getFlashcardsDue()          { return this.get('/flashcards/due');                    },
-  createFlashcard(payload)    { return this.post('/flashcards', payload);              },
-  // ── NOVO: faltava esse método, usado em saveEdit() no flashcards.js ──
-  updateFlashcard(id, payload){ return this.put(`/flashcards/${id}`, payload);         },
+  getFlashcardsDue()           { return this.get('/flashcards/due');                       },
+  createFlashcard(payload)     { return this.post('/flashcards', payload);                 },
+  updateFlashcard(id, payload) { return this.put(`/flashcards/${id}`, payload);            },
   generateQuestion(answer, subjectId) {
     return this.post('/flashcards/generate-question', { answer, subjectId });
   },
-  reviewFlashcard(id, quality){ return this.post(`/flashcards/${id}/review`, { quality }); },
-  deleteFlashcard(id)         { return this.delete(`/flashcards/${id}`);               },
+  reviewFlashcard(id, quality) { return this.post(`/flashcards/${id}/review`, { quality }); },
+  deleteFlashcard(id)          { return this.delete(`/flashcards/${id}`);                   },
 };

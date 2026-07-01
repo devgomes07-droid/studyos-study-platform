@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
+
     List<Subject> findByUserIdAndActiveTrue(Long userId);
 
-    // usado em FlashcardService para garantir que a matéria pertence ao usuário logado
-    // antes de vinculá-la a um flashcard (create/update) ou usá-la como contexto da IA
+    Optional<Subject> findById(Long id);
+
+    // necessário para o FlashcardService validar que a matéria pertence ao usuário logado
     Optional<Subject> findByIdAndUserId(Long id, Long userId);
+
+    long countByUserIdAndActiveTrue(Long userId);
 }

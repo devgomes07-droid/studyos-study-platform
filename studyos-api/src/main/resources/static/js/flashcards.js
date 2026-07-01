@@ -43,10 +43,8 @@ let subjects     = [];
 let filtered     = [];
 let activeFilter = 'all';
 
-// edit
 let editingId    = null;
 
-// study
 let studyQueue   = [];
 let studyIdx     = 0;
 let studyFlipped = false;
@@ -269,6 +267,36 @@ function updatePreview(which) {
   if (!val.trim()) { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
   Utils.$(previewId).innerHTML = parseContent(val);
+}
+
+/* ── Gerar pergunta via IA (Gemini) ── */
+async function generateQuestionAI() {
+  const answer    = Utils.$('#fc-answer-input').value.trim();
+  const subjectId = parseInt(Utils.$('#fc-subject-sel').value) || null;
+  const btn       = Utils.$('#fc-ai-btn');
+  const errEl     = Utils.$('#fc-err');
+
+  if (!answer) {
+    errEl.textContent = 'Escreva a resposta primeiro.';
+    return;
+  }
+  errEl.textContent = '';
+
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '🧠 Gerando...';
+
+  try {
+    const result = await Api.generateQuestion(answer, subjectId);
+    Utils.$('#fc-question-input').value = result.question;
+    updatePreview('q');
+    Toast.success('Pergunta gerada! Revise antes de salvar.');
+  } catch (err) {
+    errEl.textContent = err.message || 'Erro ao gerar pergunta. Tente de novo.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 }
 
 async function createCard() {
