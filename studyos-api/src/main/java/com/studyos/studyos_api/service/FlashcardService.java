@@ -11,10 +11,12 @@ import com.studyos.studyos_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class FlashcardService {
 
@@ -23,6 +25,7 @@ public class FlashcardService {
     private final UserRepository userRepository;
     private final GeminiAIService geminiAIService;
 
+    @Transactional(readOnly = true)
     public List<FlashcardResponse> listAll(Long subjectId) {
         User user = getCurrentUser();
         List<Flashcard> cards = subjectId != null
@@ -31,6 +34,7 @@ public class FlashcardService {
         return cards.stream().map(this::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<FlashcardResponse> listDue() {
         User user = getCurrentUser();
         return flashcardRepository.findDueForReview(user.getId(), LocalDateTime.now())
@@ -52,10 +56,6 @@ public class FlashcardService {
         return toResponse(flashcardRepository.save(card));
     }
 
-    /**
-     * Edita um flashcard existente. Garante que o card pertence ao usuário logado
-     * antes de permitir qualquer alteração (corrige falha de IDOR).
-     */
     public FlashcardResponse update(Long id, FlashcardRequest request) {
         User user = getCurrentUser();
         Flashcard card = findOwnedCardOrThrow(id, user.getId());
@@ -74,10 +74,6 @@ public class FlashcardService {
         return toResponse(flashcardRepository.save(card));
     }
 
-    /**
-     * Aplica o algoritmo SM-2. Garante que o card pertence ao usuário logado
-     * antes de permitir a revisão (corrige falha de IDOR).
-     */
     public FlashcardResponse review(Long id, int quality) {
         User user = getCurrentUser();
         Flashcard card = findOwnedCardOrThrow(id, user.getId());
@@ -85,10 +81,6 @@ public class FlashcardService {
         return toResponse(flashcardRepository.save(card));
     }
 
-    /**
-     * Soft delete. Garante que o card pertence ao usuário logado
-     * antes de permitir a exclusão (corrige falha de IDOR).
-     */
     public void delete(Long id) {
         User user = getCurrentUser();
         Flashcard card = findOwnedCardOrThrow(id, user.getId());
@@ -96,15 +88,10 @@ public class FlashcardService {
         flashcardRepository.save(card);
     }
 
-    /**
-     * Gera uma pergunta de flashcard a partir de uma resposta, usando IA (Gemini).
-     * Se subjectId for informado, usa o nome da matéria como contexto extra.
-     */
     public String generateQuestion(String answer, Long subjectId) {
         if (answer == null || answer.isBlank()) {
             throw new IllegalArgumentException("Informe a resposta antes de gerar a pergunta.");
         }
-
         String subjectName = null;
         if (subjectId != null) {
             User user = getCurrentUser();
@@ -134,7 +121,6 @@ public class FlashcardService {
     }
 
     private FlashcardResponse toResponse(Flashcard f) {
-        // f.getSubject() já vem carregado (lazy proxy) — não precisa buscar de novo no banco.
         Subject s = f.getSubject();
         return FlashcardResponse.builder()
                 .id(f.getId())
