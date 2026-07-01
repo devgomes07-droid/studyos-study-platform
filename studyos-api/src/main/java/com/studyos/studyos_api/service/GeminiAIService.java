@@ -20,17 +20,13 @@ public class GeminiAIService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    // Modelo gratuito e rápido, ideal pra esse tipo de tarefa curta
+    // modelo estável do tier gratuito
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * Gera uma pergunta de flashcard a partir de uma resposta,
-     * usando a API gratuita do Gemini.
-     */
     public String generateQuestion(String answer, String subjectName) {
         String prompt = buildPrompt(answer, subjectName);
 
@@ -39,8 +35,8 @@ public class GeminiAIService {
                         Map.of("parts", List.of(Map.of("text", prompt)))
                 ),
                 "generationConfig", Map.of(
-                        "temperature", 0.4,
-                        "maxOutputTokens", 100
+                        "temperature", 0.3,
+                        "maxOutputTokens", 300  // aumentado pra não cortar a pergunta
                 )
         );
 
@@ -59,15 +55,18 @@ public class GeminiAIService {
 
     private String buildPrompt(String answer, String subjectName) {
         String contexto = (subjectName != null && !subjectName.isBlank())
-                ? " A matéria é: " + subjectName + "."
+                ? " Matéria: " + subjectName + "."
                 : "";
 
-        return "Você cria perguntas de flashcard de estudo. " +
-                "Dada a resposta abaixo, gere APENAS a pergunta correspondente, " +
-                "curta, direta e clara, sem explicações, sem aspas, sem prefixos como 'Pergunta:'." +
-                contexto +
-                "\n\nResposta: " + answer +
-                "\n\nPergunta:";
+        return "Você é um professor criando flashcards de estudo." + contexto + "\n\n" +
+                "Com base na resposta abaixo, crie UMA pergunta de flashcard.\n" +
+                "Regras:\n" +
+                "- A pergunta deve ser completa, clara e direta\n" +
+                "- Entre 5 e 15 palavras\n" +
+                "- Sem aspas, sem prefixos como 'Pergunta:' ou 'P:'\n" +
+                "- Apenas a pergunta, nada mais\n\n" +
+                "Resposta: " + answer + "\n\n" +
+                "Pergunta:";
     }
 
     private String extractText(String responseJson) {
@@ -79,7 +78,7 @@ public class GeminiAIService {
                     .path("parts").get(0)
                     .path("text")
                     .asText();
-            return text.trim().replaceAll("^\"|\"$", "");
+            return text.trim().replaceAll("^\"|\"$", "").replaceAll("\\n+$", "");
         } catch (Exception e) {
             log.error("Erro ao parsear resposta do Gemini: {}", e.getMessage());
             throw new RuntimeException("Resposta inesperada da IA. Tente novamente.");
