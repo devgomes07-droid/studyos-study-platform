@@ -20,9 +20,9 @@ public class GeminiAIService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    // linha nova
     private static final String GEMINI_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,7 +35,7 @@ public class GeminiAIService {
                 ),
                 "generationConfig", Map.of(
                         "temperature", 0.3,
-                        "maxOutputTokens", 300  // aumentado pra não cortar a pergunta
+                        "maxOutputTokens", 300
                 )
         );
 
